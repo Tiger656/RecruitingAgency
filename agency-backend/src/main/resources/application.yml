@@ -1,12 +1,17 @@
+
 server:
-  port: 8081
+  port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/agency
-    username: postgres
+#    url: jdbc:postgresql://localhost:5432/agency
+    url: jdbc:mysql://localhost:3306/orm?useUnicode=true&serverTimezone=UTC
+    username: root
     password: root
-    driver-class-name: org.postgresql.Driver
+#    driver-class-name: org.postgresql.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
+
+
 
