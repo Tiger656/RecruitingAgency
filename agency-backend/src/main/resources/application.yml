@@ -12,6 +12,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  liquibase:
+    enabled: true
+    change-log: classpath:/data/changelog/db.changelog-master.xml
 
 
 
