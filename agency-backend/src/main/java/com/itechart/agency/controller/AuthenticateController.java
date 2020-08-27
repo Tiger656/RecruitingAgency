@@ -1,8 +1,7 @@
 package com.itechart.agency.controller;
 
-import com.itechart.agency.Dto.AuthenticateRequestDto;
+import com.itechart.agency.dto.AuthenticateRequestDto;
 import com.itechart.agency.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
