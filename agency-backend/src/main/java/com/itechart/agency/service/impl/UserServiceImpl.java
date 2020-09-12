@@ -1,9 +1,9 @@
 package com.itechart.agency.service.impl;
 
 
-import com.itechart.agency.entity.Role;
 import com.itechart.agency.entity.User;
 import com.itechart.agency.repository.UserRepository;
+import com.itechart.agency.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service("userDetailServiceImpl")
-public class UserServiceImpl implements UserDetailsService {
+public class UserServiceImpl implements UserDetailsService, UserService {
     @Autowired
     private UserRepository userRepository;
 
@@ -33,4 +34,14 @@ public class UserServiceImpl implements UserDetailsService {
 
         return authorities;
     }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+//    @Override
+//    public void createUser(User user) {
+//        userRepository.save(user);
+//    }
 }

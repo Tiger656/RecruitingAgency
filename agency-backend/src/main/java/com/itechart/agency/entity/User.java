@@ -13,29 +13,27 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class User implements BaseEntity{
+public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    @NotNull
-    private Long companyId;
-
-
     @Column(name = "email", unique = true)
-    @NotNull
+
     private String email;
 
     @Column(name = "password")
-    @NotNull
+
     private String password;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "agency_id",referencedColumnName = "id")
+    private Agency agency;
     @Column
-    @NotNull
+
     private Boolean isDeleted;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = { CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles", joinColumns = {
             @JoinColumn(name = "user_id")}, inverseJoinColumns = {
             @JoinColumn(name = "role_id")})

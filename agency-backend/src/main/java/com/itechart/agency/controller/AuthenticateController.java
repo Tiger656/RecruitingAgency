@@ -1,6 +1,7 @@
 package com.itechart.agency.controller;
 
-import com.itechart.agency.dto.AuthenticateRequestDto;
+
+import com.itechart.agency.Dto.AuthenticateRequestDto;
 import com.itechart.agency.security.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +30,6 @@ public class AuthenticateController {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticateRequestDto request) {

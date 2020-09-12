@@ -3,6 +3,7 @@ package com.itechart.agency.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "roles")
@@ -11,13 +12,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Role implements BaseEntity{
+public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private long id;
 
     @Column
     private String name;
+//    @ManyToMany(mappedBy = "roles")
+//    private List<User> users;
 
 
 }
