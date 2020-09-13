@@ -6,6 +6,8 @@ import com.itechart.agency.entity.location.City;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -18,21 +20,27 @@ import java.util.List;
 public class Agency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @NotNull(message = "Agency name cannot be null")
+    @Size(min = 1, max = 50, message = "Agency name must be between 1 and 50 characters")
+    @Column(name = "name")
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "city_id",referencedColumnName = "id")
+
+    @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id",referencedColumnName = "id")
+
+    @ManyToOne
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
     @OneToMany(mappedBy = "agency")
     @JsonIgnore
     private List<User> users;
+
     @OneToMany(mappedBy = "agency")
     @JsonIgnore
-    private List<AgencyEmployeeContract> agencyEmployeeContracts;
-
+    private List<EmployeeContract> employeeContracts;
 }

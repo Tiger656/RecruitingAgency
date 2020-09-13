@@ -1,7 +1,6 @@
-package com.itechart.agency.Dto;
+package com.itechart.agency.dto;
 
-import com.itechart.agency.entity.Agency;
-import com.itechart.agency.entity.Role;
+import com.itechart.agency.entity.lists.Role;
 import com.itechart.agency.entity.User;
 import lombok.*;
 

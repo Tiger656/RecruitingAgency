@@ -1,7 +1,7 @@
 package com.itechart.agency.repository;
 
 
-import com.itechart.agency.entity.Role;
+import com.itechart.agency.entity.lists.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
