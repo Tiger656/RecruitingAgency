@@ -16,7 +16,7 @@ import java.sql.Date;
 @ToString
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull(message = "File name cannot be null")

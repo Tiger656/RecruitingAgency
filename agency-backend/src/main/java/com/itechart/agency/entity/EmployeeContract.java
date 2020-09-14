@@ -23,7 +23,7 @@ import java.util.List;
 @ToString
 public class EmployeeContract {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull(message = "Agency id in employee contract cannot be null")

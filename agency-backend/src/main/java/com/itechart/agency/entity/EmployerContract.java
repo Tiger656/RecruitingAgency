@@ -16,7 +16,7 @@ import java.sql.Date;
 @ToString
 public class EmployerContract {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull(message = "Contract type cannot be null")

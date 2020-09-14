@@ -19,7 +19,7 @@ import java.util.List;
 @ToString
 public class Employer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     //зачем ему имя?

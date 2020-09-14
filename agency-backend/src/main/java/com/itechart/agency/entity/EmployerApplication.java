@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 public class EmployerApplication {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @NotNull(message = "Agency for employer cannot be null")
