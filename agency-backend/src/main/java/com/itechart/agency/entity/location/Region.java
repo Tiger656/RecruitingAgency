@@ -1,9 +1,11 @@
 package com.itechart.agency.entity.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "regions")
@@ -11,10 +13,10 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+
 public class Region {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "name",unique = true)
@@ -24,7 +26,8 @@ public class Region {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="countries_id",referencedColumnName = "id")
     private Country country;
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<City> cities;
 
-    public Region(String name, Country country) {
-    }
 }

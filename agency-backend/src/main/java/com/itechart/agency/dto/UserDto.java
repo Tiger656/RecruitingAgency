@@ -1,10 +1,13 @@
-package com.itechart.agency.Dto;
+package com.itechart.agency.dto;
 
 import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.Role;
 import com.itechart.agency.entity.User;
 import lombok.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,27 +16,27 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserDto {
-    private String email;
-    private String password;
-    private String agencyName;
-    private List<String> roleName;
-    private String city;
 
-    public UserDto(String email, String password, String agencyName, List<String> roleName) {
-        this.email = email;
-        this.password = password;
-        this.agencyName = agencyName;
-        this.roleName = roleName;
+public class UserDto {
+
+private Long id;
+    private String email;
+    private Long agencyId;
+    private List<Long> roleId;
+
+
+
+
+
+
+    public static UserDto convertEntityToDto(User entity) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(entity, UserDto.class);
     }
 
-    public static UserDto convertToDto(User user) {
-        return new UserDto(
-                user.getEmail(),
-                user.getPassword(),
-                user.getAgency().getName(),
-                user.getRoles().stream().map(Role::getName).collect(Collectors.toList())
-        );
+    public static User convertDtoToEntity(UserDto dto) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(dto, User.class);
     }
 
 

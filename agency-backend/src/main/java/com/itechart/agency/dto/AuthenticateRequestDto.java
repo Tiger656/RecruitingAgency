@@ -1,4 +1,4 @@
-package com.itechart.agency.Dto;
+package com.itechart.agency.dto;
 
 import lombok.Data;
 

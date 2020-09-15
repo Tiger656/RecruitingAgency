@@ -1,37 +1,38 @@
 package com.itechart.agency.controller;
 
-import com.itechart.agency.Dto.UserDto;
-import com.itechart.agency.entity.Agency;
-import com.itechart.agency.entity.Role;
+
+import com.itechart.agency.dto.UserDto;
 import com.itechart.agency.entity.User;
-import com.itechart.agency.entity.location.Address;
-import com.itechart.agency.entity.location.City;
-import com.itechart.agency.entity.location.Country;
-import com.itechart.agency.entity.location.Region;
-import com.itechart.agency.repository.*;
-import com.itechart.agency.service.UserService;
-import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.itechart.agency.service.CrudService;
+import com.itechart.agency.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/user")
 public class UserController {
-    private final UserService userService;
+    private UserServiceImpl userService;
 
 
-    public UserController(UserService userService){
-        this.userService=userService;
+    public UserController(UserServiceImpl userService) {
+        this.userService = userService;
     }
 
     @GetMapping
     public List<UserDto> getAll() {
-        return userService.getAll().stream().map(UserDto::convertToDto).collect(Collectors.toList());
+        return userService.findAll();
     }
+
+    //    @GetMapping("/{id}")
+//    public User findById(@PathVariable(name = "id") Long id) {
+//        return userService.findById(id);
+//    }
+    @PostMapping
+    public Long createUser(@RequestBody UserDto userDto) {
+        return userService.create(userDto);
+    }
+
 }
