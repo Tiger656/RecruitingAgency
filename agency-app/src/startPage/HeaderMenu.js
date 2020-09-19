@@ -28,6 +28,7 @@ const styles = {
         textAlign: 'center'
     },
     divSign: {
+        zIndex: '999',
         width: '280px',
         position: 'absolute',
         margin: '0 0 0 -140px',
