@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface EmployerContractRepository extends JpaRepository<EmployerContract, Long>, JpaSpecificationExecutor<EmployerContract> {
     //мб надо findAllByIs_deletedIsFalse()
-    List<EmployerContract> findAllBy_deletedIsFalse();
+//    List<EmployerContract> findAllBy_deletedIsFalse();
 }

@@ -52,7 +52,7 @@ public class EmployerContractServiceImpl implements CrudService<EmployerContract
 
     @Override
     public List<EmployerContractDto> findAll() {
-        List<EmployerContract> contracts = employerContractRepository.findAllBy_deletedIsFalse();
+        List<EmployerContract> contracts = employerContractRepository.findAll();
         return contracts.stream().map((EmployerContractConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 

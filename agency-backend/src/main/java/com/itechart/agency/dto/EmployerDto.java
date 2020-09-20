@@ -26,7 +26,7 @@ public class EmployerDto {
     }
 
     public class Builder {
-        private Builder() {
+        public Builder() {
         }
 
         public EmployerDto.Builder withId(final Long id) {
