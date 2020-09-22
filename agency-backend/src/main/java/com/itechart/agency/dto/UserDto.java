@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 
 public class UserDto {
 
-private Long id;
+    private Long id;
     private String email;
     private Long agencyId;
-//    private String password;
     private Boolean isDeleted;
     private List<Long> roleIds;
     private List<Role> roles;
@@ -69,8 +68,6 @@ private Long id;
             return UserDto.this;
         }
     }
-
-
 
 
     public static UserDto convertEntityToDto(User entity) {

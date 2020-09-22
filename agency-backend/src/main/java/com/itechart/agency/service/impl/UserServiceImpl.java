@@ -13,6 +13,7 @@ import com.itechart.agency.service.CrudService;
 import liquibase.pro.packaged.A;
 import liquibase.pro.packaged.T;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserDetailsService, CrudService<UserDto>
 
     @Override
     public UserDto findById(Long id) {
-        return UserDto.convertEntityToDto(userRepository.findById(id).filter(user -> user.getIsDeleted().equals(false)).orElseThrow(() -> new NotFoundException("User by id:" + id + "not found")));
+        return UserDto.convertEntityToDto(userRepository.findById(id).filter(user -> user.getIsDeleted().equals(false)).orElseThrow(() -> new NotFoundException("User with id:" + id + " not found")));
     }
 
     /*get role ids*/

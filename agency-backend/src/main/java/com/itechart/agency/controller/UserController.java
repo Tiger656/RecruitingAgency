@@ -8,6 +8,7 @@ import com.itechart.agency.dto.UserDtoResponse;
 import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.User;
 import com.itechart.agency.entity.lists.Role;
+import com.itechart.agency.exception.NotFoundException;
 import com.itechart.agency.repository.AgencyRepository;
 import com.itechart.agency.repository.EmployerRepository;
 import com.itechart.agency.repository.RoleRepository;
@@ -15,9 +16,13 @@ import com.itechart.agency.service.CrudService;
 import com.itechart.agency.service.impl.EmployerServiceImpl;
 import com.itechart.agency.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,7 +48,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable(name = "id") Long id) {
-        return userService.findById(id);
+
+return userService.findById(id);
+
+//        UserDto userDto = ;
+//        return Objects.isNull(userDto)?:ResponseEntity.ok().body(userDto);
     }
 
     @PostMapping
@@ -61,15 +70,9 @@ public class UserController {
         userService.deleteById(id);
     }
 
-    @GetMapping("/agencies")
-    public List<Agency> getAgencies() {
-        return agencyRepository.findAll();
-    }
 
-    @GetMapping("/roles")
-    public List<Role> getRoles() {
-        return roleRepository.findAll();
-    }
+
+
 
 
 }
