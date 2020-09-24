@@ -1,7 +1,9 @@
 package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.EmployerApplicationDto;
+import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.dto.converter.EmployerApplicationConvert;
+import com.itechart.agency.dto.converter.EmployerApplicationForManagerConvert;
 import com.itechart.agency.entity.EmployerApplication;
 import com.itechart.agency.entity.lists.Feature;
 import com.itechart.agency.exception.BadRequestException;
@@ -88,6 +90,11 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     public List<EmployerApplicationDto> findAll() {
         List<EmployerApplication> applicationList = employerApplicationRepository.findAll();
         return applicationList.stream().map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
+    }
+
+    public List<EmployerApplicationForManagerDto> findAllForManager() {
+        List<EmployerApplication> applicationList = employerApplicationRepository.findAll();
+        return applicationList.stream().map((EmployerApplicationForManagerConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
     @Override

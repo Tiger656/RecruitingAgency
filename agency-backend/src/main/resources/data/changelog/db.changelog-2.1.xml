@@ -1,0 +1,207 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <property name="now" value="now()" dbms="postgresql"/>
+    <changeSet  id="3"  author="Tim">
+
+        <createTable tableName="question_types">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <insert tableName="question_types">
+            <column name="name" value="OPEN"></column>
+        </insert>
+        <insert tableName="question_types">
+            <column name="name" value="CHECKBOXES"></column>
+        </insert>
+
+        <createTable tableName="questions">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="name" type="varchar(1000)">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="question_type_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_questions_question_types" references="question_types(id)"></constraints>
+            </column>
+        </createTable>
+        <insert tableName="questions">
+            <column name="name" value="Lets speak about access levels in Java"></column>
+            <column name="question_type_id" valueNumeric="1"></column>
+        </insert>
+        <insert tableName="questions">
+            <column name="name" value="How many access levels in Java"></column>
+            <column name="question_type_id" valueNumeric="2"></column>
+        </insert>
+
+        <createTable tableName="question_variants">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="question_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_question_variants_questions" references="questions(id)"></constraints>
+            </column>
+            <column name="answer_variant" type="varchar(1000)">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <insert tableName="question_variants">
+            <column name="question_id" valueNumeric="2"></column>
+            <column name="answer_variant" value="3"></column>
+        </insert>
+        <insert tableName="question_variants">
+            <column name="question_id" valueNumeric="2"></column>
+            <column name="answer_variant" value="4"></column>
+        </insert>
+        <insert tableName="question_variants">
+            <column name="question_id" valueNumeric="2"></column>
+            <column name="answer_variant" value="5"></column>
+        </insert>
+        <insert tableName="question_variants">
+            <column name="question_id" valueNumeric="2"></column>
+            <column name="answer_variant" value="6"></column>
+        </insert>
+
+        <createTable tableName="interview_statuses">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <insert tableName="interview_statuses">
+            <column name="name" value="WAITING_APPROVING_EXPERT_AND_EMPLOYEE"></column>
+        </insert>
+        <insert tableName="interview_statuses">
+            <column name="name" value="WAITING_APPROVING_EXPERT"></column>
+        </insert>
+        <insert tableName="interview_statuses">
+            <column name="name" value="WAITING_APPROVING_EMPLOYEE"></column>
+        </insert>
+        <insert tableName="interview_statuses">
+            <column name="name" value="WAITING_APPROVING_EXPERT_AND_EMPLOYEE"></column>
+        </insert>
+        <insert tableName="interview_statuses">
+            <column name="name" value="IN_PROGRESS"></column>
+        </insert>
+        <insert tableName="interview_statuses">
+            <column name="name" value="FINISHED"></column>
+        </insert>
+        <insert tableName="interview_statuses">
+            <column name="name" value="CANCELED"></column>
+        </insert>
+
+
+        <createTable tableName="interviews">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" >
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="agency_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_interviews_agencies" references="agencies(id)"></constraints>
+            </column>
+            <column name="employer_application_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_interviews_employer_application" references="employer_application(id)"></constraints>
+            </column>
+            <column name="employee_contract_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_interviews_employee_contract" references="agency_employee_contract(id)"></constraints>
+            </column>
+            <column name="manager_id" type="bigint">
+                <constraints nullable="false"></constraints> <!--foreignKeyName="fk_interviews_managers" references="managers(id)"-->
+            </column>
+            <column name="expert_id" type="bigint">
+                <constraints nullable="false"></constraints> <!--foreignKeyName="fk_interviews_experts" references="experts(id)"-->
+            </column>
+            <column name="date_time" type="timestamp">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="interview_status_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_interviews_interview_statuses" references="interview_statuses"></constraints>
+            </column>
+            <column name="manager_comment" type="varchar(1000)">
+            </column>
+            <column name="expert_comment" type="varchar(1000)">
+            </column>
+        </createTable>
+
+        <insert tableName="interviews">
+            <column name="agency_id" valueNumeric="1"></column>
+            <column name="employer_application_id" valueNumeric="1"></column>
+            <column name="employee_contract_id" valueNumeric="1"></column>
+            <column name="manager_id" valueNumeric="1"></column>
+            <column name="expert_id" valueNumeric="1"></column>
+            <column name="date_time" valueDate="${now}"></column>
+            <column name="interview_status_id" valueNumeric="3"></column>
+            <column name="manager_comment" value="Manager's comment"></column>
+            <column name="expert_comment" value="Expert's comment"></column>
+        </insert>
+
+        <createTable tableName="interview_questions">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="interview_id" type="bigint">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="question_id" type="bigint">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="answer" type="varchar(1000)">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="is_right" type="boolean">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <insert tableName="interview_questions">
+            <column name="interview_id" valueNumeric="1"></column>
+            <column name="question_id" valueNumeric="1"/>
+            <column name="answer" value="4 (public, protected, default, private)"/>
+            <column name="is_right" valueBoolean="true"/>
+        </insert>
+
+        <createTable tableName="experts">
+            <column name="id" type="bigserial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"></constraints>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"></constraints>
+            </column>
+        </createTable>
+        <insert tableName="experts">
+            <column name="name" value="Alex"></column>
+        </insert>
+        <insert tableName="experts">
+            <column name="name" value="Andrew"></column>
+        </insert>
+        <insert tableName="experts">
+            <column name="name" value="Rob"></column>
+        </insert>
+
+
+
+
+
+        <!-- insert user 'manager'-->
+        <insert tableName="users">
+            <column name="email" value="manager.anton@gmail.com"></column>
+            <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
+            <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deleted" valueBoolean="0"></column>
+        </insert>
+        <insert tableName="user_roles">
+            <column name="user_id" valueNumeric="2"></column>
+            <column name="role_id" valueNumeric="7"></column>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

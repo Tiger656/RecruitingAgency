@@ -59,6 +59,7 @@ public class EmployeeContractServiceImpl implements CrudService<EmployeeContract
         }
     }
 
+
     @Override
     public List<EmployeeContractDto> findAll() {
         List<EmployeeContract> contracts = employeeContractRepository.findAllByIs_deletedIsFalse();

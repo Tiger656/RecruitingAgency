@@ -204,8 +204,8 @@ function HeaderMenu(props) {
                             <div className="cl-btn-7" onClick={signNone}/>
                             <br/>
                             <span style={styles.span}>
-					{langConst[4]}
-				</span>
+					            {langConst[4]}
+				            </span>
 
                             <div style={styles.divEnterData} data-validate="Enter your email">
                                 <input className="input100" type="text" style={styles.input} id="userLogin"

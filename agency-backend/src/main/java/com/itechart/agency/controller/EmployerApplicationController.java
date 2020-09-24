@@ -1,6 +1,7 @@
 package com.itechart.agency.controller;
 
 import com.itechart.agency.dto.EmployerApplicationDto;
+import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.service.impl.EmployerApplicationServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,14 @@ public class EmployerApplicationController {
         LOGGER.info("REST request. Path:/employerApplication/{} method: DELETE.", id);
         employerApplicationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    //@PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    @GetMapping("/all-for-manager")
+    public ResponseEntity<?> getAllEmployerApplicationsForManager() {
+        LOGGER.info("REST request. Path:/employerApplication/all-for-manager method: GET.");
+        final List<EmployerApplicationForManagerDto> employerAppDtos = employerApplicationService.findAllForManager();
+        return new ResponseEntity<>(employerAppDtos, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
