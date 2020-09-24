@@ -1,5 +1,6 @@
 package com.itechart.agency.dto;
 
+import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.lists.Role;
 import com.itechart.agency.entity.User;
 import lombok.*;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -20,14 +22,15 @@ public class UserDto {
 
     private Long id;
     private String email;
+    private String agencyName;
     private Long agencyId;
     private Boolean isDeleted;
-    private List<Long> roleIds;
     private List<Role> roles;
 
     public static UserDto.Builder newBuilder() {
         return new UserDto().new Builder();
     }
+
 
     public class Builder {
         private Builder() {
@@ -53,10 +56,7 @@ public class UserDto {
             return this;
         }
 
-        public UserDto.Builder withCityId(final List<Long> roleIds) {
-            UserDto.this.roleIds = roleIds;
-            return this;
-        }
+
 
         public UserDto.Builder withAddressId(final List<Role> roles) {
             UserDto.this.roles = roles;
