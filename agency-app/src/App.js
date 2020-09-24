@@ -8,6 +8,7 @@ import Contacts from "./startPage/Contacts";
 import './startPage/Toggle.css';
 import {BrowserRouter as Router, Route,BrowserRouter,Switch} from "react-router-dom";
 import {AdminPage} from "./individualPage/AdminPage/AdminPage";
+import ManagerPageMain from "./individualPage/ManagerPages/ManagerPageMain";
 
 const App = () => {
     const logo = 'https://s3.us-west-1.amazonaws.com/com.soar.p/images/profile/companylogos/iTechArt-7926.jpg';
@@ -48,6 +49,15 @@ const App = () => {
                 </Route>
                 <Route path="/employeePage">
                     <EmployeePage lang={lang} name = {employeeName} email={employerEmail}/>
+                </Route>
+                <Route path="/manager-page">
+                    <ManagerPageMain lang={lang} companyName = {companyName} email={employerEmail}/>
+                </Route>
+                <Route path="/manager-page/employer-applications">
+                    <ManagerPageMain lang={lang} companyName = {companyName} email={employerEmail}/>
+                </Route>
+                <Route path="/manager-page/employee-applications">
+                    <ManagerPageMain lang={lang} companyName = {companyName} email={employerEmail}/>
                 </Route>
             </Router>
             <Contacts/>

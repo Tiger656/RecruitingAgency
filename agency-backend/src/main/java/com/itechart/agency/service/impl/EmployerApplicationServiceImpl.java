@@ -1,10 +1,11 @@
 package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.EmployerApplicationDto;
+import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.dto.converter.EmployerApplicationConvert;
+import com.itechart.agency.dto.converter.EmployerApplicationForManagerConvert;
 import com.itechart.agency.entity.EmployerApplication;
 import com.itechart.agency.entity.lists.Feature;
-import com.itechart.agency.entity.lists.Status;
 import com.itechart.agency.exception.BadRequestException;
 import com.itechart.agency.exception.NotFoundException;
 import com.itechart.agency.repository.*;
@@ -43,18 +44,20 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     }
 
     @Override
-    public List<EmployerApplicationDto> getApplicationsByStatus(Status status) {
-        List<EmployerApplication> applicationList = employerApplicationRepository.findByStatus(status);
+    public List<EmployerApplicationDto> getApplicationsByStatus(String status) {
+        if (statusRepository.findByName(status).isPresent())
+            throw new NotFoundException("Status doesn't exist");
+        List<EmployerApplication> applicationList = employerApplicationRepository.findByStatus(statusRepository.findByName(status).get());
         return applicationList.stream().map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
     @Override
-    public void changeApplicationStatus(Long applicationId, Status newStatus) {
-        if (employerApplicationRepository.findById(applicationId).isEmpty())
-            throw new NotFoundException("Employer application doesn't exist");
+    public void changeApplicationStatus(Long applicationId, String newStatus) {
+        if (employerApplicationRepository.findById(applicationId).isEmpty() || statusRepository.findByName(newStatus).isPresent())
+            throw new NotFoundException("Employer application or/and status doesn't exist");
         else {
             EmployerApplication employerApplication = find(applicationId);
-            employerApplication.setStatus(newStatus);
+            employerApplication.setStatus(statusRepository.findByName(newStatus).get());
             employerApplicationRepository.save(employerApplication);
         }
     }
@@ -87,6 +90,11 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     public List<EmployerApplicationDto> findAll() {
         List<EmployerApplication> applicationList = employerApplicationRepository.findAll();
         return applicationList.stream().map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
+    }
+
+    public List<EmployerApplicationForManagerDto> findAllForManager() {
+        List<EmployerApplication> applicationList = employerApplicationRepository.findAll();
+        return applicationList.stream().map((EmployerApplicationForManagerConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
     @Override

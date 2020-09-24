@@ -5,7 +5,7 @@ const styles = {
         target: '_blank'
     },
     footer: {
-        position: ' relative',
+        position: 'relative',
         color: '#ffffff',
         backgroundColor: '#292d33'
     },
