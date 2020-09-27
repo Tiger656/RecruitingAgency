@@ -6,11 +6,12 @@ import EmployerPage from "./individualPage/EmployerPage";
 import EmployeePage from "./individualPage/EmployeePage";
 import Contacts from "./startPage/Contacts";
 import './startPage/Toggle.css';
-import {BrowserRouter as Router, Route,BrowserRouter,Switch} from "react-router-dom";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import {AdminPage} from "./individualPage/AdminPage/AdminPage";
-import ManagerPageMain from "./individualPage/ManagerPages/ManagerPageMain";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const App = () => {
+
+export const App = () => {
     const logo = 'https://s3.us-west-1.amazonaws.com/com.soar.p/images/profile/companylogos/iTechArt-7926.jpg';
     const companyName = 'Recruiting agency';
     const infCom = 'Разнообразный и богатый опыт консультация с&nbsp; активом обеспечивает широкому кругу. ' +
@@ -31,38 +32,40 @@ const App = () => {
         if (lang === 'en') setLang('ru');
         else setLang('en');
     }, [lang]);
+
+
+
+
+
+
     return (
 
         <section className="App">
             <input className="checkbox" type="checkbox" id="codepen" onChange={handler}/>
             <label htmlFor="codepen"/>
 
-            <HeaderMenu logo={logo} lang={lang} id=''/>
+            <HeaderMenu logo={logo} lang={lang} id='1'/>
+
+
+
 
             <Router>
+
                 <Route exact path="/">
                     <InformationInPicture lang={lang}/>
                 </Route>
-                <Route path="/adminPage" exact component={AdminPage}/>
-                <Route path="/employerPage">
+                <Route path="/admin-page" exact component={AdminPage}/>
+                <Route  path="/employerPage">
                     <EmployerPage lang={lang} companyName = {companyName} email={employerEmail}/>
                 </Route>
                 <Route path="/employeePage">
                     <EmployeePage lang={lang} name = {employeeName} email={employerEmail}/>
                 </Route>
-                <Route path="/manager-page">
-                    <ManagerPageMain lang={lang} companyName = {companyName} email={employerEmail}/>
-                </Route>
-                <Route path="/manager-page/employer-applications">
-                    <ManagerPageMain lang={lang} companyName = {companyName} email={employerEmail}/>
-                </Route>
-                <Route path="/manager-page/employee-applications">
-                    <ManagerPageMain lang={lang} companyName = {companyName} email={employerEmail}/>
-                </Route>
             </Router>
             <Contacts/>
         </section>
 
-    )
-};
-export default App;
+    )}
+
+    export default App;
+
