@@ -21,32 +21,36 @@ public class ExpertServiceImpl implements ExpertService {
         this.expertRepository = expertRepository;
     }
 
-    @Override
-    public Long create(Expert expert) {
-        return null;
+
+    public Expert create(Expert expert) {
+        Expert savedExpert = expertRepository.save(expert);
+        if (savedExpert != null) {
+            //sending email with credentials;
+
+        }
+        return savedExpert;
     }
 
-    @Override
+
     public Expert findById(Long id) {
         return null;
     }
 
-    @Override
+
     public List<Expert> findAll() {
         return expertRepository.findAll();
     }
 
-    @Override
+
     public Long update(Expert expert) {
         return null;
     }
 
-    @Override
+
     public void deleteById(Long id) {
 
     }
 
-    @Override
     public void delete(Expert expert) {
 
     }

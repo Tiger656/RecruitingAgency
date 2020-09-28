@@ -1,5 +1,4 @@
 import React, {useState,useEffect} from "react"
-import axios from'axios'
 
 
 export default function SideBlock(props){
@@ -12,20 +11,22 @@ export default function SideBlock(props){
     return(
         <div id='sideBlock' style={{display: props.display, position: 'fixed', right: '10px', top: '50%', color: 'black'}} onClick={()=> {
             if (document.getElementById('sideBlockMainInfo').style.display === 'none'){
+                document.getElementById('side-block-button').style.display = 'none';
                 document.getElementById('sideBlockMainInfo').style.display = 'block'
             }else {
+                document.getElementById('side-block-button').style.display = 'block';
                 document.getElementById('sideBlockMainInfo').style.display = 'none'
             }
         }}>
-            <h2>Eto malenkaya knopochka</h2>
-            <div style={{display: 'block'}} id='sideBlockMainInfo'>
-                <p>Employer: {props.data.employer.name}</p>
-                <p>Profession: {props.data.profession.name}</p>
-                <p>Salary: {props.data.salary}</p>
-                <p>Features:</p>
-                {props.data.features.map((feature) => {
-                    return <p>{feature.name}</p>
-                })}
+            <div id='side-block-button' style={{height: '50px', width: '50px', backgroundColor: 'black', right: '10px', marginLeft: 'auto'}}></div>
+            <div style={{display: 'none'}} id='sideBlockMainInfo'>
+                    <p>Employer: {props.data.employer.name}</p>
+                    <p>Profession: {props.data.profession.name}</p>
+                    <p>Salary: {props.data.salary}</p>
+                    <p>Features:</p>
+                    {props.data.features.map((feature) => {
+                        return <p>{feature.name}</p>
+                    })}
             </div>
         </div>
     )

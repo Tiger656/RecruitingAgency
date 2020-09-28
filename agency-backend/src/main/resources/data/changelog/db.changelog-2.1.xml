@@ -102,7 +102,7 @@
 
 
         <createTable tableName="interviews">
-            <column name="id" type="BIGSERIAL" autoIncrement="true" >
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"></constraints>
             </column>
             <column name="agency_id" type="bigint">

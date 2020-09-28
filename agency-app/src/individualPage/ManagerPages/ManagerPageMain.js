@@ -209,6 +209,7 @@ export default function ManagerPageMain(props) {
                                 return <option value={expert.id}>{expert.name}</option>
                             })}
                         </select>
+
                     </div>
 
                     <div style={styles.divEnterData} data-validate="Enter password">
@@ -218,12 +219,6 @@ export default function ManagerPageMain(props) {
                         <span className="focus-input100"/>
                     </div>
 
-                    <div style={styles.divEnterData} data-validate="Enter password">
-                        <input className="input100" type="text" style={styles.input} id="time"
-                               name="time"
-                               placeholder="Time"/>
-                        <span className="focus-input100"/>
-                    </div>
 
                     <div style={styles.divEnterData} data-validate="Enter password">
                         <input className="input100" type="text" style={styles.input} id="manager-comment"

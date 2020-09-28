@@ -1,9 +1,12 @@
 package com.itechart.agency.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+//import com.itechart.agency.entity.location.Address;
+//import com.itechart.agency.entity.location.City;
 import com.itechart.agency.entity.location.Address;
 import com.itechart.agency.entity.location.City;
 import lombok.*;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
