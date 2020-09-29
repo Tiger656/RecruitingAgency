@@ -1,10 +1,16 @@
 package com.itechart.agency.service;
 
-import com.itechart.agency.entity.User;
-
 import java.util.List;
 
-public interface UserService {
-    List<User> getAll();
+public interface UserService<T> {
+    T create(final T t);
+
+    T findById(final Long id);
+
+    List<T> findAll();
+
+    T update(final T t);
+
+    void deleteById(final Long id);
 
 }

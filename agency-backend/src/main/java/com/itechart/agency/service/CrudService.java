@@ -1,7 +1,6 @@
 package com.itechart.agency.service;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CrudService<T> {
     Long create(final T t);
@@ -9,7 +8,7 @@ public interface CrudService<T> {
     T findById(final Long id);
 
     List<T> findAll();
-
+/**/
     Long update(final T t);
 
     void deleteById(final Long id);

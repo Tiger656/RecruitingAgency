@@ -81,7 +81,7 @@ function EmployerPage(props) {
             <div className=" section-0">
 
                 <div className="wrap-login100" id="request" style={{
-                    top: '80px', width: '360px', position: 'absolute', zIndex:'999',
+                    top: '80px', width: '360px', position: 'absolute',
                     margin: '0 0 0 -180px', left: '50%', display: 'none',
                     paddingLeft: '30px', paddingTop: '30px', paddingBottom: '30px', paddingRight: '30px'
                 }}>
