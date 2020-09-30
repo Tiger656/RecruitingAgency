@@ -4,6 +4,8 @@ import "../../cssForIndividualPage/icomoon.css";
 import "../../cssForIndividualPage/simple-line-icons.css";
 import "../../cssForIndividualPage/magnific-popup.css";
 import "../../cssForIndividualPage/style.css";
+import "./ManagerPage.css";
+
 import axios from "axios";
 import SideBlock from "./components/SideBlock";
 
@@ -48,6 +50,16 @@ const styles = {
         paddingBottom: '50px',
         display: 'flex',
         justifyContent: 'center'
+    },
+    select100: {
+        height: '62px',
+        border:'none',
+        outline:'none',
+        marginBottom: '20px',
+        position: 'relative',
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: '20px'
     },
     divEnterData: {
         marginBottom: '20px',
@@ -209,7 +221,18 @@ export default function ManagerPageMain(props) {
                                 return <option value={expert.id}>{expert.name}</option>
                             })}
                         </select>
+                        <div className="add-btn-1" />
+                    </div>
 
+                    <div style={styles.select100}>
+                        <select  style={styles.select100} name="expert"
+                                 /*onChange={handleInputChange}*/>
+                            {experts.experts.map(expert =>
+
+                                <option style={styles.option100} key={expert.id} value={expert.id}
+                                >{expert.name}</option>)}
+                        </select>
+                        <span className="focus-input100"/>
                     </div>
 
                     <div style={styles.divEnterData} data-validate="Enter password">

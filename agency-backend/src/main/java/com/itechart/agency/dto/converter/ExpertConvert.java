@@ -1,21 +1,26 @@
 package com.itechart.agency.dto.converter;
 
-import com.itechart.agency.dto.EmployerDto;
+import com.itechart.agency.dto.ExpertDto;
 import com.itechart.agency.dto.ExpertForInterviewDto;
 import com.itechart.agency.entity.Employer;
 import com.itechart.agency.entity.Expert;
+import com.itechart.agency.entity.User;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Component;
 
 public class ExpertConvert {
 
-    public static ExpertForInterviewDto convertEntityToDto(Expert entity) {
+    public static ExpertDto convertEntityToDto(Expert entity) {
         ModelMapper mapper = new ModelMapper();
-        return mapper.map(entity, ExpertForInterviewDto.class);
+        return mapper.map(entity, ExpertDto.class);
     }
 
-    public static Employer convertDtoToEntity(ExpertForInterviewDto dto) {
+    public static Expert convertDtoToEntity(ExpertDto dto) {
         ModelMapper mapper = new ModelMapper();
-        return mapper.map(dto, Employer.class);
+        return mapper.map(dto, Expert.class);
+    }
+
+    public static User convertDtoToUserEntity(ExpertDto dto) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(dto, User.class);
     }
 }

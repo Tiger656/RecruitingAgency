@@ -172,11 +172,15 @@
             <column name="id" type="bigserial" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"></constraints>
             </column>
+            <column name="user_id" type="bigint" >
+                <constraints nullable="false" unique="true" foreignKeyName="fk_experts_users" references="users"></constraints>
+            </column>
             <column name="name" type="varchar(50)">
                 <constraints nullable="false"></constraints>
             </column>
+
         </createTable>
-        <insert tableName="experts">
+       <!-- <insert tableName="experts">
             <column name="name" value="Alex"></column>
         </insert>
         <insert tableName="experts">
@@ -184,7 +188,7 @@
         </insert>
         <insert tableName="experts">
             <column name="name" value="Rob"></column>
-        </insert>
+        </insert>-->
 
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 public class ExpertForInterviewDto {
 
     private Long id;
+    //private Long agencyId;
     private String name;
 
     public static ExpertForInterviewDto.Builder builder() {

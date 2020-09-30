@@ -16,8 +16,12 @@ import javax.validation.constraints.Size;
 public class Expert {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @NotNull(message = "Expert name cannot be null")
     @Size(min = 1, max = 50, message = "Expert name must be between 1 and 50 characters")
