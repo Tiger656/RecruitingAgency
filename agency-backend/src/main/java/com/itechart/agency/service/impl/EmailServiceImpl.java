@@ -1,10 +1,13 @@
 package com.itechart.agency.service.impl;
 
-
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -16,13 +19,13 @@ public class EmailServiceImpl {
     private static final String password;
     private static final Session session;
     private static final Properties props = new Properties();
-//   private static final Logger log = Logger.getLogger(EmailServiceImpl.class);
+    private static final Logger log = Logger.getLogger(EmailServiceImpl.class);
 
     static {
         try {
             props.load(EmailServiceImpl.class.getClassLoader().getResourceAsStream("email.properties"));
         } catch (IOException e) {
-//            log.error(e);
+            log.error(e);
         }
         username = props.getProperty("username");
         password = props.getProperty("password");
@@ -45,7 +48,7 @@ public class EmailServiceImpl {
         message.setSubject(subject);
         message.setText(text);
         Transport.send(message);
-//        log.info("message was send");
+        log.info("message was send");
     }
 
 }
