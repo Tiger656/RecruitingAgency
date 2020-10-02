@@ -6,6 +6,8 @@ import "../../../cssForIndividualPage/icomoon.css";
 import "../../../cssForIndividualPage/simple-line-icons.css";
 import "../../../cssForIndividualPage/magnific-popup.css";
 import "../../../cssForIndividualPage/style.css";
+import {Notification} from "./Notification";
+import {toast} from "react-toastify";
 
 const styles = {
     popupFade: {
@@ -85,7 +87,9 @@ const styles = {
     }
 }
 
+
 export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', agencyId = '', roleIds = [], roles = [], allRoles, allAgencies,buttonName}) => {
+    let currentAgencyId = JSON.parse(localStorage.getItem('response')).agency.id;
     const initialFormState = {id, email, agencyId, roleIds, roles};
     const [user, setUser] = useState(initialFormState)
     const [rolesIds] = useState([]);
@@ -100,7 +104,7 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
     const checkChangeHandler = roleId => {
         const result = toggleUserRole(user.roles, roleId);
 
-        setUser({...user, roles: result});
+        setUser({...user, roles: result,agencyId:currentAgencyId});
     }
 
     const hasRole = (roles, roleId) => roles.find(role => role.id === roleId);
@@ -112,25 +116,27 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
             return roles.filter(role => role.id !== roleId)
         return [...roles, allRoles.find(role => role.id === roleId)];
     }
-
     const handleSubmit = event => {
         event.preventDefault()
         /*fix*/
-        if (!user.email || !user.agencyId) return
-
+        if (!user.email || !user.agencyId)
+            warnEnterAllFieldsNotify("Fields cannot be empty!")
+            else
         submitHandler(user)
         setUser(initialFormState)
     }
 
 
-
+    const warnEnterAllFieldsNotify =(message)=>{
+        toast.warn(message, {position: toast.POSITION.TOP_RIGHT,color:"black"});
+    }
 
 
 
 
     return (
         <div style={styles.popupFade}>
-
+<Notification/>
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
@@ -152,17 +158,17 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
                                onChange={handleInputChange}/>
                         <span className="focus-input100"/>
                     </div>
-                    <div style={styles.select100}>
-                        <select  style={styles.select100} name="agencyId" value={user.agencyId}
-                                onChange={handleInputChange}>
-                            <option style={styles.option100}>Choose</option>
-                            {allAgencies.map(agency =>
+                    {/*<div style={styles.select100}>*/}
+                    {/*    <select  style={styles.select100} name="agencyId" value={user.agencyId}*/}
+                    {/*            onChange={handleInputChange}>*/}
+                    {/*        <option style={styles.option100}>Choose</option>*/}
+                    {/*        {allAgencies.map(agency =>*/}
 
-                                <option style={styles.option100} key={agency.id} value={agency.id}
-                                >{agency.name}</option>)}
-                        </select>
-                        <span className="focus-input100"/>
-                    </div>
+                    {/*            <option style={styles.option100} key={agency.id} value={agency.id}*/}
+                    {/*            >{agency.name}</option>)}*/}
+                    {/*    </select>*/}
+                    {/*    <span className="focus-input100"/>*/}
+                    {/*</div>*/}
 
                     <div style={styles.divEnterData}>
                         <div style={{textAlign: 'left'}}>

@@ -7,6 +7,8 @@ import "../cssForIndividualPage/style.css";
 
 
 function EmployeePage(props) {
+    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    let personEmail = JSON.parse(localStorage.getItem('response')).email;
     const name = props.name;
     const email = props.email;
     const lang = props.lang;
@@ -24,7 +26,7 @@ function EmployeePage(props) {
     }
     return (
 
-        <div style={{marginTop: '-52px'}}>
+        <div >
 
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -40,8 +42,8 @@ function EmployeePage(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{name}</h1>
-                                    <h2 className="to-animate"> Email: {email}</h2>
+                                    <h1 className="to-animate">{agencyName}</h1>
+                                    <h2 className="to-animate"> Email: {personEmail}</h2>
                                 </div>
                             </div>
                         </div>

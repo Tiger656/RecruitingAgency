@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface AgencyRepository extends JpaRepository<Agency,Long> {
     Optional<Agency> findById(Long id);
+    Optional<Agency> findByName(String name);
+
 }

@@ -19,11 +19,10 @@ import java.util.List;
 public class AgencyController {
     @Autowired
     private AgencyServiceImpl agencyService;
-    @PreAuthorize("hasAnyAuthority('ADMIN') or hasAnyAuthority('SYSADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<?> getAll(){
 
-//        return new ResponseEntity<>(agencyService.findAll(), HttpStatus.OK);
-        return new ResponseEntity<>("Ilya",HttpStatus.OK);
+        return new ResponseEntity<>(agencyService.findAll(), HttpStatus.OK);
     }
 }

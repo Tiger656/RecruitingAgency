@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {UserTable} from "../AdminPage/components/UserTable"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css/animate.min.css'
@@ -6,6 +6,8 @@ import axios from 'axios'
 import {Modal} from "./components/Modal";
 import {Filter} from "./components/Filter";
 import {Notification} from "./components/Notification";
+import authHeader from "../../auth/header";
+import {toast} from "react-toastify";
 
 
 export const AdminPage = () => {
@@ -22,43 +24,49 @@ export const AdminPage = () => {
 
     useEffect(() => {
         getUsers();
-        getAgencies();
+        // getAgencies();
         getRoles();
     }, []);
+    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    let personEmail = JSON.parse(localStorage.getItem('response')).email;
 
     const getUsers = () => {
         axios
-            .get('http://localhost:8080/api/user')
+            .get('http://localhost:8080/api/user?name=' + agencyName, {headers: authHeader()})
             .then((data) => {
                 setUsers(data.data)
                 setLoading(false)
             })
-            .catch((err) => alert(err))
+            .catch((err) => errorNotify(err.response.data.error))
+        console.log(users);
+
     };
 
     const deleteUs = id => {
         axios
-            .delete('http://localhost:8080/api/user/' + id)
-            .catch((err) => alert(err))
+            .delete('http://localhost:8080/api/user/' + id, {headers: authHeader()})
+            .then(()=>successNotify('User delete successfully!'))
+            .catch((err) => errorNotify(err.response.data.error))
     };
 
-    const getAgencies = () => {
-        axios
-            .get('http://localhost:8080/api/agencies')
-            .then((data) => setAllAgencies(data.data))
-            .catch((err) => alert(err))
-    };
+    // const getAgencies = () => {
+    //     axios
+    //         .get('http://localhost:8080/api/agencies', {headers: authHeader()})
+    //         .then((data) => setAllAgencies(data.data))
+    //         .catch((err) => errorNotify(err.response.data.error))
+    //
+    // };
 
     const getRoles = () => {
         axios
-            .get('http://localhost:8080/api/roles')
+            .get('http://localhost:8080/api/roles', {headers: authHeader()})
             .then((data) => setAllRoles(data.data))
-            .catch((err) => alert(err))
+            .catch((err) => errorNotify(err.response.data.error))
     };
 
     const handleChange = e => {
         setSearchTerm(e);
-        e !== '' ? setSearchResults(users.filter(user=>user.email.toLowerCase().includes(searchTerm.toLowerCase()))) : setSearchResults(users);
+        e !== '' ? setSearchResults(users.filter(user => user.email.toLowerCase().includes(searchTerm.toLowerCase()))) : setSearchResults(users);
     };
 
     const modalCreateClickHandler = () => setIsModalCreate(false);
@@ -67,22 +75,27 @@ export const AdminPage = () => {
 
     const addUser = user => {
         setIsModalCreate(true)
+
         axios
-            .post('http://localhost:8080/api/user', user)
-            .then(resp => setUsers([...users, resp.data]))
-            .catch((err) => alert(err))
+            .post('http://localhost:8080/api/user', user, {headers: authHeader()})
+            .then(resp => {
+                setUsers([...users, resp.data]);
+                successNotify("User with email: "+user.email+" created successfully!");
+            })
+            .catch((err) => errorNotify(err.response.data.error))
     }
 
     const update = user => {
         setLoading(true)
         axios
-            .put('http://localhost:8080/api/user', user)
-            .then(resp => setUsers(users.map(user => (user.id === resp.data.id ? resp.data : user))))
+            .put('http://localhost:8080/api/user', user, {headers: authHeader()})
+            .then(resp => {setUsers(users.map(user => (user.id === resp.data.id ? resp.data : user)));
+                successNotify('User is update successfully!')})
             .then(() => setLoading(false))
-            .catch((err) => alert(err))
+            .catch((err) => errorNotify(err.response.data.error))
     }
 
-    const deleteUser = id =>    {
+    const deleteUser = id => {
         deleteUs(id);
         setUsers(users.filter(user => user.id !== id))
     }
@@ -104,14 +117,23 @@ export const AdminPage = () => {
             roles: user.roles
         })
     }
+    const errorNotify = (error) => {
+        toast.error(error, {position: toast.POSITION.TOP_RIGHT});
+    }
+    const successNotify =(message)=>{
+        toast.success(message, {position: toast.POSITION.TOP_RIGHT});
+    }
+
+
 
     return (
         <div>
-            <div style={{marginTop: '-70px'}}>
+            <Notification />
+            <div>
                 <link
                     href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                     rel='stylesheet' type='text/css'/>
-                <section  id="fh5co-home" className="section section-6" data-section="home"
+                <section id="fh5co-home" className="section section-6" data-section="home"
                          style={{backgroundImage: 'url(images/full_image_2.jpg)', paddingTop: '20px'}}
                          data-stellar-background-ratio="0.5">
                     <div className="gradient"/>
@@ -121,8 +143,9 @@ export const AdminPage = () => {
                                 <div className="row">
                                     <div className="col-md-8"
                                          style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                        <h1 className="to-animate">TUT.BY</h1>
-                                        <h2 className="to-animate"> Email: ILyas@mail.ru</h2>
+                                        <h1 className="to-animate">{agencyName}</h1>
+                                        <h2 className="to-animate"> Email: {personEmail}</h2>
+
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +182,9 @@ export const AdminPage = () => {
                                 <div className="flex-row">
                                     <div className="flex-large">
                                         <div>
-                                            <button className="btn btn-dark" onClick={modalCreateClickHandler}>Add new user</button>
+                                            <button className="btn btn-dark" onClick={modalCreateClickHandler}>Add new
+                                                user
+                                            </button>
                                             {!isModalCreate &&
                                             <Modal submitHandler={addUser} onModalCloseClick={modalCloseClickHandler}
                                                    allRoles={allRoles}
@@ -169,10 +194,12 @@ export const AdminPage = () => {
                                         </div>
                                     </div>
 
-                                 <Filter value={searchTerm} handleChange={e => handleChange(e.target.value)}/>
+                                    <Filter value={searchTerm} handleChange={e => handleChange(e.target.value)}/>
                                     <div className="flex-large">
                                         <h2>View users</h2>
-                                        <UserTable users={searchResults.length < 1 ? users : searchResults} editRow={editRow} deleteUser={deleteUser} loading={loading}
+
+                                        <UserTable users={searchResults.length < 1 ? users : searchResults}
+                                                   editRow={editRow} deleteUser={deleteUser} loading={loading}
                                                    allAgencies={allAgencies}/>
                                     </div>
                                 </div>

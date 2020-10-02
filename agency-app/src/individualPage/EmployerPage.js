@@ -71,9 +71,11 @@ function EmployerPage(props) {
         langConst.push('Контракт');
         langConst.push('Подать заявку');
     }
+    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    let personEmail = JSON.parse(localStorage.getItem('response')).email;
     return (
 
-        <div style={{marginTop: '-75px'}}>
+        <div >
 
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -174,8 +176,8 @@ function EmployerPage(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{companyName}</h1>
-                                    <h2 className="to-animate"> Email: {email}</h2>
+                                    <h1 className="to-animate">{agencyName}</h1>
+                                    <h2 className="to-animate"> Email: {personEmail}</h2>
                                 </div>
                             </div>
                         </div>

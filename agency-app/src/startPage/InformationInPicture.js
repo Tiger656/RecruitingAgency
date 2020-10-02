@@ -2,6 +2,8 @@ import React from 'react';
 import AboutCompany from "./AboutCompany";
 import Clients from "./Clients";
 import Services from "./Services";
+import {Notification} from "../individualPage/AdminPage/components/Notification";
+import {toast} from "react-toastify";
 
 
 const styles = {
@@ -25,7 +27,7 @@ const styles = {
 };
 
 function InformationInPicture(props) {
-
+    let personEmail = JSON.parse(localStorage.getItem('response')) ? JSON.parse(localStorage.getItem('response')).email :null;
     let lang = props.lang;
     let langConst = [];
     if (lang === 'en') {
@@ -55,9 +57,13 @@ function InformationInPicture(props) {
         backgroundColor: 'transparent',
         marginLeft: 'calc(100% - 200px)'
     };
+
+
     return (
         <div>
+
             <a name="top"/>
+
             <section className="section section-1" id="sec-ab20" style={{marginTop: '-100px'}}>
 
                 <div style={styles.div}><br/><br/><br/><br/><br/><br/>

@@ -1,14 +1,15 @@
 import React from "react";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const Notification=({errorMessage})=>{
-    return(
+export const Notification = () => {
 
-       <div className='animate__animated animate__backInRight' style={{textAlign:'left'}}>
-           <form style={{width:'20%',height:'10%',backgroundColor:"whitesmoke",textAlight:'left'}}>
-           <label style={{color:'black'}}>{errorMessage}</label>
-           </form>
-       </div>
 
+
+    return (
+        <div>
+            <ToastContainer style={{marginTop:"130px",width:"400px",height:"200px"}}/>
+        </div>
 
     )
 }
