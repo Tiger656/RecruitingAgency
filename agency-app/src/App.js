@@ -1,9 +1,16 @@
 import React, {useCallback, useState} from 'react';
+import HeaderMenu from "./startPage/HeaderMenu";
+import InformationInPicture from "./startPage/InformationInPicture";
 import './App.css';
+import EmployerPage from "./individualPage/EmployerPage";
+import EmployeePage from "./individualPage/EmployeePage";
 import Contacts from "./startPage/Contacts";
 import './startPage/Toggle.css';
+import {BrowserRouter as Router, Route} from "react-router-dom";
+import {AdminPage} from "./individualPage/AdminPage/AdminPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import HeaderMenu from "./startPage/HeaderMenu";
+import {ManagerPageMain} from "./individualPage/ManagerPages/ManagerPageMain";
+
 
 
 export const App = () => {
@@ -31,19 +38,38 @@ export const App = () => {
 
 
 
+
+
     return (
 
         <section className="App">
             <input className="checkbox" type="checkbox" id="codepen" onChange={handler}/>
             <label htmlFor="codepen"/>
 
-            <HeaderMenu logo={logo} lang={lang} id='1' />
+            <HeaderMenu logo={logo} lang={lang} id='1'/>
 
+
+
+
+            <Router>
+
+                <Route exact path="/">
+                    <InformationInPicture lang={lang}/>
+                </Route>
+                <Route path="/admin-page" exact component={AdminPage}/>
+                <Route  path="/employerPage" >
+                    <EmployerPage lang={lang} companyName = {companyName} email={employerEmail}/>
+                </Route>
+                <Route path="/employeePage">
+                    <EmployeePage lang={lang} name = {employeeName} email={employerEmail}/>
+                </Route>
+                <Route path="/manager-page" exact component={ManagerPageMain}/>
+                    {/*<ManagerPageMain companyName = {companyName} email={employerEmail}/>*/}
+            </Router>
             <Contacts/>
         </section>
 
-    )
-}
+    )}
 
-export default App;
+    export default App;
 
