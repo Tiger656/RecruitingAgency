@@ -8,6 +8,12 @@ import "./ManagerPage.css";
 
 import axios from "axios";
 import SideBlock from "./components/SideBlock";
+import {AddExpertModal} from "./components/AddExpertModal";
+import DatePicker from "react-datepicker"
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
+
+
 
 
 const styles = {
@@ -76,40 +82,33 @@ const styles = {
 
 }
 
-let employerApplicationId;
-let employeeApplicationId;
-
-function showInterviewForm(id) {
-    document.getElementById("interviewForm").style.display = "block";
-    console.log(id);
-    if (employeeApplicationId === undefined) {
-        employeeApplicationId = id;
-    }
-    if (employerApplicationId === undefined) {
-        employerApplicationId = id;
-    }
-}
-
-
-function closeInterviewForm() {
-    document.getElementById("interviewForm").style.display = "none";
-}
 
 
 
-export default function ManagerPageMain(props) {
+
+export const ManagerPageMain =  () => {
 
     const [sideBlockStyle, setSideBlockStyle]= React.useState({display:'none'})
-    const [sideBlockData, setSideBlockData]= React.useState({employer: 'a', profession: 'b', salary: 'c', features: []})
-    const name = props.name;
-    const email = props.email;
+    const [sideBlockData, setSideBlockData]= React.useState({employer: '', profession: '', salary: '', features: []})
     const [experts,setExperts] = useState({experts:[]})
     const [erApplications,setErApplications] = useState({erApplications:[]})
+    const [isModalCreate, setIsModalCreate] = useState(true)
+    const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 30), 16))
+
+    let employerApplicationId;
+    let employeeApplicationId;
+
 
     useEffect(() => {
         getExperts();
         getEmployerApplications();
+        //getEmployeeApplications();
     }, [])
+
+    const modalCreateClickHandler = () => setIsModalCreate(false);
+
+    const modalCloseClickHandler = () => setIsModalCreate(true);
+
     const getExperts = () => {
         axios
             .get("http://localhost:8080/expert")
@@ -130,7 +129,23 @@ export default function ManagerPageMain(props) {
             .catch(err => alert(err))
     };
 
-    function addToTempAppEmployer(application, evnt){
+    const showInterviewForm = id => {
+        document.getElementById("interviewForm").style.display = "block";
+        console.log(id);
+        if (employeeApplicationId === undefined) {
+            employeeApplicationId = id;
+        }
+        if (employerApplicationId === undefined) {
+            employerApplicationId = id;
+        }
+    }
+
+
+    const closeInterviewForm = () => {
+        document.getElementById("interviewForm").style.display = "none";
+    }
+
+    const addToTempAppEmployer = (application, evnt) => {
         employerApplicationId = application.id;
         setSideBlockStyle({display:'block'});
         setSideBlockData(application);
@@ -146,7 +161,7 @@ export default function ManagerPageMain(props) {
 
     }
 
-    function addToTempAppEmployee(application, evnt){
+    const addToTempAppEmployee = (application, evnt) => {
         employeeApplicationId = application.id;
         setSideBlockStyle({display:'block'});
         setSideBlockData(application);
@@ -162,7 +177,7 @@ export default function ManagerPageMain(props) {
         }
     }
 
-    function resetData(){
+    const resetData = () => {
         setSideBlockStyle({display:'none'});
         document.getElementsByClassName("employer-section")[0].style.display = "block";
         document.getElementsByClassName("employee-section")[0].style.display = "block";
@@ -178,7 +193,7 @@ export default function ManagerPageMain(props) {
         document.getElementById("interviewForm").style.display = "none";
     }
 
-    function createInterview() {
+    const createInterview = () => {
         let data = new Object();
         data.agencyId = 1;
         data.employerApplicationId = employerApplicationId;
@@ -202,6 +217,10 @@ export default function ManagerPageMain(props) {
 
         <div style={{marginTop: '-52px'}}>
             <SideBlock display={sideBlockStyle.display} data={sideBlockData}/>
+            {!isModalCreate &&
+            <AddExpertModal onModalCloseClick={modalCloseClickHandler} getExperts={getExperts}/>
+            }
+
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
@@ -214,25 +233,31 @@ export default function ManagerPageMain(props) {
 					            ADD INTERVIEW
                     </span>
 
-                    <div style={styles.divEnterData} data-validate="Enter your email">
-                        <label htmlFor="experts">Choose:expert </label>
-                        <select id="expert" name="cars">
-                            {experts.experts.map((expert) => {
-                                return <option value={expert.id}>{expert.name}</option>
-                            })}
-                        </select>
-                        <div className="add-btn-1" />
-                    </div>
+
+
 
                     <div style={styles.select100}>
-                        <select  style={styles.select100} name="expert"
-                                 /*onChange={handleInputChange}*/>
-                            {experts.experts.map(expert =>
-
-                                <option style={styles.option100} key={expert.id} value={expert.id}
-                                >{expert.name}</option>)}
-                        </select>
-                        <span className="focus-input100"/>
+                            <select  id="expert" style={styles.select100} name="expert" >
+                                {experts.experts.map(expert =>
+                                    <option style={styles.option100} key={expert.id} value={expert.id}
+                                    >{expert.name}</option>)}
+                            </select>
+                            <span className="focus-input100"/>
+                            <div className="add-btn-1" onClick={modalCreateClickHandler}/>
+                    </div>
+                    <div>
+                        {/*<DatePicker
+                            selected={startDate}
+                            onChange={date => setStartDate(date)}
+                            showTimeSelect
+                            excludeTimes={[
+                                setHours(setMinutes(new Date(), 0), 17),
+                                setHours(setMinutes(new Date(), 30), 18),
+                                setHours(setMinutes(new Date(), 30), 19),
+                                setHours(setMinutes(new Date(), 30), 17)
+                            ]}
+                            dateFormat="MMMM d, yyyy h:mm aa"
+                        />*/}
                     </div>
 
                     <div style={styles.divEnterData} data-validate="Enter password">
@@ -241,7 +266,6 @@ export default function ManagerPageMain(props) {
                                placeholder="date"/>
                         <span className="focus-input100"/>
                     </div>
-
 
                     <div style={styles.divEnterData} data-validate="Enter password">
                         <input className="input100" type="text" style={styles.input} id="manager-comment"
@@ -259,9 +283,11 @@ export default function ManagerPageMain(props) {
 
             </div>
 
+
             <section id="fh5co-home" className="section section-6" data-section="home"
                      style={{backgroundImage: 'url(images/full_image_2.jpg)', paddingTop: '20px'}}
                      data-stellar-background-ratio="0.5">
+
                 <div className="gradient"/>
                 <div className="container">
                     <div className="text-wrap">
@@ -269,21 +295,19 @@ export default function ManagerPageMain(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{name}</h1>
-                                    <h2 className="to-animate" > Email: {email}</h2>
-                                    <div className="container-login100-form-btn">
-                                        <button className="login100-form-btn" onClick={resetData}>
-                                            Reset
-                                        </button>
-                                    </div>
+                                    <h1 className="to-animate">{/*{name}*/}</h1>
+                                    <h2 className="to-animate" > Email: {/*{email}*/}</h2>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </section>
-
+            <div className="container-login100-form-btn" style={{backgroundColor: "#f9f6f0"}}>
+                <button className="login100-form-btn" onClick={resetData}>
+                    Reset
+                </button>
+            </div>
             <section id="fh5co-work" className="section section-6 employer-section" data-section="work">
                 <div className="container">
                     <div className="row">
@@ -305,10 +329,10 @@ export default function ManagerPageMain(props) {
                                                 return <p>{feature.name}</p>
                                             })}
 
-                                            <button className="login100-form-btn add-temp" onClick={addToTempAppEmployer.bind(this, erApplication)}>
+                                            <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn add-temp" onClick={addToTempAppEmployer.bind(this, erApplication)}>
                                                 Выбрать
                                             </button>
-                                            <button style={{display: 'none'}} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employer.id)}>
+                                            <button style={{display: 'none', marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employer.id)}>
                                                 Создать интервью
                                             </button>
                                         </div>
@@ -341,10 +365,10 @@ export default function ManagerPageMain(props) {
                                         return <p>{feature.name}</p>
                                     })}
 
-                                    <button className="login100-form-btn add-temp"  onClick={addToTempAppEmployee.bind(this, erApplication)}>
+                                    <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn add-temp"  onClick={addToTempAppEmployee.bind(this, erApplication)}>
                                         Выбрать
                                     </button>
-                                    <button  style={{display: 'none'}} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employer.id)}>
+                                    <button  style={{display: 'none', marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employer.id)}>
                                         Создать интервью
                                     </button>
                                 </div>
