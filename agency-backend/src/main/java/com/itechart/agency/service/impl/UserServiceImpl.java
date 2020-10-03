@@ -10,6 +10,7 @@ import com.itechart.agency.repository.AgencyRepository;
 import com.itechart.agency.repository.RoleRepository;
 import com.itechart.agency.repository.UserRepository;
 import com.itechart.agency.service.UserService;
+
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
