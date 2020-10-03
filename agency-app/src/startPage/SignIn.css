@@ -240,21 +240,11 @@ iframe {
     -o-transition: all 0.4s;
     -moz-transition: all 0.4s;
     transition: all 0.4s;
-
-    box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -moz-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -webkit-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -o-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -ms-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
 }
 
 .login100-form-btn:hover {
-    background-color: #9765ff;
-    box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -moz-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -webkit-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -o-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -ms-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
+    background-color: #17a2b8db;
+
 }
 /*ilya*/
 .login101-form-btn {
@@ -281,20 +271,10 @@ iframe {
     -moz-transition: all 0.4s;
     transition: all 0.4s;
 
-    box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -moz-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -webkit-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -o-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
-    -ms-box-shadow: 0 10px 30px 0px rgba(79, 75, 78, 0.8);
 }
 
 .login101-form-btn:hover {
     background-color: red;
-    box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -moz-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -webkit-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -o-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
-    -ms-box-shadow: 0 10px 30px 0px rgba(40, 19, 45, 0.8);
 }
 
 .login100-social-item {

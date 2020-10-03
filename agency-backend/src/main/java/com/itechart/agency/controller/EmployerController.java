@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//?? надо менять url
 @RequestMapping("/employer")
 public class EmployerController {
     private final EmployerServiceImpl employerService;
@@ -27,13 +25,12 @@ public class EmployerController {
         this.employerService = employerService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
+    //@PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneEmployer(@PathVariable("id") Long id) {
+    public EmployerDto getOneEmployer(@PathVariable("id") Long id) {
         LOGGER.info("REST request. Path:/employer/{} method: GET.", id);
-        final EmployerDto employerDto = employerService.findById(id);
-        return Objects.isNull(employerDto) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                ResponseEntity.ok().body(employerDto);
+        return employerService.findById(id);
+
     }
 
 
@@ -55,11 +52,10 @@ public class EmployerController {
 
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeEmployer(@PathVariable("id") Long id) {
+    @DeleteMapping("delete/{id}")
+    public void removeEmployer(@PathVariable("id") Long id) {
         LOGGER.info("REST request. Path:/employer/{} method: DELETE.", id);
         employerService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //preauthorize ???

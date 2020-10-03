@@ -13,7 +13,6 @@ import java.util.List;
 @Table(name = "addresses")
 @Getter
 @Setter
-@ToString
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -13,6 +13,9 @@ import java.util.List;
 @Table(name = "cities")
 @Getter
 @Setter
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@ToString
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

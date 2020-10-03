@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "../cssForIndividualPage/animate.css";
 import "../cssForIndividualPage/icomoon.css";
 import "../cssForIndividualPage/simple-line-icons.css";
 import "../cssForIndividualPage/magnific-popup.css";
 import "../cssForIndividualPage/style.css";
 import "../startPage/SignIn.css";
+import axios from "axios";
 
 const styles = {
     divEnterData: {
@@ -13,6 +14,14 @@ const styles = {
         width: '100%',
         backgroundColor: '#fff',
         borderRadius: '20px'
+    },
+    input: {
+        fontSize: '16px',
+        color: '#000000',
+        lineHeight: '1.2',
+        height: '62px',
+        background: 'transparent',
+        padding: '0 20px 0 23px'
     },
     span: {
         paddingBottom: '30px',
@@ -52,7 +61,6 @@ function requestNone() {
 
 
 function EmployerPage(props) {
-    const companyName = props.companyName;
     const email = props.email;
     const lang = props.lang;
     let langConst = [];
@@ -71,11 +79,59 @@ function EmployerPage(props) {
         langConst.push('Контракт');
         langConst.push('Подать заявку');
     }
-    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
-    let personEmail = JSON.parse(localStorage.getItem('response')).email;
+
+    const id = 1;
+    let is_suspended;
+    const [contract, setContract] = useState({contract: []})
+    const [professions, setProfessions] = useState({professions: []})
+
+    const [applications, setApplications] = useState([])
+    const [employer, setEmployer] = useState({employer: [], isLoading: true})
+
+    useEffect(() => {
+        getEmployer();
+        getContract();
+        getProfessions();
+    }, [])
+    const getEmployer = () => {
+        axios
+            .get("http://localhost:8080/employer/" + id)
+            .then(data => {
+                setEmployer({employer: data.data, isLoading: false})
+            })
+            .catch(err => alert(err))
+    }
+
+    const getContract = () => {
+        axios
+            .get("http://localhost:8080/employer-contract/" + id)
+            .then(data => {
+                setContract({contract: data.data})
+            })
+            .catch(err => alert(err))
+
+    }
+    const getProfessions = () => {
+        axios
+            .get("http://localhost:8080/profession/all")
+            .then(data => {
+                setProfessions({professions: data.data})
+            })
+            .catch(err => alert(err))
+
+    }
+    const createApp = (app) => {
+        axios
+            .post('http://localhost:8080/employerApplication/create', app)
+            .then(resp => setApplications([...applications, resp.data]))
+            .catch((err) => alert(err))
+    }
+    if (contract.contract.is_suspended === true)
+        is_suspended = 'Контракт приостановлен';
+    else is_suspended = 'Контракт действителен';
     return (
 
-        <div >
+        <div style={{marginTop: '-75px'}}>
 
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -83,9 +139,9 @@ function EmployerPage(props) {
             <div className=" section-0">
 
                 <div className="wrap-login100" id="request" style={{
-                    top: '80px', width: '360px', position: 'absolute',
+                    top: '80px', width: '360px', position: 'absolute', zIndex: '999',
                     margin: '0 0 0 -180px', left: '50%', display: 'none',
-                    paddingLeft: '30px', paddingTop: '30px', paddingBottom: '30px', paddingRight: '30px'
+                    paddingLeft: '30px', paddingTop: '5px', paddingBottom: '30px', paddingRight: '30px'
                 }}>
 
                     <form className="login100-form validate-form">
@@ -95,9 +151,22 @@ function EmployerPage(props) {
 
 
                         <div style={styles.divEnterData} data-validate="Enter your email">
-                            <input className="input100" type="text" style={styles.input} id="userLogin"
-                                   name="username"
-                                   placeholder="Специальность"/>
+                            <input className="input100" type="button" style={styles.input} id="profession"
+                                   value="Специальность" onClick={
+                                function () {
+                                    let value = [];
+                                    professions.professions.map((val) => {
+                                        value.push(val.name);
+                                        //  return (<text style={styles.input}>{val.name}</text>)
+                                    })
+                                    console.log(value);
+                                    value.map((val, ind) => {
+                                        return <div key={ind}><input style={styles.input} value={val}/></div>
+                                    })
+                                }
+                            }>
+
+                            </input>
                             <span className="focus-input100"/>
                         </div>
 
@@ -176,8 +245,8 @@ function EmployerPage(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{agencyName}</h1>
-                                    <h2 className="to-animate"> Email: {personEmail}</h2>
+                                    <h1 className="to-animate">{employer.employer.name}</h1>
+                                    <h2 className="to-animate"> Email: {email}</h2>
                                 </div>
                             </div>
                         </div>
@@ -197,8 +266,7 @@ function EmployerPage(props) {
                     <div className="row row-bottom-padded-sm">
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_1.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_1.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
+                               <div className="fh5co-text">
                                     <h2>{langConst[0]} 1</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -206,8 +274,7 @@ function EmployerPage(props) {
                         </div>
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_2.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_2.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
+                               <div className="fh5co-text">
                                     <h2>{langConst[0]} 2</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -218,8 +285,7 @@ function EmployerPage(props) {
 
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_3.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_3.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
+                               <div className="fh5co-text">
                                     <h2>{langConst[0]} 3</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -227,8 +293,7 @@ function EmployerPage(props) {
                         </div>
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_4.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_4.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
+                               <div className="fh5co-text">
                                     <h2>{langConst[0]} 4</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -246,29 +311,35 @@ function EmployerPage(props) {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 section-heading text-center">
-                            <h2 className="to-animate">{langConst[3]}</h2>
+                            <h2 className="to-animate">{langConst[4]}</h2>
                         </div>
                     </div>
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
-                        <div className="col-md-4 col-sm-6 ">
+                        <div>
                             <a href="../images/work_1.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_1.jpg" alt="Image" className="img-responsive"/>
                                 <div className="fh5co-text">
-                                    <h2>{langConst[4]} 1</h2>
+                                    <h2>{is_suspended}</h2>
                                 </div>
-                            </a>
-                        </div>
-                        <div className="col-md-4 col-sm-6">
-                            <a href="../images/work_2.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_2.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
-                                    <h2>{langConst[4]} 2</h2>
+                                <div style={{
+                                    color: "black",
+                                    textAlign: 'left',
+                                    paddingBottom: '20px',
+                                    paddingLeft: '20px',
+                                    paddingRight: '20px'
+                                }}>
+                                    <h10> Дата создания контракта: {contract.contract.contract_creation_date}</h10>
+                                    <br/>
+                                    <h10> Дата окончания контракта: {contract.contract.contract_end_date}</h10>
+                                    <br/>
+                                    <h10> Тип контракта: {contract.contract.contractTypeId}</h10>
+
                                 </div>
                             </a>
                         </div>
                         <div className="clearfix visible-sm-block"/>
                     </div>
+                    <text>Нажмите на контракт для скачивания файла с подробным описанием</text>
                 </div>
             </section>
         </div>

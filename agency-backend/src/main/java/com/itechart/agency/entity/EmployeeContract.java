@@ -1,5 +1,6 @@
 package com.itechart.agency.entity;
 
+
 import com.itechart.agency.entity.lists.EmploymentType;
 import com.itechart.agency.entity.lists.Feature;
 import com.itechart.agency.entity.lists.Profession;
