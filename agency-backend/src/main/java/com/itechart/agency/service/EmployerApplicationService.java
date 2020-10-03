@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface EmployerApplicationService {
     List<EmployerApplicationDto> getApplicationsByStatus(final String status);
-    void changeApplicationStatus(Long applicationId, final String newStatus);
+    EmployerApplicationDto changeApplicationStatus(Long applicationId, final String newStatus);
 }

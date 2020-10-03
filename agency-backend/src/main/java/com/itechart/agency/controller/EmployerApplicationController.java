@@ -2,6 +2,7 @@ package com.itechart.agency.controller;
 
 import com.itechart.agency.dto.EmployerApplicationDto;
 import com.itechart.agency.dto.EmployerApplicationForManagerDto;
+import com.itechart.agency.service.impl.EmailServiceImpl;
 import com.itechart.agency.service.impl.EmployerApplicationServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//?? надо менять url
 @RequestMapping("/employerApplication")
 public class EmployerApplicationController {
     private final EmployerApplicationServiceImpl employerApplicationService;
@@ -27,6 +28,15 @@ public class EmployerApplicationController {
     public EmployerApplicationController(final EmployerApplicationServiceImpl employerApplicationService) {
         this.employerApplicationService = employerApplicationService;
     }
+
+
+    @PostMapping("/sendEmail")
+    public ResponseEntity<?> sendEmail(final @Valid @RequestBody String[] email) throws MessagingException {
+        LOGGER.info("REST request. Path:/employerApplication/sendEmail method: POST. email: {}", "to " + email[0] + ", message: " + email[2]);
+        EmailServiceImpl.send(email[0], email[1], email[2]);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @PreAuthorize("hasAuthority('SECRETARY')or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
@@ -80,20 +90,25 @@ public class EmployerApplicationController {
         return new ResponseEntity<>(employerApplicationDtos, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('SECRETARY')")
-    @GetMapping("/change-status/{id}/{statusName}")
-    public ResponseEntity<?> changeEmployerApplicationStatus(@PathVariable("id") Long id, @PathVariable("statusName") String statusName) {
-        LOGGER.info("REST request. Path:/employerApplication/change-status/{id}/{statusId} method: POST. employerId and statusName: {}", id + ", " + statusName);
-        employerApplicationService.changeApplicationStatus(id, statusName);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    // @PreAuthorize("hasAuthority('SECRETARY')")
+    @PutMapping("/change-status/{id}/{statusNew}")
+    public EmployerApplicationDto changeEmployerApplicationStatus(@PathVariable("id") Long id, @PathVariable("statusNew") String statusName) {
+        LOGGER.info("REST request. Path:/employerApplication/change-status/{id}/{statusId} method: PUT. employerId and statusName: {}", id + ", " + statusName);
+        System.out.println(statusName);
+        if (statusName.contains("-")) {
+            String status = statusName.replace('-', ' ');
+            return employerApplicationService.changeApplicationStatus(id, status);
+        } else return employerApplicationService.changeApplicationStatus(id, statusName);
     }
 
-    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    // @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
     @GetMapping("/getAllByStatus/{status}")
-    public ResponseEntity<?> getAllEmployerApplicationByStatus(@PathVariable("status") String status) {
+    public List<EmployerApplicationDto> getAllEmployerApplicationByStatus(@PathVariable("status") String status) {
         LOGGER.info("REST request. Path:/employerApplication/getAllByStatus/{} method: GET.", status);
-        final List<EmployerApplicationDto> employerApplicationDto = employerApplicationService.getApplicationsByStatus(status);
-        return Objects.isNull(employerApplicationDto) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                ResponseEntity.ok().body(employerApplicationDto);
+        System.out.println(status);
+        if (status.contains("-")) {
+            String statusN = status.replace('-', ' ');
+            return employerApplicationService.getApplicationsByStatus(statusN);
+        } else return employerApplicationService.getApplicationsByStatus(status);
     }
 }

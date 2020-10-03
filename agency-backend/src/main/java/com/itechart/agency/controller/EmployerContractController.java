@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//?? надо менять url
 @RequestMapping("/employer-contract")
 public class EmployerContractController {
     private final EmployerContractServiceImpl employerContractService;
@@ -27,17 +25,15 @@ public class EmployerContractController {
         this.employerContractService = employerContractService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
+    //@PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneEmployerContract(@PathVariable("id") Long id) {
+    public EmployerContractDto getOneEmployerContract(@PathVariable("id") Long id) {
         LOGGER.info("REST request. Path:/employer-contract/{} method: GET.", id);
-        final EmployerContractDto employerContractDto = employerContractService.findById(id);
-        return Objects.isNull(employerContractDto) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                ResponseEntity.ok().body(employerContractDto);
+        return employerContractService.findById(id);
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+   /* @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/edit")
     public ResponseEntity<?> editEmployerContract(final @Valid @RequestBody EmployerContractDto employerContractDto) {
         LOGGER.info("REST request. Path:/employer-contract/edit method: POST. employer contract: {}", employerContractDto);
@@ -68,6 +64,6 @@ public class EmployerContractController {
         LOGGER.info("REST request. Path:/employer-contract/all method: GET.");
         final List<EmployerContractDto> employerContractDtos = employerContractService.findAll();
         return new ResponseEntity<>(employerContractDtos, HttpStatus.OK);
-    }
+    }*/
 
 }

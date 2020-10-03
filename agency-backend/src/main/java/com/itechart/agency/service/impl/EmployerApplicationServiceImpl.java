@@ -45,20 +45,20 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
 
     @Override
     public List<EmployerApplicationDto> getApplicationsByStatus(String status) {
-        if (statusRepository.findByName(status).isPresent())
+        if (statusRepository.findByName(status).isEmpty())
             throw new NotFoundException("Status doesn't exist");
         List<EmployerApplication> applicationList = employerApplicationRepository.findByStatus(statusRepository.findByName(status).get());
         return applicationList.stream().map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
     @Override
-    public void changeApplicationStatus(Long applicationId, String newStatus) {
-        if (employerApplicationRepository.findById(applicationId).isEmpty() || statusRepository.findByName(newStatus).isPresent())
+    public EmployerApplicationDto changeApplicationStatus(Long applicationId, String newStatus) {
+        if (employerApplicationRepository.findById(applicationId).isEmpty() || statusRepository.findByName(newStatus).isEmpty())
             throw new NotFoundException("Employer application or/and status doesn't exist");
         else {
             EmployerApplication employerApplication = find(applicationId);
             employerApplication.setStatus(statusRepository.findByName(newStatus).get());
-            employerApplicationRepository.save(employerApplication);
+            return EmployerApplicationConvert.convertEntityToDto(employerApplicationRepository.save(employerApplication));
         }
     }
 

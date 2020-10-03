@@ -1,0 +1,83 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <property name="now" value="now()" dbms="postgresql"/>
+    <changeSet id="4" author="Maria">
+
+        <insert tableName="statuses">
+            <column name="name" value="NOT REVIEWED"/>
+            <column name="description" value="Document create but not been reviewed"/>
+        </insert>
+
+        <insert tableName="statuses">
+            <column name="name" value="CONSIDERED"/>
+            <column name="description" value="Document is being considered"/>
+        </insert>
+
+        <insert tableName="statuses">
+            <column name="name" value="ACCEPTED"/>
+            <column name="description" value="Document has been accepted"/>
+        </insert>
+
+        <insert tableName="statuses">
+            <column name="name" value="REJECTED"/>
+            <column name="description" value="Document has not been accepted"/>
+        </insert>
+        <insert tableName="profession">
+            <column name="name" value="Programmer"/>
+        </insert>
+        <insert tableName="profession">
+            <column name="name" value="Manager"/>
+        </insert>
+        <insert tableName="profession">
+            <column name="name" value="Lector"/>
+        </insert>
+
+        <insert tableName="employer_application">
+            <column name="agency_id" valueNumeric="1"/>
+            <column name="application_number" value="23711617"/>
+            <column name="application_date" valueDate="2020-09-30"/>
+            <column name="employer_id" valueNumeric="1"/>
+            <column name="application_name" value="application name"/>
+            <column name="profession_id" valueNumeric="3"/>
+            <column name="salary" valueNumeric="500"/>
+            <column name="employment_type_id" valueNumeric="1"/>
+            <column name="expert_personal_name" value="Helga"/>
+            <column name="creation_date" valueDate="2020-08-11"/>
+            <column name="end_date" valueDate="2021-09-30"/>
+            <column name="status_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="employer_application">
+            <column name="agency_id" valueNumeric="1"/>
+            <column name="application_number" value="44444617"/>
+            <column name="application_date" valueDate="2020-03-20"/>
+            <column name="employer_id" valueNumeric="1"/>
+            <column name="application_name" value="application name"/>
+            <column name="profession_id" valueNumeric="2"/>
+            <column name="salary" valueNumeric="200"/>
+            <column name="employment_type_id" valueNumeric="1"/>
+            <column name="expert_personal_name" value="Helga"/>
+            <column name="creation_date" valueDate="2020-03-20"/>
+            <column name="end_date" valueDate="2021-10-30"/>
+            <column name="status_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="employer_application">
+            <column name="agency_id" valueNumeric="1"/>
+            <column name="application_number" value="3333617"/>
+            <column name="application_date" valueDate="2020-03-20"/>
+            <column name="employer_id" valueNumeric="1"/>
+            <column name="application_name" value="application name"/>
+            <column name="profession_id" valueNumeric="2"/>
+            <column name="salary" valueNumeric="200"/>
+            <column name="employment_type_id" valueNumeric="1"/>
+            <column name="expert_personal_name" value="Helga"/>
+            <column name="creation_date" valueDate="2020-03-20"/>
+            <column name="end_date" valueDate="2021-10-30"/>
+            <column name="status_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

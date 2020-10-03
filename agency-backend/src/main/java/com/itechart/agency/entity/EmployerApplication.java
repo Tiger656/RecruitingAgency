@@ -25,7 +25,7 @@ public class EmployerApplication {
     @ManyToOne
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     private Agency agency;
-
+//-
     @NotNull(message = "Application number cannot be null")
     @Size(min = 1, max = 50, message = "Application number must be between 1 and 50 characters")
     @Column(name = "application_number")
@@ -39,7 +39,7 @@ public class EmployerApplication {
     @ManyToOne
     @JoinColumn(name = "employer_id")
     private Employer employer;
-
+//-
     @NotNull(message = "Application name cannot be null")
     @Size(min = 1, max = 100, message = "Application name must be between 1 and 100 characters")
     @Column(name = "application_name")
@@ -54,13 +54,13 @@ public class EmployerApplication {
     @Size(min = 1, max = 38, message = "Salary in application must be between 1 and 38 characters")
     @Column(name = "salary")
     private double salary;
-
+//рабочий график
     @NotNull(message = "Employment type in application cannot be null")
     @ManyToOne
     @JoinColumn(name = "employment_type_id", referencedColumnName = "id")
     private EmploymentType employmentType;
 
-    @Size(max = 100, message = "Expert name must be shoter than 100")
+    @Size(max = 100, message = "Expert name must be shorter than 100")
     @Column(name = "expert_personal_name")
     private String expert_personal_name;
 
@@ -77,13 +77,8 @@ public class EmployerApplication {
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
 
-    /*  @ManyToOne
-    @JoinColumn(name = "employer_application_id")
-    private EmployerApplication employerApplication;
-    @OneToOne
-    @JoinColumn(name = "feature_id", referencedColumnName = "id")
-    private Feature feature;*/
 
+//-
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "employer_application_feature", joinColumns = {
             @JoinColumn(name = "employer_application_id")}, inverseJoinColumns = {

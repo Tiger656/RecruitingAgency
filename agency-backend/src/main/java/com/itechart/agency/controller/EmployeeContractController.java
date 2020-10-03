@@ -16,8 +16,7 @@ import java.util.Objects;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-//?? надо менять url
-@RequestMapping("/employee-contract")
+@RequestMapping("/employeeContract")
 public class EmployeeContractController {
     private final EmployeeContractServiceImpl employeeContractService;
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeContractController.class);
@@ -62,12 +61,11 @@ public class EmployeeContractController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+   // @PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
     @GetMapping("/all")
-    public ResponseEntity<?> getAllEmployeeContracts() {
+    public List<EmployeeContractDto> getAllEmployeeContracts() {
         LOGGER.info("REST request. Path:/employee-contract/all method: GET.");
-        final List<EmployeeContractDto> employeeContractDtos = employeeContractService.findAll();
-        return new ResponseEntity<>(employeeContractDtos, HttpStatus.OK);
+        return employeeContractService.findAll();
     }
 
 }
