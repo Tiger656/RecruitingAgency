@@ -4,6 +4,7 @@ import "../../cssForIndividualPage/icomoon.css";
 import "../../cssForIndividualPage/simple-line-icons.css";
 import "../../cssForIndividualPage/magnific-popup.css";
 import "../../cssForIndividualPage/style.css";
+import 'react-datepicker/dist/react-datepicker.css'
 import "./ManagerPage.css";
 
 import axios from "axios";
@@ -12,6 +13,7 @@ import {AddExpertModal} from "./components/AddExpertModal";
 import DatePicker from "react-datepicker"
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
+import format from "date-fns/format";
 
 
 
@@ -42,14 +44,15 @@ const styles = {
     },
     divSign: {
         zIndex: '999',
-        width: '280px',
+        height: '560px',
+        width: '500px',
         position: 'absolute',
-        margin: '0 0 0 -140px',
+        margin: '0 0 0 -280px',
         left: '50%',
         display: 'none',
         paddingLeft: '30px',
         paddingRight: '30px',
-        paddingTop: '30px',
+        paddingTop: '5px',
         paddingBottom: '30px'
     },
     divFacebookGoogle: {
@@ -91,12 +94,10 @@ export const ManagerPageMain =  () => {
     const [sideBlockStyle, setSideBlockStyle]= React.useState({display:'none'})
     const [sideBlockData, setSideBlockData]= React.useState({employer: '', profession: '', salary: '', features: []})
     const [experts,setExperts] = useState({experts:[]})
+    const [interviewAppIds, setInterviewAppIds] = useState({})
     const [erApplications,setErApplications] = useState({erApplications:[]})
     const [isModalCreate, setIsModalCreate] = useState(true)
     const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 30), 16))
-
-    let employerApplicationId;
-    let employeeApplicationId;
 
 
     useEffect(() => {
@@ -132,11 +133,11 @@ export const ManagerPageMain =  () => {
     const showInterviewForm = id => {
         document.getElementById("interviewForm").style.display = "block";
         console.log(id);
-        if (employeeApplicationId === undefined) {
-            employeeApplicationId = id;
+        if (interviewAppIds.employeeApplicationId === undefined) {
+            setInterviewAppIds({...interviewAppIds, employeeApplicationId: id});
         }
-        if (employerApplicationId === undefined) {
-            employerApplicationId = id;
+        if (interviewAppIds.employerApplicationId === undefined) {
+            setInterviewAppIds({...interviewAppIds, employerApplicationId: id});
         }
     }
 
@@ -146,8 +147,9 @@ export const ManagerPageMain =  () => {
     }
 
     const addToTempAppEmployer = (application, evnt) => {
-        employerApplicationId = application.id;
-        setSideBlockStyle({display:'block'});
+        console.log(application.id);
+        setInterviewAppIds({...interviewAppIds, employerApplicationId: application.id});
+        setSideBlockStyle({display: 'block'});
         setSideBlockData(application);
         document.getElementsByClassName("employer-section")[0].style.display = "none";
         let list = document.getElementsByClassName("add-temp")
@@ -158,11 +160,10 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "block";
         }
-
     }
 
     const addToTempAppEmployee = (application, evnt) => {
-        employeeApplicationId = application.id;
+        setInterviewAppIds({...interviewAppIds, employeeApplicationId: application.id});
         setSideBlockStyle({display:'block'});
         setSideBlockData(application);
         document.getElementsByClassName("employee-section")[0].style.display = "none";
@@ -175,6 +176,7 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "block";
         }
+
     }
 
     const resetData = () => {
@@ -189,19 +191,19 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "none";
         }
-
         document.getElementById("interviewForm").style.display = "none";
     }
 
     const createInterview = () => {
         let data = new Object();
         data.agencyId = 1;
-        data.employerApplicationId = employerApplicationId;
-        data.employeeContractId = employeeApplicationId;
+        data.employerApplicationId = interviewAppIds.employerApplicationId;
+        data.employeeContractId = interviewAppIds.employeeApplicationId;
         data.managerId = 1;
         data.interviewStatusId = 1;
         data.expertId = document.getElementById("expert").value;
-        data.dateTime = document.getElementById("date").value;
+        data.dateTime = format(startDate, 'yyyy-MM-dd HH:mm');
+        /*document.getElementById("date").value*;*/
         data.managerComment = document.getElementById("manager-comment").value;
         console.log(data);
         axios
@@ -245,8 +247,8 @@ export const ManagerPageMain =  () => {
                             <span className="focus-input100"/>
                             <div className="add-btn-1" onClick={modalCreateClickHandler}/>
                     </div>
-                    <div>
-                        {/*<DatePicker
+                    <div style={styles.divEnterData} >
+                        <DatePicker
                             selected={startDate}
                             onChange={date => setStartDate(date)}
                             showTimeSelect
@@ -256,16 +258,17 @@ export const ManagerPageMain =  () => {
                                 setHours(setMinutes(new Date(), 30), 19),
                                 setHours(setMinutes(new Date(), 30), 17)
                             ]}
-                            dateFormat="MMMM d, yyyy h:mm aa"
-                        />*/}
+                            /*dateFormat="MMMM d, yyyy h:mm aa"*/
+                            dateFormat="yyyy-MM-dd HH:mm"
+                        />
+                        <span className="focus-input100"/>
                     </div>
-
-                    <div style={styles.divEnterData} data-validate="Enter password">
+                   {/* <div style={styles.divEnterData} data-validate="Enter password">
                         <input className="input100" type="text" style={styles.input} id="date"
                                name="date"
                                placeholder="date"/>
                         <span className="focus-input100"/>
-                    </div>
+                    </div>*/}
 
                     <div style={styles.divEnterData} data-validate="Enter password">
                         <input className="input100" type="text" style={styles.input} id="manager-comment"
@@ -380,4 +383,5 @@ export const ManagerPageMain =  () => {
         </div>
     )
 }
+
 
