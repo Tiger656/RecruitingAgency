@@ -5,6 +5,7 @@ import "../cssForIndividualPage/simple-line-icons.css";
 import "../cssForIndividualPage/magnific-popup.css";
 import "../cssForIndividualPage/style.css";
 import axios from "axios";
+import authHeader from "../auth/header";
 
 const styles = {
     input: {
@@ -116,7 +117,7 @@ function SecretaryPage(props) {
     }, [])
     const getApplications = () => {
         axios
-            .get("http://localhost:8080/employerApplication/getAllByStatus/" + 'NOT-REVIEWED')
+            .get("http://localhost:8080/employerApplication/getAllByStatus/" + 'NOT-REVIEWED', {headers: authHeader()})
             .then(data => {
                 setApplications({applications: data.data})
                 setLoading(false)
