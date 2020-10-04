@@ -25,7 +25,7 @@ public class EmployerController {
         this.employerService = employerService;
     }
 
-    //@PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
     public EmployerDto getOneEmployer(@PathVariable("id") Long id) {
         LOGGER.info("REST request. Path:/employer/{} method: GET.", id);

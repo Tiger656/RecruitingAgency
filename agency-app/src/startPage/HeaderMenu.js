@@ -10,6 +10,7 @@ import EmployeePage from "../individualPage/EmployeePage";
 import {SysAdminPage} from "../individualPage/SysAdminPage";
 import {IncorrectUrl} from "../auth/component/InсorrectUrl";
 import AuthService from "../auth/auth.service";
+import SecretaryPage from "../individualPage/SecretaryPage";
 
 
 const styles = {
@@ -550,7 +551,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                         {userRole.includes('EMPLOYEE') && <Route exact path="/employee-page"><EmployeePage lang={lang}/></Route>}
                         {userRole.includes('SYSADMIN') && <Route exact path="/sysadmin-page" component={SysAdminPage}/>}
                         {/*{userRole.includes('OWNER') && <Route exact path="/owner-page" component={}/>}*/}
-                        {/*{userRole.includes('SECRETARY') && <Route exact path="/secretary-page" component={}/>}*/}
+                        {userRole.includes('SECRETARY') && <Route exact path="/secretary-page"><SecretaryPage lang={lang}/></Route>}
                         {/*{userRole.includes('MANAGER') && <Route exact path="/manager-page" component={}/>}*/}
 
                         <Route path='*' component={IncorrectUrl}/>

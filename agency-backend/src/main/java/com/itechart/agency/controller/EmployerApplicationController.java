@@ -30,6 +30,7 @@ public class EmployerApplicationController {
     }
 
 
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/sendEmail")
     public ResponseEntity<?> sendEmail(final @Valid @RequestBody String[] email) throws MessagingException {
         LOGGER.info("REST request. Path:/employerApplication/sendEmail method: POST. email: {}", "to " + email[0] + ", message: " + email[2]);
@@ -56,7 +57,7 @@ public class EmployerApplicationController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('SECRETARY') or hasAnyAuthority('EMPLOYER')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER')")
     @PutMapping("/create")
     public ResponseEntity<?> createEmployerApplication(final @Valid @RequestBody EmployerApplicationDto employerApplicationDto) {
         LOGGER.info("REST request. Path:/employerApplication/create method: POST. employer: {}", employerApplicationDto);
@@ -66,7 +67,7 @@ public class EmployerApplicationController {
 
 
     //нельзя удалять при статусе "рассматривается"
-    @PreAuthorize("hasAuthority('SECRETARY') or hasAnyAuthority('EMPLOYER')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeEmployerApplication(@PathVariable("id") Long id) {
         LOGGER.info("REST request. Path:/employerApplication/{} method: DELETE.", id);
@@ -74,7 +75,7 @@ public class EmployerApplicationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //@PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
     @GetMapping("/all-for-manager")
     public ResponseEntity<?> getAllEmployerApplicationsForManager() {
         LOGGER.info("REST request. Path:/employerApplication/all-for-manager method: GET.");
@@ -90,7 +91,7 @@ public class EmployerApplicationController {
         return new ResponseEntity<>(employerApplicationDtos, HttpStatus.OK);
     }
 
-    // @PreAuthorize("hasAuthority('SECRETARY')")
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @PutMapping("/change-status/{id}/{statusNew}")
     public EmployerApplicationDto changeEmployerApplicationStatus(@PathVariable("id") Long id, @PathVariable("statusNew") String statusName) {
         LOGGER.info("REST request. Path:/employerApplication/change-status/{id}/{statusId} method: PUT. employerId and statusName: {}", id + ", " + statusName);
@@ -101,7 +102,7 @@ public class EmployerApplicationController {
         } else return employerApplicationService.changeApplicationStatus(id, statusName);
     }
 
-    // @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
     @GetMapping("/getAllByStatus/{status}")
     public List<EmployerApplicationDto> getAllEmployerApplicationByStatus(@PathVariable("status") String status) {
         LOGGER.info("REST request. Path:/employerApplication/getAllByStatus/{} method: GET.", status);

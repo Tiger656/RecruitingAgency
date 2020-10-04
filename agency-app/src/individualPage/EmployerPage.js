@@ -6,6 +6,7 @@ import "../cssForIndividualPage/magnific-popup.css";
 import "../cssForIndividualPage/style.css";
 import "../startPage/SignIn.css";
 import axios from "axios";
+import authHeader from "../auth/header";
 
 const styles = {
     divEnterData: {
@@ -93,9 +94,11 @@ function EmployerPage(props) {
         getContract();
         getProfessions();
     }, [])
+    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    let personEmail = JSON.parse(localStorage.getItem('response')).email;
     const getEmployer = () => {
         axios
-            .get("http://localhost:8080/employer/" + id)
+            .get("http://localhost:8080/employer/" + id, {headers: authHeader()})
             .then(data => {
                 setEmployer({employer: data.data, isLoading: false})
             })
@@ -104,7 +107,7 @@ function EmployerPage(props) {
 
     const getContract = () => {
         axios
-            .get("http://localhost:8080/employer-contract/" + id)
+            .get("http://localhost:8080/employer-contract/" + id, {headers: authHeader()})
             .then(data => {
                 setContract({contract: data.data})
             })
@@ -113,7 +116,7 @@ function EmployerPage(props) {
     }
     const getProfessions = () => {
         axios
-            .get("http://localhost:8080/profession/all")
+            .get("http://localhost:8080/profession/all", {headers: authHeader()})
             .then(data => {
                 setProfessions({professions: data.data})
             })
@@ -122,7 +125,7 @@ function EmployerPage(props) {
     }
     const createApp = (app) => {
         axios
-            .post('http://localhost:8080/employerApplication/create', app)
+            .post('http://localhost:8080/employerApplication/create', app, {headers: authHeader()})
             .then(resp => setApplications([...applications, resp.data]))
             .catch((err) => alert(err))
     }
@@ -131,7 +134,7 @@ function EmployerPage(props) {
     else is_suspended = 'Контракт действителен';
     return (
 
-        <div style={{marginTop: '-75px'}}>
+        <div>
 
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -245,8 +248,8 @@ function EmployerPage(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{employer.employer.name}</h1>
-                                    <h2 className="to-animate"> Email: {email}</h2>
+                                    <h1 className="to-animate">{agencyName}</h1>
+                                    <h2 className="to-animate"> Email: {personEmail}</h2>
                                 </div>
                             </div>
                         </div>
@@ -266,7 +269,7 @@ function EmployerPage(props) {
                     <div className="row row-bottom-padded-sm">
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_1.jpg" className="fh5co-project-item image-popup to-animate">
-                               <div className="fh5co-text">
+                                <div className="fh5co-text">
                                     <h2>{langConst[0]} 1</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -274,7 +277,7 @@ function EmployerPage(props) {
                         </div>
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_2.jpg" className="fh5co-project-item image-popup to-animate">
-                               <div className="fh5co-text">
+                                <div className="fh5co-text">
                                     <h2>{langConst[0]} 2</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -285,7 +288,7 @@ function EmployerPage(props) {
 
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_3.jpg" className="fh5co-project-item image-popup to-animate">
-                               <div className="fh5co-text">
+                                <div className="fh5co-text">
                                     <h2>{langConst[0]} 3</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>
@@ -293,7 +296,7 @@ function EmployerPage(props) {
                         </div>
                         <div className="col-md-4 col-sm-6">
                             <a href="../images/work_4.jpg" className="fh5co-project-item image-popup to-animate">
-                               <div className="fh5co-text">
+                                <div className="fh5co-text">
                                     <h2>{langConst[0]} 4</h2>
                                     <span>{langConst[2]}: </span>
                                 </div>

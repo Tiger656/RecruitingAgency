@@ -25,7 +25,7 @@ public class EmployerContractController {
         this.employerContractService = employerContractService;
     }
 
-    //@PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
     public EmployerContractDto getOneEmployerContract(@PathVariable("id") Long id) {
         LOGGER.info("REST request. Path:/employer-contract/{} method: GET.", id);
@@ -58,7 +58,7 @@ public class EmployerContractController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllEmployerContracts() {
         LOGGER.info("REST request. Path:/employer-contract/all method: GET.");
