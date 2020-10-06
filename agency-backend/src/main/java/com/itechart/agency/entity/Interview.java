@@ -44,9 +44,13 @@ public class Interview {
     @JoinColumn(name = "expert_id")
     private Expert expert;
 
-    @Column(name = "date_time")
+    @Column(name = "start_date_time")
     @NotNull
-    private LocalDateTime dateTime;
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_date_time")
+    @NotNull
+    private LocalDateTime endDateTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH")
     @ManyToOne(fetch = FetchType.LAZY)

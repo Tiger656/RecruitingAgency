@@ -14,6 +14,12 @@ import DatePicker from "react-datepicker"
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import format from "date-fns/format";
+import getMonth from "date-fns/getMonth";
+import getYear from "date-fns/getYear";
+import getMinutes from "date-fns/getMinutes"
+import getHours from "date-fns/getHours"
+import getDate from "date-fns/getDate"
+import authHeader from "../../auth/header";
 
 
 
@@ -44,10 +50,10 @@ const styles = {
     },
     divSign: {
         zIndex: '999',
-        height: '560px',
+        height: '700px',
         width: '500px',
         position: 'absolute',
-        margin: '0 0 0 -280px',
+        margin: '0 0 0 -350px',
         left: '50%',
         display: 'none',
         paddingLeft: '30px',
@@ -97,7 +103,9 @@ export const ManagerPageMain =  () => {
     const [interviewAppIds, setInterviewAppIds] = useState({})
     const [erApplications,setErApplications] = useState({erApplications:[]})
     const [isModalCreate, setIsModalCreate] = useState(true)
-    const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 30), 16))
+    const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 0), 9))
+    const [endDate, setEndDate] = useState(null/*setHours(setMinutes(new Date(), 30), 16)*/)
+    const [busyHours, setBusyHours] = useState({busyHours:[], busyStartHours:[], busyEndHours:[]});
 
 
     useEffect(() => {
@@ -112,7 +120,7 @@ export const ManagerPageMain =  () => {
 
     const getExperts = () => {
         axios
-            .get("http://localhost:8080/expert")
+            .get("http://localhost:8080/expert", {headers: authHeader()})
             .then(data => {
                 console.log(data.data)
                 setExperts({experts: data.data})
@@ -122,7 +130,7 @@ export const ManagerPageMain =  () => {
     }
     const getEmployerApplications = () => {
         axios
-            .get("http://localhost:8080/employerApplication/all-for-manager")
+            .get("http://localhost:8080/employerApplication/all-for-manager", {headers: authHeader()})
             .then(data => {
                 console.log(data.data)
                 setErApplications({erApplications: data.data})
@@ -202,18 +210,41 @@ export const ManagerPageMain =  () => {
         data.managerId = 1;
         data.interviewStatusId = 1;
         data.expertId = document.getElementById("expert").value;
-        data.dateTime = format(startDate, 'yyyy-MM-dd HH:mm');
+        data.startDateTime = format(startDate, 'yyyy-MM-dd HH:mm');
+        data.endDateTime = format(endDate, 'yyyy-MM-dd HH:mm');
         /*document.getElementById("date").value*;*/
         data.managerComment = document.getElementById("manager-comment").value;
         console.log(data);
         axios
-            .post("http://localhost:8080/interview", data)
+            .post("http://localhost:8080/interview", data, {headers: authHeader()})
             .then(data => {
-                console.log(data);
                 resetData();
             })
             .catch(err => alert(err))
 
+    }
+
+    const changeStartDateTime = date => {
+        setStartDate(date);
+        setEndDate(null);
+        console.log("http://localhost:8080/interview/get-time/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ document.getElementById("expert").value + "/" +
+            getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date));
+        axios
+            .get("http://localhost:8080/interview/get-time/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ document.getElementById("expert").value + "/" +
+                getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .then(data => {
+                console.log(data.data);
+                /*setBusyHours([...busyHours, ...data.data.busyHours])*/
+                setBusyHours(data.data)
+                /*setBusyHours({busyHours: data.data.busyHours, busyStartHours: data.data.busyStartHours, busyEndHours: data.data.busyEndHours})*/
+            })
+            .catch(err => alert(err))
+    }
+
+    const calcMaxTime = () => {
+        let filtered = busyHours.busyHours.filter(hour => hour > getHours(startDate)).filter(hour => busyHours.busyStartHours.includes(hour));
+        let min = Math.min(...filtered)
+        return min === Infinity ? 18 : min;
     }
     return (
 
@@ -250,16 +281,42 @@ export const ManagerPageMain =  () => {
                     <div style={styles.divEnterData} >
                         <DatePicker
                             selected={startDate}
-                            onChange={date => setStartDate(date)}
+                            onChange={date => changeStartDateTime(date)/*setStartDate(date)*/}
                             showTimeSelect
-                            excludeTimes={[
-                                setHours(setMinutes(new Date(), 0), 17),
-                                setHours(setMinutes(new Date(), 30), 18),
-                                setHours(setMinutes(new Date(), 30), 19),
-                                setHours(setMinutes(new Date(), 30), 17)
-                            ]}
-                            /*dateFormat="MMMM d, yyyy h:mm aa"*/
+                            minDate={new Date()}
+                            minTime={setHours(setMinutes(new Date(), 0), 9)}
+                            maxTime={setHours(setMinutes(new Date(), 0), 18)}
+                            timeIntervals={60}
+                            placeholderText='Enter start time'
+                            excludeTimes={
+                                busyHours.busyHours.filter(hour =>
+                                    !busyHours.busyEndHours.includes(hour)
+                                ).map(hour => {
+                                    return setHours(setMinutes(new Date(), 0), hour)
+                                })
+                            }
+
                             dateFormat="yyyy-MM-dd HH:mm"
+                        />
+                        <span className="focus-input100"/>
+                    </div>
+                    <div style={styles.divEnterData} >
+                        <DatePicker
+                            selected={endDate}
+                            onChange={date => setEndDate(date)}
+                            showTimeSelect
+                            minDate={startDate}
+                            maxDate={startDate}
+                            timeIntervals={60}
+                            minTime={setHours(setMinutes(new Date(), 0), getHours(startDate))}
+                            maxTime={setHours(setMinutes(new Date(), 0), calcMaxTime())}
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            placeholderText='Enter end time'
+                            excludeTimes={
+                                busyHours.busyHours.filter(hour =>
+                                    !busyHours.busyStartHours.includes(hour)).map(hour => {return setHours(setMinutes(new Date(), 0), hour)})
+                            }
+
                         />
                         <span className="focus-input100"/>
                     </div>

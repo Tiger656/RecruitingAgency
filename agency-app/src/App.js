@@ -45,6 +45,9 @@ export const App = () => {
             {/*    </Route>*/}
             {/*    <Route path="/manager-page" exact component={ManagerPageMain}/>*/}
             {/*</Router>*/}
+                <Router>
+                    <Route path="/manager-page" exact component={ManagerPageMain}/>
+                </Router>
             <Contacts/>
         </section>
     )

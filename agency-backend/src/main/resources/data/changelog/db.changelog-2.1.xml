@@ -120,7 +120,10 @@
             <column name="expert_id" type="bigint">
                 <constraints nullable="false"></constraints> <!--foreignKeyName="fk_interviews_experts" references="experts(id)"-->
             </column>
-            <column name="date_time" type="timestamp">
+            <column name="start_date_time" type="timestamp">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="end_date_time" type="timestamp">
                 <constraints nullable="false"></constraints>
             </column>
             <column name="interview_status_id" type="bigint">
@@ -138,7 +141,8 @@
             <column name="employee_contract_id" valueNumeric="1"></column>
             <column name="manager_id" valueNumeric="1"></column>
             <column name="expert_id" valueNumeric="1"></column>
-            <column name="date_time" valueDate="${now}"></column>
+            <column name="start_date_time" valueDate="2020-10-05 15:00:00.000000"></column>
+            <column name="end_date_time" valueDate="2020-10-06 17:00:00.000000"></column>
             <column name="interview_status_id" valueNumeric="3"></column>
             <column name="manager_comment" value="Manager's comment"></column>
             <column name="expert_comment" value="Expert's comment"></column>

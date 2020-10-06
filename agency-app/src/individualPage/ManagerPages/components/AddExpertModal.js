@@ -7,6 +7,7 @@ import "../../../cssForIndividualPage/simple-line-icons.css";
 import "../../../cssForIndividualPage/magnific-popup.css";
 import "../../../cssForIndividualPage/style.css";
 import axios from "axios";
+import authHeader from "../../../auth/header";
 
 const styles = {
     popupFade: {
@@ -95,7 +96,7 @@ export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
     const createExpert = () => {
         onModalCloseClick();
         axios
-            .post("http://localhost:8080/expert", expert)
+            .post("http://localhost:8080/expert", expert, {headers: authHeader()})
             .then(data => {
                 console.log(data);
                 getExperts();
