@@ -1,5 +1,7 @@
 package com.itechart.agency.controller;
 
+import com.itechart.agency.dto.BusyHoursDto;
+import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.dto.EmployerContractDto;
 import com.itechart.agency.dto.InterviewDto;
 import com.itechart.agency.dto.converter.InterviewConverter;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -35,6 +38,7 @@ public class InterviewController {
         this.modelMapper = modelMapper;
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<?> createInterview(@RequestBody InterviewDto interviewDto){
         System.out.println(interviewDto);
@@ -42,5 +46,17 @@ public class InterviewController {
         System.out.println(interview);
         Long id = interviewService.create(interview);
         return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @GetMapping("/get-time/{agencyId}/{expertId}/{year}/{month}/{day}")
+    public ResponseEntity<?> getAllEmployerApplicationsForManager(@PathVariable("agencyId") Long agencyId,
+                                                                  @PathVariable("expertId") Long expertId,
+                                                                  @PathVariable("year") Integer year,
+                                                                  @PathVariable("month") Integer month,
+                                                                  @PathVariable("day") Integer day) {
+        LOGGER.info("REST request. Path:/interview/get-time method: GET.");
+        BusyHoursDto busyHours = interviewService.getBusyHours(agencyId, expertId, year, month, day);
+        return new ResponseEntity<BusyHoursDto>(busyHours, HttpStatus.OK);
     }
 }

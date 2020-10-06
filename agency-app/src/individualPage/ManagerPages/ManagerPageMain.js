@@ -4,6 +4,7 @@ import "../../cssForIndividualPage/icomoon.css";
 import "../../cssForIndividualPage/simple-line-icons.css";
 import "../../cssForIndividualPage/magnific-popup.css";
 import "../../cssForIndividualPage/style.css";
+import 'react-datepicker/dist/react-datepicker.css'
 import "./ManagerPage.css";
 
 import axios from "axios";
@@ -12,6 +13,13 @@ import {AddExpertModal} from "./components/AddExpertModal";
 import DatePicker from "react-datepicker"
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
+import format from "date-fns/format";
+import getMonth from "date-fns/getMonth";
+import getYear from "date-fns/getYear";
+import getMinutes from "date-fns/getMinutes"
+import getHours from "date-fns/getHours"
+import getDate from "date-fns/getDate"
+import authHeader from "../../auth/header";
 
 
 
@@ -42,14 +50,15 @@ const styles = {
     },
     divSign: {
         zIndex: '999',
-        width: '280px',
+        height: '700px',
+        width: '500px',
         position: 'absolute',
-        margin: '0 0 0 -140px',
+        margin: '0 0 0 -350px',
         left: '50%',
         display: 'none',
         paddingLeft: '30px',
         paddingRight: '30px',
-        paddingTop: '30px',
+        paddingTop: '5px',
         paddingBottom: '30px'
     },
     divFacebookGoogle: {
@@ -91,12 +100,12 @@ export const ManagerPageMain =  () => {
     const [sideBlockStyle, setSideBlockStyle]= React.useState({display:'none'})
     const [sideBlockData, setSideBlockData]= React.useState({employer: '', profession: '', salary: '', features: []})
     const [experts,setExperts] = useState({experts:[]})
+    const [interviewAppIds, setInterviewAppIds] = useState({})
     const [erApplications,setErApplications] = useState({erApplications:[]})
     const [isModalCreate, setIsModalCreate] = useState(true)
-    const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 30), 16))
-
-    let employerApplicationId;
-    let employeeApplicationId;
+    const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 0), 9))
+    const [endDate, setEndDate] = useState(null/*setHours(setMinutes(new Date(), 30), 16)*/)
+    const [busyHours, setBusyHours] = useState({busyHours:[], busyStartHours:[], busyEndHours:[]});
 
 
     useEffect(() => {
@@ -111,7 +120,7 @@ export const ManagerPageMain =  () => {
 
     const getExperts = () => {
         axios
-            .get("http://localhost:8080/expert")
+            .get("http://localhost:8080/expert", {headers: authHeader()})
             .then(data => {
                 console.log(data.data)
                 setExperts({experts: data.data})
@@ -121,7 +130,7 @@ export const ManagerPageMain =  () => {
     }
     const getEmployerApplications = () => {
         axios
-            .get("http://localhost:8080/employerApplication/all-for-manager")
+            .get("http://localhost:8080/employerApplication/all-for-manager", {headers: authHeader()})
             .then(data => {
                 console.log(data.data)
                 setErApplications({erApplications: data.data})
@@ -132,11 +141,11 @@ export const ManagerPageMain =  () => {
     const showInterviewForm = id => {
         document.getElementById("interviewForm").style.display = "block";
         console.log(id);
-        if (employeeApplicationId === undefined) {
-            employeeApplicationId = id;
+        if (interviewAppIds.employeeApplicationId === undefined) {
+            setInterviewAppIds({...interviewAppIds, employeeApplicationId: id});
         }
-        if (employerApplicationId === undefined) {
-            employerApplicationId = id;
+        if (interviewAppIds.employerApplicationId === undefined) {
+            setInterviewAppIds({...interviewAppIds, employerApplicationId: id});
         }
     }
 
@@ -146,8 +155,9 @@ export const ManagerPageMain =  () => {
     }
 
     const addToTempAppEmployer = (application, evnt) => {
-        employerApplicationId = application.id;
-        setSideBlockStyle({display:'block'});
+        console.log(application.id);
+        setInterviewAppIds({...interviewAppIds, employerApplicationId: application.id});
+        setSideBlockStyle({display: 'block'});
         setSideBlockData(application);
         document.getElementsByClassName("employer-section")[0].style.display = "none";
         let list = document.getElementsByClassName("add-temp")
@@ -158,11 +168,10 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "block";
         }
-
     }
 
     const addToTempAppEmployee = (application, evnt) => {
-        employeeApplicationId = application.id;
+        setInterviewAppIds({...interviewAppIds, employeeApplicationId: application.id});
         setSideBlockStyle({display:'block'});
         setSideBlockData(application);
         document.getElementsByClassName("employee-section")[0].style.display = "none";
@@ -175,6 +184,7 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "block";
         }
+
     }
 
     const resetData = () => {
@@ -189,29 +199,52 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "none";
         }
-
         document.getElementById("interviewForm").style.display = "none";
     }
 
     const createInterview = () => {
         let data = new Object();
         data.agencyId = 1;
-        data.employerApplicationId = employerApplicationId;
-        data.employeeContractId = employeeApplicationId;
+        data.employerApplicationId = interviewAppIds.employerApplicationId;
+        data.employeeContractId = interviewAppIds.employeeApplicationId;
         data.managerId = 1;
         data.interviewStatusId = 1;
         data.expertId = document.getElementById("expert").value;
-        data.dateTime = document.getElementById("date").value;
+        data.startDateTime = format(startDate, 'yyyy-MM-dd HH:mm');
+        data.endDateTime = format(endDate, 'yyyy-MM-dd HH:mm');
+        /*document.getElementById("date").value*;*/
         data.managerComment = document.getElementById("manager-comment").value;
         console.log(data);
         axios
-            .post("http://localhost:8080/interview", data)
+            .post("http://localhost:8080/interview", data, {headers: authHeader()})
             .then(data => {
-                console.log(data);
                 resetData();
             })
             .catch(err => alert(err))
 
+    }
+
+    const changeStartDateTime = date => {
+        setStartDate(date);
+        setEndDate(null);
+        console.log("http://localhost:8080/interview/get-time/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ document.getElementById("expert").value + "/" +
+            getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date));
+        axios
+            .get("http://localhost:8080/interview/get-time/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ document.getElementById("expert").value + "/" +
+                getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .then(data => {
+                console.log(data.data);
+                /*setBusyHours([...busyHours, ...data.data.busyHours])*/
+                setBusyHours(data.data)
+                /*setBusyHours({busyHours: data.data.busyHours, busyStartHours: data.data.busyStartHours, busyEndHours: data.data.busyEndHours})*/
+            })
+            .catch(err => alert(err))
+    }
+
+    const calcMaxTime = () => {
+        let filtered = busyHours.busyHours.filter(hour => hour > getHours(startDate)).filter(hour => busyHours.busyStartHours.includes(hour));
+        let min = Math.min(...filtered)
+        return min === Infinity ? 18 : min;
     }
     return (
 
@@ -245,27 +278,54 @@ export const ManagerPageMain =  () => {
                             <span className="focus-input100"/>
                             <div className="add-btn-1" onClick={modalCreateClickHandler}/>
                     </div>
-                    <div>
-                        {/*<DatePicker
+                    <div style={styles.divEnterData} >
+                        <DatePicker
                             selected={startDate}
-                            onChange={date => setStartDate(date)}
+                            onChange={date => changeStartDateTime(date)/*setStartDate(date)*/}
                             showTimeSelect
-                            excludeTimes={[
-                                setHours(setMinutes(new Date(), 0), 17),
-                                setHours(setMinutes(new Date(), 30), 18),
-                                setHours(setMinutes(new Date(), 30), 19),
-                                setHours(setMinutes(new Date(), 30), 17)
-                            ]}
-                            dateFormat="MMMM d, yyyy h:mm aa"
-                        />*/}
-                    </div>
+                            minDate={new Date()}
+                            minTime={setHours(setMinutes(new Date(), 0), 9)}
+                            maxTime={setHours(setMinutes(new Date(), 0), 18)}
+                            timeIntervals={60}
+                            placeholderText='Enter start time'
+                            excludeTimes={
+                                busyHours.busyHours.filter(hour =>
+                                    !busyHours.busyEndHours.includes(hour)
+                                ).map(hour => {
+                                    return setHours(setMinutes(new Date(), 0), hour)
+                                })
+                            }
 
-                    <div style={styles.divEnterData} data-validate="Enter password">
+                            dateFormat="yyyy-MM-dd HH:mm"
+                        />
+                        <span className="focus-input100"/>
+                    </div>
+                    <div style={styles.divEnterData} >
+                        <DatePicker
+                            selected={endDate}
+                            onChange={date => setEndDate(date)}
+                            showTimeSelect
+                            minDate={startDate}
+                            maxDate={startDate}
+                            timeIntervals={60}
+                            minTime={setHours(setMinutes(new Date(), 0), getHours(startDate))}
+                            maxTime={setHours(setMinutes(new Date(), 0), calcMaxTime())}
+                            dateFormat="yyyy-MM-dd HH:mm"
+                            placeholderText='Enter end time'
+                            excludeTimes={
+                                busyHours.busyHours.filter(hour =>
+                                    !busyHours.busyStartHours.includes(hour)).map(hour => {return setHours(setMinutes(new Date(), 0), hour)})
+                            }
+
+                        />
+                        <span className="focus-input100"/>
+                    </div>
+                   {/* <div style={styles.divEnterData} data-validate="Enter password">
                         <input className="input100" type="text" style={styles.input} id="date"
                                name="date"
                                placeholder="date"/>
                         <span className="focus-input100"/>
-                    </div>
+                    </div>*/}
 
                     <div style={styles.divEnterData} data-validate="Enter password">
                         <input className="input100" type="text" style={styles.input} id="manager-comment"
@@ -380,4 +440,5 @@ export const ManagerPageMain =  () => {
         </div>
     )
 }
+
 

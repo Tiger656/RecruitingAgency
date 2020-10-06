@@ -13,6 +13,7 @@ import com.itechart.agency.entity.User;
 import com.itechart.agency.service.ExpertService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,11 +31,12 @@ public class ExpertController {
         this.expertService = expertService;
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     @GetMapping
     public List<ExpertForInterviewDto> getAll() {
         return expertService.findAll().stream().map(ExpertForDtoConvert::convertEntityToDto).collect(Collectors.toList());
     }
-
+    @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping()
     public ResponseEntity<?> createExpert(@RequestBody ExpertDto expertDto){
         User user = ExpertConvert.convertDtoToUserEntity(expertDto);
@@ -43,6 +45,7 @@ public class ExpertController {
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteExpert(@PathVariable("id") Long id) {
         expertService.deleteById(id);
