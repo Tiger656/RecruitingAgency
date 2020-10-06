@@ -62,32 +62,26 @@ public class EmployerApplication {
     @JoinColumn(name = "employment_type_id", referencedColumnName = "id")
     private EmploymentType employmentType;
 
-    //new
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "experience")
     private Enums.Experience experience;
 
-    //new
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "age_restriction")
     private Enums.AgeRestriction ageRestriction;
 
-    //new
     @ManyToOne
     @JoinColumn(name = "country_id", referencedColumnName = "id")
     private Country country;
 
-    //new
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
-    //new
     @ManyToOne
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
-    //new
     @Size(max = 1000, message = "Employer application comment must be shorter than 1000 characters")
     @Column(name = "comment")
     private String comment;
@@ -96,7 +90,6 @@ public class EmployerApplication {
     @Column(name = "expert_personal_name")
     private String expertPersonalName;
 
-    //new
     @NotNull(message = "Field is_deleted in contract cannot be null")
     @Column(name = "is_deleted")
     private boolean isDeleted;
