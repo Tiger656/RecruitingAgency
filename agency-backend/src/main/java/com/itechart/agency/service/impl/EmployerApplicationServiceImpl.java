@@ -5,7 +5,6 @@ import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.dto.converter.EmployerApplicationConvert;
 import com.itechart.agency.dto.converter.EmployerApplicationForManagerConvert;
 import com.itechart.agency.entity.EmployerApplication;
-import com.itechart.agency.entity.lists.Feature;
 import com.itechart.agency.exception.BadRequestException;
 import com.itechart.agency.exception.NotFoundException;
 import com.itechart.agency.repository.*;
@@ -22,25 +21,30 @@ import java.util.stream.Collectors;
 public class EmployerApplicationServiceImpl implements EmployerApplicationService, CrudService<EmployerApplicationDto> {
 
     private final EmployerApplicationRepository employerApplicationRepository;
-    private final FeatureRepository featureRepository;
     private final AgencyRepository agencyRepository;
     private final EmployerRepository employerRepository;
     private final EmploymentTypeRepository employmentTypeRepository;
     private final ProfessionRepository professionRepository;
     private final StatusRepository statusRepository;
+    private final AddressRepository addressRepository;
+    private final CityRepository cityRepository;
+    private final CountryRepository countryRepository;
 
     @Autowired
     public EmployerApplicationServiceImpl(EmployerApplicationRepository employerApplicationRepository,
-                                          FeatureRepository featureRepository, AgencyRepository agencyRepository,
-                                          EmployerRepository employerRepository, EmploymentTypeRepository employmentTypeRepository,
+                                          AgencyRepository agencyRepository, EmployerRepository employerRepository,
+                                          AddressRepository addressRepository, CityRepository cityRepository,
+                                          EmploymentTypeRepository employmentTypeRepository, CountryRepository countryRepository,
                                           ProfessionRepository professionRepository, StatusRepository statusRepository) {
         this.employerApplicationRepository = employerApplicationRepository;
-        this.featureRepository = featureRepository;
         this.agencyRepository = agencyRepository;
         this.employerRepository = employerRepository;
         this.employmentTypeRepository = employmentTypeRepository;
         this.professionRepository = professionRepository;
         this.statusRepository = statusRepository;
+        this.cityRepository = cityRepository;
+        this.addressRepository = addressRepository;
+        this.countryRepository = countryRepository;
     }
 
     @Override
@@ -114,8 +118,6 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
         if (applicationDto.getId() <= 0L)
             throw new BadRequestException("Not valid data");
         if (employerApplicationRepository.findById(applicationDto.getId()).isPresent()) {
-            //не помню, надо ли. Кажется, нет
-            //employerApplicationRepository.delete(employerApplicationRepository.findById(applicationDto.getId()).get());
             employerApplicationRepository.save(application);
             return application.getId();
         } else {
@@ -125,25 +127,21 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
 
 
     private EmployerApplication setData(EmployerApplicationDto applicationDto) {
-        for (long id : applicationDto.getFeaturesIds()) {
-            if (featureRepository.findById(id).isEmpty())
-                throw new NotFoundException("Feature doesn't exist");
-        }
         if (agencyRepository.findById(applicationDto.getAgencyId()).isEmpty() || employerRepository.findById(applicationDto.getEmployerId()).isEmpty()
-                || employmentTypeRepository.findById(applicationDto.getEmploymentTypeId()).isEmpty()
-                || professionRepository.findById(applicationDto.getProfessionId()).isEmpty() || statusRepository.findById(applicationDto.getStatusId()).isEmpty())
-            throw new NotFoundException("Agency, or/and employer, or/and employment type, or/and profession, or/and status  doesn't exist");
+                || employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).isEmpty() || countryRepository.findByName(applicationDto.getCountryName()).isEmpty()
+                || professionRepository.findByName(applicationDto.getProfessionName()).isEmpty() || statusRepository.findByName(applicationDto.getStatusName()).isEmpty()
+                || addressRepository.findById(applicationDto.getAddressId()).isEmpty() || cityRepository.findByName(applicationDto.getCityName()).isEmpty())
+            throw new NotFoundException("Agency, or/and employer, or/and employment type, or/and profession, or/and status, or/and country, or/and address, or/and city  doesn't exist");
 
         EmployerApplication application = EmployerApplicationConvert.convertDtoToEntity(applicationDto);
-        List<Feature> features = applicationDto.getFeaturesIds().stream()
-                .map(a -> featureRepository.findById(a).get())
-                .collect(Collectors.toList());
-        application.setFeatures(features);
         application.setAgency(agencyRepository.findById(applicationDto.getAgencyId()).get());
         application.setEmployer(employerRepository.findById(applicationDto.getEmployerId()).get());
-        application.setEmploymentType(employmentTypeRepository.findById(applicationDto.getEmploymentTypeId()).get());
-        application.setProfession(professionRepository.findById(applicationDto.getProfessionId()).get());
-        application.setStatus(statusRepository.findById(applicationDto.getStatusId()).get());
+        application.setEmploymentType(employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).get());
+        application.setProfession(professionRepository.findByName(applicationDto.getProfessionName()).get());
+        application.setStatus(statusRepository.findByName(applicationDto.getStatusName()).get());
+        application.setCountry(countryRepository.findByName(applicationDto.getCountryName()).get());
+        application.setCity(cityRepository.findByName(applicationDto.getCityName()).get());
+        application.setAddress(addressRepository.findById(applicationDto.getAddressId()).get());
         return application;
     }
 

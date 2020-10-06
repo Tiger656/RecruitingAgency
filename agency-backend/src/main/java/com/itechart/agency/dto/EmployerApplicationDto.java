@@ -1,11 +1,9 @@
 package com.itechart.agency.dto;
 
-
+import com.itechart.agency.entity.Enums;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.sql.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -13,20 +11,23 @@ public class EmployerApplicationDto {
 
     private Long id;
 
-    private Long agencyId;
-    private String application_number;
-    private Date application_date;
-    private Long employerId;
-    private String application_name;
-    private Long professionId;
+    private Long agencyId;//
+    private Long employerId;//
+    private Date creationDate;
+    private Date endDate;
+    private String statusName;//
+    private String professionName;//
     private double salary;
-    private Long employmentTypeId;
-    private String expert_personal_name;
-    private Date creation_date;
-    private Date end_date;
-    private Long statusId;
-    private List<Long> featuresIds;
-
+    private String employmentTypeName;
+    private Enums.Experience experience;
+    private Enums.AgeRestriction ageRestriction;
+    private String countryName;//
+    private String cityName;//
+    private Long addressId;//
+    private String comment;
+    private String expertPersonalName;
+    private boolean isDeleted;
+/*
     public static Builder builder() {
         return new EmployerApplicationDto().new Builder();
     }
@@ -94,22 +95,5 @@ public class EmployerApplicationDto {
             return EmployerApplicationDto.this;
         }
     }
-
-    @Override
-    public String toString() {
-        return "EmployerApplicationDto{" +
-                "agencyId=" + agencyId +
-                ", application_number='" + application_number + '\'' +
-                ", application_date=" + application_date +
-                ", employerId=" + employerId +
-                ", application_name='" + application_name + '\'' +
-                ", professionId=" + professionId +
-                ", salary=" + salary +
-                ", employmentTypeId=" + employmentTypeId +
-                ", expert_personal_name='" + expert_personal_name + '\'' +
-                ", creation_date=" + creation_date +
-                ", end_date=" + end_date +
-                ", statusId=" + statusId +
-                '}';
-    }
+*/
 }
