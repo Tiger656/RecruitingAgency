@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class EmployerApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

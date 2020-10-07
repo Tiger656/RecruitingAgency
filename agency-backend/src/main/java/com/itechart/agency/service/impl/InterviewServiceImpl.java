@@ -14,7 +14,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class InterviewServiceImpl implements CrudService<Interview> {
+public class InterviewServiceImpl {
 
     public final InterviewRepository interviewRepository;
 
@@ -23,12 +23,12 @@ public class InterviewServiceImpl implements CrudService<Interview> {
         this.interviewRepository = interviewRepository;
     }
 
-    @Override
+
     public Long create(Interview interview) {
         return interviewRepository.save(interview).getId();
     }
 
-    @Override
+
     public Interview findById(Long id) throws NotFoundException { //Why we should return optional????
         Optional<Interview> interviewOptional = interviewRepository.findById(id);
         if (interviewOptional.isPresent()) {
@@ -38,23 +38,34 @@ public class InterviewServiceImpl implements CrudService<Interview> {
         }
     }
 
-    @Override
-    public List<Interview> findAll() {
-        return interviewRepository.findAll();
+
+    public List<Interview> findAllByAgencyAndManager(Long agencyId, Long managerId) {
+        List<Interview> interviews = interviewRepository.findByAgencyIdAndManagerId(agencyId, managerId);
+        return interviews;
     }
 
-    @Override
+    public List<Interview> findAllByAgencyAndExpertAndInterviewStatus(Long agencyId, Long expertId, Long interviewStatusId) {
+        List<Interview> interviews = interviewRepository.findByAgencyIdAndExpertIdAndStatusId(agencyId, expertId, interviewStatusId);
+        return interviews;
+    }
+
+    public List<Interview> findAllByAgency(Long agencyId) {
+        List<Interview> interviews = interviewRepository.findByAgencyId(agencyId);
+        return interviews;
+    }
+
+
     public Long update(Interview interview) {
         interviewRepository.save(interview);
         return null;
     }
 
-    @Override
+
     public void deleteById(Long id) {
         interviewRepository.deleteById(id);
     }
 
-    @Override
+
     public void delete(Interview interview) {
         interviewRepository.delete(interview);
     }

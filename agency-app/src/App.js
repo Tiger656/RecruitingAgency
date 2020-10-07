@@ -11,6 +11,7 @@ import {AdminPage} from "./individualPage/AdminPage/AdminPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SecretaryPage from "./individualPage/SecretaryPage";
 import {ManagerPageMain} from "./individualPage/ManagerPages/ManagerPageMain";
+import {ExpertPage} from "./individualPage/ExpertPage/ExpertPage";
 
 
 export const App = () => {
@@ -46,6 +47,8 @@ export const App = () => {
             {/*    <Route path="/manager-page" exact component={ManagerPageMain}/>*/}
             {/*</Router>*/}
                 <Router>
+                    <Route path="/expert-page" exact component={ExpertPage}/>
+                    <Route path="/admin-page" exact component={AdminPage}/>
                     <Route path="/manager-page" exact component={ManagerPageMain}/>
                 </Router>
             <Contacts/>

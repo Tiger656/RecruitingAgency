@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class InterviewDto {
+public class InterviewSaveDto {
 
     private Long id;
     private Long agencyId;

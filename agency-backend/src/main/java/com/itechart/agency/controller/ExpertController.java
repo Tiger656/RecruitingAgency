@@ -2,13 +2,9 @@ package com.itechart.agency.controller;
 
 import com.itechart.agency.dto.ExpertDto;
 import com.itechart.agency.dto.ExpertForInterviewDto;
-import com.itechart.agency.dto.InterviewDto;
-import com.itechart.agency.dto.UserDto;
 import com.itechart.agency.dto.converter.ExpertConvert;
 import com.itechart.agency.dto.converter.ExpertForDtoConvert;
-import com.itechart.agency.dto.converter.InterviewConverter;
 import com.itechart.agency.entity.Expert;
-import com.itechart.agency.entity.Interview;
 import com.itechart.agency.entity.User;
 import com.itechart.agency.service.ExpertService;
 import org.springframework.http.HttpStatus;
