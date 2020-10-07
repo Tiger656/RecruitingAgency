@@ -10,14 +10,9 @@ import java.util.List;
 @Getter
 public class EmployerDto {
     private Long id;
-
-    //зачем ему имя?
     private String name;
     private Long userId;
-    //стоит убрать
     private Long agencyId;
-    private Long cityId;
-    private Long addressId;
     private Long employerContractId;
     private List<Long> applicationsIds;
 
@@ -49,16 +44,6 @@ public class EmployerDto {
             return this;
         }
 
-        public EmployerDto.Builder withCityId(final Long cityId) {
-            EmployerDto.this.cityId = cityId;
-            return this;
-        }
-
-        public EmployerDto.Builder withAddressId(final Long addressId) {
-            EmployerDto.this.addressId = addressId;
-            return this;
-        }
-
         public EmployerDto.Builder withEmployerContractId(final Long employerContractId) {
             EmployerDto.this.employerContractId = employerContractId;
             return this;
@@ -74,15 +59,4 @@ public class EmployerDto {
         }
     }
 
-    @Override
-    public String toString() {
-        return "EmployerDto{" +
-                "name='" + name + '\'' +
-                ", userId=" + userId +
-                ", agencyId=" + agencyId +
-                ", cityId=" + cityId +
-                ", addressId=" + addressId +
-                ", employerContractId=" + employerContractId +
-                '}';
-    }
 }

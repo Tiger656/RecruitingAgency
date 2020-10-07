@@ -12,50 +12,24 @@ public class EmployeeContractDto {
     private Long id;
 
     private Long agencyId;
-    private double min_salary;
-    private double price_usd;
+    private double minSalary;
+    private double priceUsd;
     private double compensation;
-    private Date creation_date;
-    private Date end_date;
-    private boolean is_deleted;
+    private Date creationDate;
+    private Date endDate;
+    private boolean isDeleted;
     private String name;
     private String surname;
-    private int experience_years;
-    private Date birth_date;
+    private int experienceYears;
+    private Date birthDate;
     private Long cityId;
     private Long addressId;
     private String passport;
     private String email;
-    private String telephone_number;
+    private String telephoneNumber;
     private Long professionId;
-    private double account_usd;
+    private double accountUsd;
     private Long statusId;
     private List<Long> employmentTypesIds;
     private List<Long> featuresIds;
-
-
-    @Override
-    public String toString() {
-        return "EmployeeContractDto{" +
-                ", agencyId=" + agencyId +
-                ", min_salary=" + min_salary +
-                ", price_usd=" + price_usd +
-                ", compensation=" + compensation +
-                ", creation_date=" + creation_date +
-                ", end_date=" + end_date +
-                ", is_deleted=" + is_deleted +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", experience_years=" + experience_years +
-                ", birth_date=" + birth_date +
-                ", cityId=" + cityId +
-                ", addressId=" + addressId +
-                ", passport='" + passport + '\'' +
-                ", email='" + email + '\'' +
-                ", telephone_number='" + telephone_number + '\'' +
-                ", professionId=" + professionId +
-                ", account_usd=" + account_usd +
-                ", statusId=" + statusId +
-                '}';
-    }
 }

@@ -43,7 +43,7 @@ public class EmployerContractServiceImpl implements CrudService<EmployerContract
         } else {
             throw new NotFoundException("Employer contract not found");
         }
-        if (!contractDto.is_deleted())
+        if (!contractDto.isDeleted())
             return contractDto;
         else {
             throw new NotFoundException("Employer contract was deleted");
@@ -101,8 +101,8 @@ public class EmployerContractServiceImpl implements CrudService<EmployerContract
         } else {
             throw new NotFoundException("Employer contract not found");
         }
-        if (!contract.is_deleted()) {
-            contract.set_deleted(true);
+        if (!contract.isDeleted()) {
+            contract.setDeleted(true);
             employerContractRepository.save(contract);
         }
     }

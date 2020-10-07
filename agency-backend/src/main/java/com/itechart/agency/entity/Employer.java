@@ -16,13 +16,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@ToString
 public class Employer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    //зачем ему имя?
     @NotNull(message = "Employer name cannot be null")
     @Size(min = 1, max = 50, message = "Employer name must be between 1 and 50 characters")
     @Column(name = "name")
@@ -38,16 +37,6 @@ public class Employer {
     @ManyToOne
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     private Agency agency;
-
-    //notnull
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    private City city;
-
-    //notnull
-    @ManyToOne
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
 
     @NotNull(message = "Employer contract cannot be null")
     @OneToOne(cascade = CascadeType.ALL)

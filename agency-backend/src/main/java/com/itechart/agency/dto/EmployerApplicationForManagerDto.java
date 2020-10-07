@@ -23,9 +23,12 @@ public class EmployerApplicationForManagerDto {
 
     private Long id;
     private Agency agency;
+    //-
     private String application_number;
+    //-
     private Date application_date;
     private Employer employer;
+    //-
     private String application_name;
     private Profession profession;
     private double salary;
@@ -33,5 +36,6 @@ public class EmployerApplicationForManagerDto {
     private String expert_personal_name;
     private Date end_date;
     private Status status;
+    //-
     private List<Feature> features;
 }
