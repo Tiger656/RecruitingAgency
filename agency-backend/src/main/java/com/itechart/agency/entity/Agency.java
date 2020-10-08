@@ -19,17 +19,24 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+//@ToString
 public class Agency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Agency name cannot be null")
     @Size(min = 1, max = 50, message = "Agency name must be between 1 and 50 characters")
     @Column(name = "name")
     private String name;
+
+
+    @Column(name = "regular_payment")
+    private Double regularPayment;
+
+    @Column(name = "deposit")
+    private Double deposit;
 
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id")
@@ -38,6 +45,9 @@ public class Agency {
     @ManyToOne
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @OneToMany(mappedBy = "agency")
     @JsonIgnore

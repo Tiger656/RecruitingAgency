@@ -73,22 +73,22 @@ const styles = {
     },
     select100: {
         height: '62px',
-        border:'none',
-        outline:'none',
+        border: 'none',
+        outline: 'none',
         marginBottom: '20px',
         position: 'relative',
         width: '100%',
         backgroundColor: '#fff',
         borderRadius: '20px'
     },
-    option100:{
-        border:'20px solid #ffffff',
-        outline:'none',
+    option100: {
+        border: '20px solid #ffffff',
+        outline: 'none',
     }
 }
 
 
-export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', agencyId = '', roleIds = [], roles = [], allRoles, allAgencies,buttonName}) => {
+export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', agencyId = '', roleIds = [], roles = [], allRoles, allAgencies, buttonName}) => {
     let currentAgencyId = JSON.parse(localStorage.getItem('response')).agency.id;
     const initialFormState = {id, email, agencyId, roleIds, roles};
     const [user, setUser] = useState(initialFormState)
@@ -104,7 +104,7 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
     const checkChangeHandler = roleId => {
         const result = toggleUserRole(user.roles, roleId);
 
-        setUser({...user, roles: result,agencyId:currentAgencyId});
+        setUser({...user, roles: result, agencyId: currentAgencyId});
     }
 
     const hasRole = (roles, roleId) => roles.find(role => role.id === roleId);
@@ -121,36 +121,34 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
         /*fix*/
         if (!user.email || !user.agencyId)
             warnEnterAllFieldsNotify("Fields cannot be empty!")
-            else
-        submitHandler(user)
+        else
+            submitHandler(user)
         setUser(initialFormState)
     }
 
 
-    const warnEnterAllFieldsNotify =(message)=>{
-        toast.warn(message, {position: toast.POSITION.TOP_RIGHT,color:"black"});
+    const warnEnterAllFieldsNotify = (message) => {
+        toast.warn(message, {position: toast.POSITION.TOP_RIGHT, color: "black"});
     }
-
-
 
 
     return (
         <div style={styles.popupFade}>
-<Notification/>
+            <Notification/>
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
             <div className="animate__animated animate__backInLeft" id="interviewForm" style={styles.divSign}>
 
                 <form className="login100-form validate-form " onSubmit={handleSubmit}>
-                    <button className="cl-btn-7" onClick={onModalCloseClick} />
+                    <button type="button" className="cl-btn-7" onClick={onModalCloseClick}/>
                     <br/>
                     <span style={styles.span}>
 					             ADD USER
                     </span>
 
 
-                    <div style={styles.divEnterData} >
+                    <div style={styles.divEnterData}>
                         <input className="input100" type="email" style={styles.input}
                                name="email"
                                placeholder="Email"
@@ -181,7 +179,7 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
                                            onChange={() => checkChangeHandler(role.id)}
                                     />
                                     <label className="custom-control-label" htmlFor={role.id}
-                                           style={{marginLeft: '3.5rem',color:'black'}}>{role.name}</label>
+                                           style={{marginLeft: '3.5rem', color: 'black'}}>{role.name}</label>
                                 </div>
                             )}
                         </div>
@@ -191,13 +189,13 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
                     <br/>
 
                     <div className="container-login100-form-btn">
-                        <button className="login100-form-btn"  style={{marginBottom: '5px'}}>
+                        <button className="login100-form-btn" style={{marginBottom: '5px'}}>
                             {buttonName}
                         </button>
                     </div>
 
                     <div className="container-login100-form-btn">
-                        <button className="login101-form-btn" style={{marginBottom: '15px'}}
+                        <button type='button' className="login101-form-btn" style={{marginBottom: '15px'}}
                                 onClick={onModalCloseClick}>
                             Cancel
                         </button>

@@ -23,26 +23,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("userDetailServiceImpl")
 public class UserServiceImpl implements UserDetailsService, UserService {
+    private static final String MESSAGE_AFTER_CREATED_AGENCY="";
+    private static final String CREATE_AGENCY_FOR_OWNER="";
     private static final Properties props = new Properties();
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    RoleServiceImpl roleServiceImpl;
-    @Autowired
-    AgencyRepository agencyRepository;
-    @Autowired
-    RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final AgencyRepository agencyRepository;
+    private final RoleRepository roleRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
+
+    public UserServiceImpl(UserRepository userRepository, AgencyRepository agencyRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.agencyRepository = agencyRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public UserDetails loadUserByUsername(String email) {
 
@@ -135,6 +133,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 .map(UserDto::convertEntityToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteAllByAgencyId(Long id) {
+         userRepository.findAllByAgency_Id(id).forEach(user -> user.setIsDeleted(true));
+    }
+
 
     private User createUserData(UserDto userDto) {
 
@@ -142,23 +145,40 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         user.setAgency(agencyRepository.findById(userDto.getAgencyId()).orElseThrow(() -> new NotFoundException("No agency with id:" + userDto.getAgencyId())));
 
 
-        if(userDto.getId()==null) {
-            String password =generatePassword();
+        if (userDto.getId() == null) {
+            String password = generatePassword();
             user.setPassword(bCryptPasswordEncoder.encode((password)));
             try {
-                EmailServiceImpl.send(user.getEmail(),"User is create!!!","Your password is\n" + password  );
+                EmailServiceImpl.send(user.getEmail(), "User is create!!!", "Your password is\n" + password);
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
-        }
-        else user.setPassword(userRepository.findById(userDto.getId()).orElseThrow(() -> new NotFoundException("No user with id " + userDto.getId())).getPassword());
+        } else
+            user.setPassword(userRepository.findById(userDto.getId()).orElseThrow(() -> new NotFoundException("No user with id " + userDto.getId())).getPassword());
 
         user.setRoles(userDto.getRoles());
         user.setIsDeleted(false);
         return user;
     }
 
-    private String generatePassword(){
+    void createUserByRole(String email, Long agencyId, String role) {
+        List<Role> roles = new ArrayList<>(List.of(roleRepository.findByName(role)));
+
+        if (userRepository.getUserByEmail(email).isEmpty()) {
+            String password = generatePassword();
+            userRepository.save(new User(email, bCryptPasswordEncoder.encode((password)), agencyRepository.findById(agencyId).orElseThrow(() -> new NotFoundException("fsdf")), false, roles));
+            try {
+                EmailServiceImpl.send(email, "Agency was registered successfully!!!", "Hi, "+email+" your role is "+role+"\nYour password is\n" + password);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new NotFoundException("User with email: " + email + " is exist");
+
+        }
+    }
+
+    private String generatePassword() {
         PasswordGenerator passwordGenerator = new PasswordGenerator();
         return passwordGenerator.generatePassword(10, new CharacterRule(EnglishCharacterData.UpperCase, 1)
                 , new CharacterRule(EnglishCharacterData.LowerCase, 1)

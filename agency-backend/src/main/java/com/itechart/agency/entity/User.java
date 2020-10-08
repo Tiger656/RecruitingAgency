@@ -43,4 +43,12 @@ public class User {
             @JoinColumn(name = "user_id")}, inverseJoinColumns = {
             @JoinColumn(name = "role_id")})
     private List<Role> roles;
+
+    public User(@NotNull(message = "Email cannot be null") @Size(min = 7, max = 50, message = "Email must be between 7 and 50 characters") String email, @NotNull(message = "Password cannot be null") @Size(min = 1, max = 255, message = "Password must be between 1 and 255 characters") String password, @NotNull(message = "Agency for user cannot be null") Agency agency, Boolean isDeleted, List<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.agency = agency;
+        this.isDeleted = isDeleted;
+        this.roles = roles;
+    }
 }

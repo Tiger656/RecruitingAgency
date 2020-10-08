@@ -202,7 +202,7 @@
             <column name="is_deleted" valueBoolean="0"></column>
         </insert>
         <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="2"></column>
+            <column name="user_id" valueNumeric="4"></column>
             <column name="role_id" valueNumeric="7"></column>
         </insert>
 

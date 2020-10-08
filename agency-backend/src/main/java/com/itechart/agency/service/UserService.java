@@ -21,5 +21,6 @@ public interface UserService {
     Agency getAgencyByUserEmail(final String email);
 
     List<UserDto> getAllByAgencyName(String name);
+    void deleteAllByAgencyId(Long id);
 
 }

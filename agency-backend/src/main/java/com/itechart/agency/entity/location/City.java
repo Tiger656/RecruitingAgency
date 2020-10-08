@@ -26,10 +26,10 @@ public class City {
     @Column(name = "name", unique = true)
     private String name;
 
-    @NotNull(message = "Region for city cannot be null")
+    @NotNull(message = "City for city cannot be null")
     @ManyToOne
-    @JoinColumn(name = "region_id", referencedColumnName = "id")
-    private Region region;
+    @JoinColumn(name = "countries_id", referencedColumnName = "id")
+    private Country country;
 
     /*@OneToMany(mappedBy = "addresses", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

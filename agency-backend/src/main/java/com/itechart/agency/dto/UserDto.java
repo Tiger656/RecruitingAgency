@@ -32,6 +32,13 @@ public class UserDto {
     }
 
 
+
+    public UserDto(String email, Long agencyId) {
+        this.email = email;
+        this.agencyId = agencyId;
+
+    }
+
     public class Builder {
         private Builder() {
         }

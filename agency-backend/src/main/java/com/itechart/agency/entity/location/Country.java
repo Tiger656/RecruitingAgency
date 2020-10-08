@@ -25,5 +25,5 @@ public class Country {
 
     @OneToMany(mappedBy = "country", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Region> regions;
+    private List<City> cities;
 }
