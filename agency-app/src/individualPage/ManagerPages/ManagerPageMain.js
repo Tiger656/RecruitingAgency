@@ -99,10 +99,11 @@ const styles = {
 export const ManagerPageMain =  () => {
 
     const [sideBlockStyle, setSideBlockStyle]= React.useState({display:'none'})
-    const [sideBlockData, setSideBlockData]= React.useState({employer: '', profession: '', salary: '', features: []})
+    const [sideBlockData, setSideBlockData]= React.useState({employerName: '', professionName: '', salary: '', experience: '', name: '', surname: '', experienceYears: ''})
     const [experts,setExperts] = useState({experts:[]})
     const [interviewAppIds, setInterviewAppIds] = useState({})
-    const [erApplications,setErApplications] = useState({erApplications:[]})
+    const [erApplications,setErApplications] = useState([])
+    const [eeApplications,setEeApplications] = useState([])
     const [isAddExpertModalCreate, setIsAddExpertModalCreate] = useState(true)
     const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 0), 9))
     const [endDate, setEndDate] = useState(null/*setHours(setMinutes(new Date(), 30), 16)*/)
@@ -119,8 +120,10 @@ export const ManagerPageMain =  () => {
         getExperts();
         getEmployerApplications();
         getAllInterviews();
-        //getEmployeeApplications();
+        getEmployeeApplications();
     }, [])
+    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    let personEmail = JSON.parse(localStorage.getItem('response')).email;
 
     const modalCreateClickHandler = () => setIsAddExpertModalCreate(false);
     const modalCloseClickHandler = () => setIsAddExpertModalCreate(true);
@@ -133,14 +136,29 @@ export const ManagerPageMain =  () => {
             .catch(err => alert(err))
 
     }
-    const getEmployerApplications = () => {
+
+    const getEmployeeApplications = () => {
         axios
-            .get("http://localhost:8080/employerApplication/all-for-manager", {headers: authHeader()})
+            .get("http://localhost:8080/employeeContract/all-for-manager/" + JSON.parse(localStorage.getItem("response")).agency.id, {headers: authHeader()})
             .then(data => {
-                setErApplications({erApplications: data.data})
+                console.log(data);
+                setEeApplications(data.data)
+
             })
             .catch(err => alert(err))
     };
+    const getEmployerApplications = () => {
+        axios
+            .get("http://localhost:8080/employerApplication/all-for-manager/" + JSON.parse(localStorage.getItem("response")).agency.id, {headers: authHeader()})
+            .then(data => {
+                console.log(data);
+                setErApplications(data.data)
+
+            })
+            .catch(err => alert(err))
+    };
+
+
     const showInterviewForm = id => {
         document.getElementById("interviewForm").style.display = "block";
         if (interviewAppIds.employeeApplicationId === undefined) {
@@ -213,6 +231,7 @@ export const ManagerPageMain =  () => {
             .post("http://localhost:8080/interview", data, {headers: authHeader()})
             .then(data => {
                 resetData();
+                getAllInterviews()
             })
             .catch(err => alert(err))
 
@@ -225,9 +244,7 @@ export const ManagerPageMain =  () => {
                 getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
                 console.log(data.data);
-                /*setBusyHours([...busyHours, ...data.data.busyHours])*/
                 setBusyHours(data.data)
-                /*setBusyHours({busyHours: data.data.busyHours, busyStartHours: data.data.busyStartHours, busyEndHours: data.data.busyEndHours})*/
             })
             .catch(err => alert(err))
     }
@@ -238,7 +255,7 @@ export const ManagerPageMain =  () => {
     }
     const getMyInterviews = () => {
         axios
-            .get("http://localhost:8080/interview/" + 1/*JSON.parse(localStorage.getItem("response")).agency.id*/ +"/"+ 2/*document.getElementById("MANAGER_ID").value*/ , {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .get("http://localhost:8080/interview/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ JSON.parse(localStorage.getItem("response")).userId , {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
                 console.log(data.data);
                 setInterviews(data.data);
@@ -265,11 +282,11 @@ export const ManagerPageMain =  () => {
     const changeMyInterviewShow = () => {
         if (myInterviewsShow === true) {
             setMyInterviewsShowBtnStls({backgroundColor: "black", color: "#fff"})
-            getAllInterviews()
+            //getAllInterviews()
             setMyInterviewShow(false);
         } else {
             setMyInterviewsShowBtnStls({backgroundColor: "#17a2b8", color: "#fff"})
-            getMyInterviews();
+            //getMyInterviews();
             setMyInterviewShow(true);
         }
     }
@@ -374,8 +391,8 @@ export const ManagerPageMain =  () => {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{/*{name}*/}</h1>
-                                    <h2 className="to-animate" > Email: {/*{email}*/}</h2>
+                                    <h1 className="to-animate">{agencyName}</h1>
+                                    <h2 className="to-animate" > Email: {personEmail}</h2>
                                 </div>
                             </div>
                         </div>
@@ -396,22 +413,18 @@ export const ManagerPageMain =  () => {
                     </div>
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
-                        {erApplications.erApplications.map((erApplication) => {
+                        {erApplications.map((erApplication) => {
                             return  <div className="col-md-4 col-sm-6">
                                         <div className="fh5co-project-item image-popup to-animate">
-                                            <p>Employer: {erApplication.employer.name}</p>
-                                            <p>Employer: {erApplication.employer.name}</p>
-                                            <p>Profession: {erApplication.profession.name}</p>
+                                            <p>Employer: {erApplication.employerName}</p>
+                                            <p>Profession: {erApplication.professionName}</p>
                                             <p>Salary: {erApplication.salary}</p>
-                                            <p>Features:</p>
-                                            {erApplication.features.map((feature) => {
-                                                return <p>{feature.name}</p>
-                                            })}
-
+                                            <p>Salary: {erApplication.experience}</p>
+                                            <p>Recommended expert: {erApplication.expertPersonalName}</p>
                                             <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn add-temp" onClick={addToTempAppEmployer.bind(this, erApplication)}>
                                                 Выбрать
                                             </button>
-                                            <button style={{display: 'none', marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employer.id)}>
+                                            <button style={{display: 'none', marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employerId)}>
                                                 Создать интервью
                                             </button>
                                         </div>
@@ -432,22 +445,17 @@ export const ManagerPageMain =  () => {
                     </div>
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
-                        {erApplications.erApplications.map((erApplication) => {
+                        {eeApplications.map((eeApplication) => {
                             return  <div className="col-md-4 col-sm-6">
                                 <div className="fh5co-project-item image-popup to-animate">
-                                    <p>Employer: {erApplication.employer.name}</p>
-                                    <p>Employer: {erApplication.employer.name}</p>
-                                    <p>Profession: {erApplication.profession.name}</p>
-                                    <p>Salary: {erApplication.salary}</p>
-                                    <p>Features:</p>
-                                    {erApplication.features.map((feature) => {
-                                        return <p>{feature.name}</p>
-                                    })}
-
-                                    <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn add-temp"  onClick={addToTempAppEmployee.bind(this, erApplication)}>
+                                    <p>Employee: {eeApplication.surname + " " + eeApplication.name}</p>
+                                    <p>Profession: {eeApplication.professionName}</p>
+                                    <p>Min salary: {eeApplication.minSalary}</p>
+                                    <p>Experience: {eeApplication.experienceYears}</p>
+                                    <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn add-temp"  onClick={addToTempAppEmployee.bind(this, eeApplication)}>
                                         Выбрать
                                     </button>
-                                    <button  style={{display: 'none', marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, erApplication.employer.id)}>
+                                    <button  style={{display: 'none', marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn create-interview"  onClick={showInterviewForm.bind(this, eeApplication.id)}>
                                         Создать интервью
                                     </button>
                                 </div>
@@ -494,10 +502,10 @@ export const ManagerPageMain =  () => {
                                     <p>Start: {interview.startDateTime.replace('T', ' ')}</p>
                                     <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                     <p>Manag. comment: {interview.managerComment}</p>
-                                    <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn"  onClick={showInterview}> {/*будет окно с поялми коммента, update статуса и вопросами*/}
-                                        Выбрать
-                                    </button>
-                                    
+                                    {/*<button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn"  onClick={showInterview}> будет окно с поялми коммента, update статуса и вопросами*/}
+                                    {/*    Выбрать*/}
+                                    {/*</button>*/}
+
                                 </div>
                             </div>
                         })}

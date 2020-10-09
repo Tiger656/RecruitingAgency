@@ -164,5 +164,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 , new CharacterRule(EnglishCharacterData.Digit, 1));
     }
 
-
+    @Override
+    public Long getUserIdByUserEmail(String email) {
+        return userRepository.getUserByEmail(email).orElseThrow(() -> new NotFoundException("No user with " + email + " email")).getId();
+    }
 }

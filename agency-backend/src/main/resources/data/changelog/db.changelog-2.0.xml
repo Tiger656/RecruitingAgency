@@ -156,6 +156,9 @@
         <insert tableName="roles">
             <column name="name" value="MANAGER"></column>
         </insert>
+        <insert tableName="roles">
+            <column name="name" value="EXPERT"></column>
+        </insert>
 
         <createTable tableName="user_roles">
             <column autoIncrement="true" name="id" type="bigserial">

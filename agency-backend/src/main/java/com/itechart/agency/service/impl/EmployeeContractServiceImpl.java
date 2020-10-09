@@ -1,8 +1,11 @@
 package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.EmployeeContractDto;
+import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.dto.converter.EmployeeContractConvert;
+import com.itechart.agency.dto.converter.EmployerApplicationForManagerConvert;
 import com.itechart.agency.entity.EmployeeContract;
+import com.itechart.agency.entity.EmployerApplication;
 import com.itechart.agency.exception.BadRequestException;
 import com.itechart.agency.exception.NotFoundException;
 import com.itechart.agency.repository.*;
@@ -133,4 +136,15 @@ public class EmployeeContractServiceImpl implements CrudService<EmployeeContract
         deleteById(employeeContractDto.getId());
     }
 
+    public List<EmployeeContractDto> findActiveForManager() {
+        List<EmployeeContract> eeContractListList = employeeContractRepository.findAll();
+        return eeContractListList.stream().map((EmployeeContractConvert::convertEntityToDto)).collect(Collectors.toList());
+    }
+
+
+    public List<EmployeeContractDto> findByAgencyId(Long agencyId) {
+        List<EmployeeContract> contracts = employeeContractRepository.findByAgencyIdAndIsDeletedFalse(agencyId);
+        return contracts.stream().map((EmployeeContractConvert::convertEntityToDto)).collect(Collectors.toList());
+
+    }
 }

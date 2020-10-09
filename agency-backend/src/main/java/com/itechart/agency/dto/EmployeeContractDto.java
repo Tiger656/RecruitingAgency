@@ -28,6 +28,7 @@ public class EmployeeContractDto {
     private String email;
     private String telephoneNumber;
     private Long professionId;
+    private String professionName; //
     private double accountUsd;
     private Long statusId;
     private List<Long> employmentTypesIds;

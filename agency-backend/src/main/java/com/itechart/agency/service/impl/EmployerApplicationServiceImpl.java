@@ -96,8 +96,8 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
         return applicationList.stream().map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
-    public List<EmployerApplicationForManagerDto> findAllForManager() {
-        List<EmployerApplication> applicationList = employerApplicationRepository.findAll();
+    public List<EmployerApplicationForManagerDto> findAllForManagerByAgency(Long agencyId) {
+        List<EmployerApplication> applicationList = employerApplicationRepository.findByAgencyIdAndIsDeletedFalse(agencyId);
         return applicationList.stream().map((EmployerApplicationForManagerConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 

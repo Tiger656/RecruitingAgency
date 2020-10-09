@@ -40,9 +40,7 @@ public class InterviewController {
     @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<?> createInterview(@RequestBody InterviewSaveDto interviewSaveDto) {
-        System.out.println(interviewSaveDto);
         Interview interview = InterviewSaveConverter.toEntity(interviewSaveDto);
-        System.out.println(interview);
         Long id = interviewService.create(interview);
         return new ResponseEntity(null, HttpStatus.OK);
     }
@@ -78,23 +76,32 @@ public class InterviewController {
     public ResponseEntity<List<InterviewGetDto>> getAllAgencyInterviewsForManager(@PathVariable("agencyId") Long agencyId) {
         LOGGER.info("REST request. Path:/interview method: GET.getAllAgencyInterviewsForManager");
         List<Interview> interviews = interviewService.findAllByAgency(agencyId);
-        //List<InterviewSaveDto> interviewSaveDtos = new ArrayList<>();
-        //interviews.forEach(interview -> interviewSaveDtos.add(InterviewSaveConverter.convertEntityToDto(interview)));
         List<InterviewGetDto> interviewGetDtos = new ArrayList<>();
         interviews.forEach(interview -> interviewGetDtos.add(InterviewGetConverter.convertEntityToDto(interview)));
         return new ResponseEntity<>(interviewGetDtos, HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasAuthority('EXPERT')")
-    @GetMapping("/{expertId}")
-    public ResponseEntity<List<InterviewGetDto>> getInterviewForExpert(@PathVariable("agencyId") Long agencyId,
-                                                                       @PathVariable("expertId") Long expertId,
+    @PreAuthorize("hasAuthority('EXPERT')")
+    @GetMapping("/get-interview-for-expert/{agencyId}/{expertUserId}/{statusId}")
+    public ResponseEntity<List<InterviewGetDto>> getUnconfirmedInterviewForExpert(@PathVariable("agencyId") Long agencyId,
+                                                                       @PathVariable("expertUserId") Long expertUserId,
                                                                        @PathVariable("statusId") Long statusId
     ) {
         LOGGER.info("REST request. Path:/interview method: GET.getInterviewForExpert");
-        List<Interview> interviews = interviewService.findAllByAgencyAndExpertAndInterviewStatus(agencyId, expertId, statusId);
+        List<Interview> interviews = interviewService.findAllByAgencyAndExpertAndInterviewStatus(agencyId, expertUserId, statusId);
         List<InterviewGetDto> interviewGetDtos = new ArrayList<>();
         interviews.forEach(interview -> interviewGetDtos.add(InterviewGetConverter.convertEntityToDto(interview)));
         return new ResponseEntity<>(interviewGetDtos, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EXPERT')")
+    @GetMapping("/change-interview-status/{interviewId}/{newStatusId}")
+    public ResponseEntity<InterviewGetDto> updateInterviewStatusForExpert(@PathVariable("interviewId") Long interviewId,
+                                                                                  @PathVariable("newStatusId") Long newStatusId
+    ) {
+        LOGGER.info("REST request. Path:/interview/change-interview-status method: PUT.updateInterviewStatusForExpert");
+        Interview interview = interviewService.updateInterviewStatus(interviewId, newStatusId);
+        InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);
+        return new ResponseEntity<>(interviewGetDto, HttpStatus.OK);
     }
 }

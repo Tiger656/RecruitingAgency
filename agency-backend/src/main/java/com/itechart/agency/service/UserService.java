@@ -22,4 +22,5 @@ public interface UserService {
 
     List<UserDto> getAllByAgencyName(String name);
 
+    Long getUserIdByUserEmail(String email);
 }

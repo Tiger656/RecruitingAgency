@@ -11,4 +11,8 @@ import java.util.List;
 public interface EmployeeContractRepository extends JpaRepository<EmployeeContract, Long> {
     @Query(value = "SELECT * FROM public.agency_employee_contracts WHERE is_deleted = :false", nativeQuery = true)
     List<EmployeeContract> findAllByIs_deletedIsFalse();
+
+    List<EmployeeContract> findByAgencyIdAndIsDeletedFalse(Long agencyId);
+
+    /*List<EmployeeContract> findAllByAgencyIdAndByIs_deletedIsFalse();*/
 }

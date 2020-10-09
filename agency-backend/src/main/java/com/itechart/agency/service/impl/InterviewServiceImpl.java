@@ -2,10 +2,11 @@ package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.BusyHoursDto;
 import com.itechart.agency.entity.Interview;
+import com.itechart.agency.entity.InterviewStatus;
 import com.itechart.agency.exception.NotFoundException;
+import com.itechart.agency.repository.ExpertRepository;
 import com.itechart.agency.repository.InterviewRepository;
-import com.itechart.agency.service.CrudService;
-import com.itechart.agency.service.InterviewService;
+import com.itechart.agency.repository.InterviewStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +18,14 @@ import java.util.*;
 public class InterviewServiceImpl {
 
     public final InterviewRepository interviewRepository;
+    public final InterviewStatusRepository interviewStatusRepository;
+    public final ExpertRepository expertRepository;
 
     @Autowired
-    public InterviewServiceImpl(InterviewRepository interviewRepository) {
+    public InterviewServiceImpl(InterviewRepository interviewRepository, InterviewStatusRepository interviewStatusRepository, ExpertRepository expertRepository) {
         this.interviewRepository = interviewRepository;
+        this.interviewStatusRepository = interviewStatusRepository;
+        this.expertRepository = expertRepository;
     }
 
 
@@ -44,8 +49,9 @@ public class InterviewServiceImpl {
         return interviews;
     }
 
-    public List<Interview> findAllByAgencyAndExpertAndInterviewStatus(Long agencyId, Long expertId, Long interviewStatusId) {
-        List<Interview> interviews = interviewRepository.findByAgencyIdAndExpertIdAndStatusId(agencyId, expertId, interviewStatusId);
+    public List<Interview> findAllByAgencyAndExpertAndInterviewStatus(Long agencyId, Long expertUserId, Long interviewStatusId) {
+        Long expertId = expertRepository.findByUserId(expertUserId).getId();
+        List<Interview> interviews = interviewRepository.findByAgencyIdAndExpertIdAndInterviewStatusId(agencyId, expertId, interviewStatusId);
         return interviews;
     }
 
@@ -96,5 +102,12 @@ public class InterviewServiceImpl {
             }
         }
         return new BusyHoursDto(setOfHours, setOfStartHours, setOfEndHours);
+    }
+
+    public Interview updateInterviewStatus(Long interviewId, Long newStatusId) {
+        Interview interview = interviewRepository.findById(interviewId).orElseThrow(() -> new NotFoundException("No interview with id: " + interviewId));
+        InterviewStatus interviewStatus = interviewStatusRepository.findById(newStatusId).orElseThrow(() -> new NotFoundException("No interview with id: " + interviewId));
+        interview.setInterviewStatus(interviewStatus);
+        return interviewRepository.save(interview);
     }
 }

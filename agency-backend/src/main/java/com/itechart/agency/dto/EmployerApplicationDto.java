@@ -19,8 +19,8 @@ public class EmployerApplicationDto {
     private String professionName;//
     private double salary;
     private String employmentTypeName;
-    private Enums.Experience experience;
-    private Enums.AgeRestriction ageRestriction;
+    private /*Enums.Experience*/String experience;
+    private /*Enums.AgeRestriction*/String ageRestriction;
     private String countryName;//
     private String cityName;//
     private Long addressId;//

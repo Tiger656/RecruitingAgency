@@ -20,9 +20,12 @@ public class InterviewGetDto {
 
     private Long id;
     private String expertName;
+    private String expertId;
+    private String expertUserId;
     private String employeeName;
     private String employeeSurname;
     private String interviewStatusName;
+    private Long interviewStatusId;
     //private EmployerApplication employerApplication;
     //private EmployeeContractDto employeeContractId;
     //private InterviewStatus interviewStatus;

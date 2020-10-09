@@ -62,13 +62,17 @@ public class EmployerApplication {
     @JoinColumn(name = "employment_type_id", referencedColumnName = "id")
     private EmploymentType employmentType;
 
-    @Enumerated(EnumType.ORDINAL)
+    /*@Enumerated(EnumType.ORDINAL)
     @Column(name = "experience")
-    private Enums.Experience experience;
+    private Enums.Experience experience;*/
+    @Column(name = "experience")
+    private String experience;
 
-    @Enumerated(EnumType.ORDINAL)
     @Column(name = "age_restriction")
-    private Enums.AgeRestriction ageRestriction;
+    private String ageRestriction;
+   /* @Enumerated(EnumType.ORDINAL)
+    @Column(name = "age_restriction")
+    private Enums.AgeRestriction ageRestriction;*/
 
     @ManyToOne
     @JoinColumn(name = "country_id", referencedColumnName = "id")

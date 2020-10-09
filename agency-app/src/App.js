@@ -28,29 +28,7 @@ export const App = () => {
         <section className="App">
             <input className="checkbox" type="checkbox" id="codepen" onChange={handler}/>
             <label htmlFor="codepen"/>
-
             <HeaderMenu logo={logo} lang={lang} id='1'/>
-            {/*<Router>*/}
-            {/*    <Route exact path="/">*/}
-            {/*        <InformationInPicture lang={lang}/>*/}
-            {/*    </Route>*/}
-            {/*    <Route path="/admin-page" exact component={AdminPage}/>*/}
-            {/*    <Route path="/employer-page">*/}
-            {/*        <EmployerPage lang={lang} email={employerEmail}/>*/}
-            {/*    </Route>*/}
-            {/*    <Route path="/employee-page">*/}
-            {/*        <EmployeePage lang={lang} name={employeeName} email={employerEmail}/>*/}
-            {/*    </Route>*/}
-            {/*    <Route path="/secretary-page">*/}
-            {/*        <SecretaryPage lang={lang} email={employerEmail}/>*/}
-            {/*    </Route>*/}
-            {/*    <Route path="/manager-page" exact component={ManagerPageMain}/>*/}
-            {/*</Router>*/}
-                <Router>
-                    <Route path="/expert-page" exact component={ExpertPage}/>
-                    <Route path="/admin-page" exact component={AdminPage}/>
-                    <Route path="/manager-page" exact component={ManagerPageMain}/>
-                </Router>
             <Contacts/>
         </section>
     )

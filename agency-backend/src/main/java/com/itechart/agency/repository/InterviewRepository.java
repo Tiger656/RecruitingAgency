@@ -18,5 +18,5 @@ public interface InterviewRepository extends JpaRepository<Interview,Long> {
 
     List<Interview> findByAgencyId(Long agencyId);
 
-    List<Interview> findByAgencyIdAndExpertIdAndStatusId(Long agencyId, Long managerId, Long statusId);
+    List<Interview> findByAgencyIdAndExpertIdAndInterviewStatusId(Long agencyId, Long managerId, Long statusId);
 }
