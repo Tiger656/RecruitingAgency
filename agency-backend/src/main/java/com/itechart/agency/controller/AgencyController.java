@@ -46,8 +46,8 @@ public class AgencyController {
     }
     @PreAuthorize("hasAuthority('SYSADMIN')")
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable (name = "id") Long id) {
-        agencyService.deleteById(id);
+    public ResponseEntity<?> deactivateAgencyById(@PathVariable (name = "id") Long id) {
+        return new ResponseEntity<>(agencyService.deactivateAgencyById(id),HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('SYSADMIN') or hasAuthority('ADMIN')")

@@ -195,16 +195,17 @@
 
 
         <!-- insert user 'manager'-->
-        <insert tableName="users">
-            <column name="email" value="manager.anton@gmail.com"></column>
-            <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
-            <column name="agency_id" valueNumeric="1"></column>
-            <column name="is_deleted" valueBoolean="0"></column>
-        </insert>
-        <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="4"></column>
-            <column name="role_id" valueNumeric="7"></column>
-        </insert>
+<!--        <insert tableName="users">-->
+<!--            <column name="email" value="manager.anton@gmail.com"></column>-->
+<!--            <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>-->
+<!--            <column name="agency_id" valueNumeric="1"></column>-->
+<!--            <column name="is_deactivated" valueBoolean="1"></column>-->
+<!--            <column name="is_deleted" valueBoolean="0"></column>-->
+<!--        </insert>-->
+<!--        <insert tableName="user_roles">-->
+<!--            <column name="user_id" valueNumeric="4"></column>-->
+<!--            <column name="role_id" valueNumeric="7"></column>-->
+<!--        </insert>-->
 
     </changeSet>
 

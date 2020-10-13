@@ -145,6 +145,9 @@
             <column name="deposit" type="bigint">
                 <constraints nullable="false" />
             </column>
+            <column name="date_activate" type="date">
+                <constraints nullable="true" />
+            </column>
             <column name="is_deleted" type="boolean">
                 <constraints nullable="false"/>
             </column>
@@ -156,6 +159,7 @@
 
             <column name="regular_payment" valueNumeric="100"></column>
             <column name="deposit" valueNumeric="200"></column>
+<!--            <column name="date_activate" valueDate="1" ></column>-->
             <column name="is_deleted" valueBoolean="1"></column>
         </insert>
 
@@ -173,30 +177,37 @@
             <column name="agency_id" type="bigint">
                 <constraints foreignKeyName="fk_user_agencies" references="agencies(id)"/>
             </column>
+            <column name="is_deactivated" type="boolean">
+                <constraints nullable="false"/>
+            </column>
             <column name="is_deleted" type="boolean">
                 <constraints nullable="false"/>
-
             </column>
+
+
         </createTable>
-        <addDefaultValue tableName="users" columnName="is_deleted" defaultValueBoolean="false"/>
+        <addDefaultValue tableName="users" columnName="is_deleted" defaultValueBoolean="true"/>
 
         <insert tableName="users">
 
             <column name="email" value="mail@gmail.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="1"></column>
         </insert>
         <insert tableName="users">
             <column name="email" value="sysadmin@sysadmin.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <!--            <column name="agency_id" valueNumeric="1"></column>-->
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="1"></column>
         </insert>
         <insert tableName="users">
             <column name="email" value="admin@admin.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="1"></column>
         </insert>
 
@@ -207,7 +218,7 @@
             <column name="date" type="date">
                 <constraints nullable="false" unique="false"/>
             </column>
-            <column name="sum" type="bigint">
+            <column name="sum" type="double">
                 <constraints nullable="false" unique="false"/>
             </column>
             <column name="agency_id" type="bigint">

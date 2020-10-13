@@ -8,6 +8,7 @@ import "../../../cssForIndividualPage/magnific-popup.css";
 import "../../../cssForIndividualPage/style.css";
 import {Notification} from "./Notification";
 import {toast} from "react-toastify";
+import {EmployerContractModal} from "../../EmployerContractModal";
 
 const styles = {
     popupFade: {
@@ -93,6 +94,7 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
     const initialFormState = {id, email, agencyId, roleIds, roles};
     const [user, setUser] = useState(initialFormState)
     const [rolesIds] = useState([]);
+    const [employerContractModal,setEmployerContractModal]=useState(false);
 
     const handleInputChange = event => {
         const {name, value} = event.currentTarget
@@ -102,13 +104,15 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
 
 
     const checkChangeHandler = roleId => {
+
         const result = toggleUserRole(user.roles, roleId);
+
 
         setUser({...user, roles: result, agencyId: currentAgencyId});
     }
 
     const hasRole = (roles, roleId) => roles.find(role => role.id === roleId);
-
+const isEmployerModal=()=>setEmployerContractModal(!employerContractModal);
 
     const toggleUserRole = (roles, roleId) => {
 
@@ -119,12 +123,45 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
     const handleSubmit = event => {
         event.preventDefault()
         /*fix*/
-        if (!user.email || !user.agencyId)
-            warnEnterAllFieldsNotify("Fields cannot be empty!")
-        else
-            submitHandler(user)
-        setUser(initialFormState)
+        if (!user.email || !user.roles) {
+            warnEnterAllFieldsNotify("Fields cannot be empty!");
+        }
+
+        if (user.roles.some(role => role.name === 'EMPLOYEE') && user.roles.some(role => role.name === 'EMPLOYER')) {
+            warnEnterAllFieldsNotify("You cannot assign EMPLOYEE and EMPLOYER roles to the same user");
+        }
+        else{
+            if(user.roles.some(role=>role.name==="EMPLOYER")){
+                setEmployerContractModal(true);
+
+                // submitHandler(user)
+                console.log('employer');
+
+            }
+
+            if(user.roles.some(role=>role.name==="EMPLOYEE")) {
+                console.log('employee');
+                setEmployerContractModal(true);
+
+                // submitHandler(user)
+
+            }
+
+            // else {
+            //     // submitHandler(user);
+            //     console.log(user);
+            //     setUser(initialFormState)
+            // }
+
+
+
+        }
+
     }
+
+
+
+
 
 
     const warnEnterAllFieldsNotify = (message) => {
@@ -135,13 +172,18 @@ export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', 
     return (
         <div style={styles.popupFade}>
             <Notification/>
+            {employerContractModal &&
+            <EmployerContractModal isEmployerModal={isEmployerModal}
+
+            />
+            }
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
             <div className="animate__animated animate__backInLeft" id="interviewForm" style={styles.divSign}>
 
                 <form className="login100-form validate-form " onSubmit={handleSubmit}>
-                    <button type="button" className="cl-btn-7" onClick={onModalCloseClick}/>
+                    <button type="button" className="cl-btn-7" onClick={onModalCloseClick} style={{top:'-40px',left:'-80px'}}/>
                     <br/>
                     <span style={styles.span}>
 					             ADD USER

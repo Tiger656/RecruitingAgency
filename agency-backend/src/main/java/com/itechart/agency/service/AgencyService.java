@@ -14,6 +14,6 @@ public interface AgencyService {
 
     AgencyDto update(final AgencyDto t);
 
-    void deleteById(final Long id);
+    AgencyDto deactivateAgencyById(Long id);
     Double getDepositByAgencyId(final Long id);
 }

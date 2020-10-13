@@ -9,6 +9,7 @@ import {Notification} from "./components/Notification";
 import authHeader from "../../auth/header";
 import {toast} from "react-toastify";
 import Form from "react-validation/build/form";
+import PaymentPage from "../Payment/PaymentPage";
 
 
 export const AdminPage = () => {
@@ -33,7 +34,7 @@ export const AdminPage = () => {
     let agency = JSON.parse(localStorage.getItem('response')).agency;
     let personEmail = JSON.parse(localStorage.getItem('response')).email;
 
-console.log(JSON.parse(localStorage.getItem('response')));
+
     const getUsers = () => {
         axios
             .get('http://localhost:8080/api/user?name=' + agency.name, {headers: authHeader()})
@@ -116,6 +117,7 @@ const getDepositByAgencyId = ()=>{
     }
 
     const updateUser = updatedUser => {
+
         setEditing(false)
         update(updatedUser);
         setUsers(users.map(user => (user.id === updatedUser.id ? updatedUser : user)))
@@ -213,7 +215,9 @@ const getDepositByAgencyId = ()=>{
 
                                         <UserTable users={searchResults.length < 1 ? users : searchResults}
                                                    editRow={editRow} deleteUser={deleteUser} loading={loading}
-                                                   allAgencies={allAgencies}/>
+                                                   allAgencies={allAgencies}
+                                                   currentUserEmail={personEmail}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -221,6 +225,7 @@ const getDepositByAgencyId = ()=>{
                     </div>
                     <br/><br/>
                 </section>
+
                 <section id="fh5co-work" className="section section-6" data-section="work">
                     <div className="container">
                         <div className="row">
@@ -230,22 +235,23 @@ const getDepositByAgencyId = ()=>{
                                 <h2 className="to-animate">
                                     Your balance: {deposit}</h2>
                                 <br/>
-                                <div className="input-group mb-3">
-                                    <div className="input-group-prepend">
-                                        <span className="input-group-text" id="basic-addon1">$</span>
-                                    </div>
-                                    <input type="text" className="form-control"
-                                           placeholder="Enter the amount of money ($) "
-                                           aria-label="Enter the amount of money " aria-describedby="basic-addon1"/>
-                                </div>
-                                <br/>
-                                <div className="container-login100-form-btn">
-                                    <button type='button' className="login101-form-btn" style={{marginBottom: '15px'}}
+                                {/*<div className="input-group mb-3">*/}
+                                {/*    <div className="input-group-prepend">*/}
+                                {/*        <span className="input-group-text" id="basic-addon1">$</span>*/}
+                                {/*    </div>*/}
+                                {/*    <input type="text" className="form-control"*/}
+                                {/*           placeholder="Enter the amount of money ($) "*/}
+                                {/*           aria-label="Enter the amount of money " aria-describedby="basic-addon1"/>*/}
+                                {/*</div>*/}
+                                {/*<br/>*/}
+                                {/*<div className="container-login100-form-btn">*/}
+                                {/*    <button type='button' className="login101-form-btn" style={{marginBottom: '15px'}}*/}
 
-                                    >
-                                        Pay
-                                    </button>
-                                </div>
+                                {/*    >*/}
+                                {/*        Pay*/}
+                                {/*    </button>*/}
+                                {/*</div>*/}
+                            <PaymentPage/>
                             </div>
                         </div>
                         <br/><br/>

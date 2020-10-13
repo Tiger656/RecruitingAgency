@@ -1,5 +1,6 @@
 package com.itechart.agency.service.impl;
 
+import com.itechart.agency.exception.NotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +9,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -39,16 +41,26 @@ public class EmailServiceImpl {
     }
 
     public static void send(final String to, final String subject, final String text) throws MessagingException {
+
         final Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(username));
-        message.setRecipients(
-                Message.RecipientType.TO,
-                InternetAddress.parse(to)
-        );
-        message.setSubject(subject);
-        message.setText(text);
-        Transport.send(message);
-        log.info("message was send");
+
+           message.setFrom(new InternetAddress(username));
+           message.setRecipients(
+                   Message.RecipientType.TO,
+                   InternetAddress.parse(to)
+           );
+           message.setSubject(subject);
+           message.setText(text);
+           try{
+               Transport.send(message);
+           }catch (MessagingException e){
+               throw new NotFoundException("Correct your email!");
+           }
+
+
+           log.info("message was send");
+
+
     }
 
 }

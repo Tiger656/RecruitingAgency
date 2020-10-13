@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import './SignIn.css';
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
@@ -11,7 +11,7 @@ import {SysAdminPage} from "../individualPage/SysAdminPage/SysAdminPage";
 import {IncorrectUrl} from "../auth/component/InсorrectUrl";
 import AuthService from "../auth/auth.service";
 import SecretaryPage from "../individualPage/SecretaryPage";
-import PaymentPage from "../individualPage/PaymentPage";
+import PaymentPage from "../individualPage/Payment/PaymentPage";
 
 
 const styles = {
@@ -119,9 +119,18 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
     const [currentUser, setCurrentUser] = useState();
     const [userRole, setUserRoles] = useState([]);
 
+const [isLoading,setIsLoading] = useState(true);
+
+const  fetchingUserFromStorage=()=>{
+    setIsLoading(true);
+    const resp = AuthService.getCurrentUser();
+    setIsLoading(false);
+    return resp;
+    }
+
 
     useEffect(() => {
-        const resp = AuthService.getCurrentUser();
+        const resp = fetchingUserFromStorage();
 
         if (resp) {
             setUserRoles(resp.roles);
@@ -168,7 +177,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
     const st = {width: '150px', color: 'white', backgroundColor: 'black', marginLeft: '-23px'};
     const ulStyle = {height: '0', lineStyleType: 'none', overflow: 'hidden', opacity: '0', width: '0'};
 
-
+if(isLoading) return <></>
     return (
         <section>
 
@@ -295,6 +304,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                             <Link to={"/payment"} className="nav-link" style={styles.a}>
                                                 Pay
                                             </Link>
+
                                         </li>
 
 
@@ -318,6 +328,9 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                             <li>
                                 <a href="#contacts" className="nav-link" style={st}>{langConst[3]}</a>
                             </li>
+
+
+
 
 
                             {showAdmin && (
@@ -390,6 +403,8 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                     <Link to={"/payment"} className="nav-link" style={st}>
                                         Pay
                                     </Link>
+
+
                                 </li>
 
 
@@ -407,20 +422,24 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/payment" component={PaymentPage}/>
 
-                        {userRole.includes('ADMIN') && <Route exact path="/admin-page" component={AdminPage}/>}
+
+                        {userRole.includes('ADMIN') &&  <Route exact path="/admin-page"  component={AdminPage}/>}
                         {userRole.includes('EMPLOYER') &&
-                        <Route exact path="/employer-page"><EmployerPage lang={lang}/></Route>}
+                            <Route exact path="/employer-page"><EmployerPage lang={lang}/></Route>}
                         {userRole.includes('EMPLOYEE') &&
-                        <Route exact path="/employee-page"><EmployeePage lang={lang}/></Route>}
-                        {userRole.includes('SYSADMIN') && <Route exact path="/sysadmin-page" component={SysAdminPage}/>}
+                            <Route exact path="/employee-page"><EmployeePage lang={lang}/></Route>}
+                        {userRole.includes('SYSADMIN') && <Route exact path="/sysadmin-page"   component={SysAdminPage}/>}
                         {/*{userRole.includes('OWNER') && <Route exact path="/owner-page" component={}/>}*/}
                         {userRole.includes('SECRETARY') &&
-                        <Route exact path="/secretary-page"><SecretaryPage lang={lang}/></Route>}
+                            <Route exact path="/secretary-page"><SecretaryPage lang={lang}/></Route>}
                         {/*{userRole.includes('MANAGER') && <Route exact path="/manager-page" component={}/>}*/}
 
                         <Route path='*' component={IncorrectUrl}/>
 
+
+
                     </Switch>
+
 
                 </BrowserRouter>
             </header>

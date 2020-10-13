@@ -12,12 +12,7 @@ import axios from "axios";
 import authHeader from "../../auth/header";
 
 const styles = {
-//     box:{
-//         display: "flex",
-// flexWrap: "wrap",
-// height: "400px",
-// alignContent: "space-between"
-//     },
+
     popupFade: {
         position: 'fixed',
         width: '100%',
@@ -27,11 +22,18 @@ const styles = {
         backgroundColor: 'rgba(0,0,0,0.5)',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
         zIndex: 100
 
 
-
+    },
+    input: {
+        fontSize: '16px',
+        color: '#000000',
+        lineHeight: '1.2',
+        height: '25px',
+        background: 'transparent',
+        padding: '0 20px 0 23px'
     },
     img: {
         width: '100px'
@@ -48,28 +50,27 @@ const styles = {
         left: '0',
     },
     span: {
-        paddingBottom: '30px',
+        paddingBottom: '5px',
         display: 'flex',
-        fontSize: '30px',
+        fontSize: '20px',
         color: 'black',
         lineHeight: '1.2',
         textAlign: 'center'
     },
     divSign: {
         paddingTop: '0px',
-        marginTop: '2%',
+        marginTop: '5%',
         backgroundColor: 'white',
-        width: '30%',
-        height: '90%',
+        width: '500px',
+        height: '88%',
+        marginBottom: '20%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
 
     },
-    divFacebookGoogle: {
-        display: 'flex',
-        justifyContent: 'center'
-    },
+
+
     divEnterData: {
         marginBottom: '20px',
         position: 'relative',
@@ -77,13 +78,14 @@ const styles = {
         backgroundColor: '#fff',
         borderRadius: '20px'
     },
+
     txt: {
         fontSize: '16px',
         lineHeight: '1.4',
         color: '#999999'
     },
     select100: {
-        height: '62px',
+        height: '45px',
         border: 'none',
         outline: 'none',
         marginBottom: '20px',
@@ -95,6 +97,10 @@ const styles = {
     option100: {
         border: '20px solid #ffffff',
         outline: 'none',
+    },
+    divFacebookGoogle: {
+        display: 'flex',
+        justifyContent: 'center'
     }
 }
 
@@ -112,7 +118,8 @@ export const ModalSysAdmin = ({
         street: "",
         building: "",
         apartment: "",
-        regularPayment:""
+        regularPayment: "",
+        deposit: ""
 
     };
 
@@ -140,7 +147,7 @@ export const ModalSysAdmin = ({
             || !agency.street || !agency.building || !agency.apartment || !agency.regularPayment)
             warnEnterAllFieldsNotify("Fields cannot be empty!");
         else {
-            submitHandler(agency);
+            submitHandler({...agency, deposit: agency.deposit});
             closeModal();
         }
 
@@ -173,20 +180,19 @@ export const ModalSysAdmin = ({
                 rel='stylesheet' type='text/css'/>
             <div className="animate__animated animate__backInLeft" id="interviewForm" style={styles.divSign}>
 
-                <form className="login100-form validate-form "
-                      onSubmit={handleSubmit}
-                >
-                    <button type="button" className="cl-btn-7"
+                <form className="login100-form validate-form " onSubmit={handleSubmit} style={{marginTop: '-20px'}}>
+                    <button type="button" className="cl-btn-7" style={{top:'10px',left:'-30px'}}
                             onClick={closeModal}
                     />
                     <br/>
-                    <span style={styles.span}>
-                        {buttonName} Agency
-                    </span>
 
+
+                    <span style={styles.span} >
+                            {buttonName} Agency
+                        </span>
 
                     <div style={styles.divEnterData}>
-                        <input className="input100" type="text" style={styles.input}
+                        <input className="input101" type="text" style={styles.input}
                                name="name"
                                placeholder="Agency Name"
                                value={agency.name}
@@ -201,7 +207,7 @@ export const ModalSysAdmin = ({
                                 value={agency.countryId}
                                 onChange={handleInputCountryChange}
                         >
-                            <option style={styles.option100}>Country</option>
+                            <option value="" disabled selected>Countries</option>
                             {allCountries.map(country =>
                                 <option style={styles.option100} key={country.id} value={country.id}
                                 >{country.name}</option>)}
@@ -214,7 +220,7 @@ export const ModalSysAdmin = ({
                                 value={agency.cityId}
                                 onChange={handleInputChange}
                         >
-                            <option style={styles.option100}>City</option>
+                            <option value="" disabled selected>City</option>
                             {allCities.map(city =>
                                 <option style={styles.option100} key={city.id} value={city.id}
                                 >{city.name}</option>)}
@@ -222,9 +228,10 @@ export const ModalSysAdmin = ({
                         <span className="focus-input100"/>
                     </div>
 
-                    { !id &&
+                    {!id &&
+
                     <div>
-                    <span style={styles.span}>
+                    <span style={styles.span} >
 					             OWNER AND ADMIN
                     </span>
 
@@ -232,10 +239,10 @@ export const ModalSysAdmin = ({
                             <input
                                 // className="input100"
                                 type="text"
-                                   // style={styles.input}
-                                   name="ownerEmail"
-                                   placeholder="Enter owner email"
-                                   onChange={handleInputChange}
+                                style={{height: '35px'}}
+                                name="ownerEmail"
+                                placeholder="Enter owner email"
+                                onChange={handleInputChange}
                             />
                             <span className="focus-input100"/>
                         </div>
@@ -244,21 +251,23 @@ export const ModalSysAdmin = ({
                             <input
                                 // className="input100"
                                 type="text"
-                                   // style={styles.input}
-                                   name="adminEmail"
-                                   placeholder="Enter admin email"
-                                   onChange={handleInputChange}
+                                style={{height: '35px'}}
+                                name="adminEmail"
+                                placeholder="Enter admin email"
+                                onChange={handleInputChange}
                             />
                             <span className="focus-input100"/>
                         </div>
 
                     </div>
+
                     }
+
                     <div style={styles.divEnterData}>
                         <input
                             // className="input100"
                             type="text"
-                            // style={styles.input}
+                            style={{height: '35px'}}
                             name="regularPayment"
                             placeholder="Regular payment"
                             value={agency.regularPayment}
@@ -268,15 +277,13 @@ export const ModalSysAdmin = ({
                     </div>
 
 
-
                     <span style={styles.span}>
 					             ADDRESS
                     </span>
 
 
-
                     <div style={styles.divEnterData}>
-                        <input className="input100" type="text" style={styles.input}
+                        <input className="input101" type="text" style={styles.input}
                                name="street"
                                placeholder="Street"
                                value={agency.street}
@@ -286,7 +293,7 @@ export const ModalSysAdmin = ({
                     </div>
 
                     <div style={styles.divEnterData}>
-                        <input className="input100" type="text" style={styles.input}
+                        <input className="input101" type="text" style={styles.input}
                                name="building"
                                placeholder="Building"
                                value={agency.building}
@@ -295,7 +302,7 @@ export const ModalSysAdmin = ({
                         <span className="focus-input100"/>
                     </div>
                     <div style={styles.divEnterData}>
-                        <input className="input100" type="text" style={styles.input}
+                        <input className="input101" type="text" style={styles.input}
                                name="apartment"
                                placeholder="Apartment"
                                value={agency.apartment}
@@ -303,39 +310,40 @@ export const ModalSysAdmin = ({
                         />
                         <span className="focus-input100"/>
                     </div>
-                    <br/>
+
                     {
                         id &&
                         <div className="container-login100-form-btn">
-                            <button type='button' className="login101-form-btn" style={{marginBottom: '15px'}}
-                                    onClick={(event) => deleteAg(event)}
-                            >
-                                Delete
+                            <button type='button' className="login101-form-btn" onClick={(event) => deleteAg(event)}
+                                    style={{marginBottom: '10px'}}>
+                                Deactivate
                             </button>
                         </div>
                     }
+                    <div style={{display:'flex'}}>
+                        <div className="container-login100-form-btn">
+                            <button className="login100-form-btn"
+                                    // style={{marginBottom: '10px'}}
+                            >
+                                {buttonName}
+                            </button>
+                        </div>
 
 
-                    <div className="container-login100-form-btn">
-                        <button className="login100-form-btn" style={{marginBottom: '5px'}}
-
-                        >
-                            {buttonName}
-                        </button>
-                    </div>
-
-                    <div className="container-login100-form-btn">
-                        <button type='button' className="login101-form-btn" style={{marginBottom: '15px'}}
-                                onClick={closeModal}
-                        >
-                            Cancel
-                        </button>
+                        <div className="container-login100-form-btn">
+                            <button type='button'
+                                    className="login101-form-btn"
+                                    onClick={closeModal}
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
 
 
                 </form>
             </div>
         </div>
-    )
+)
 
 }

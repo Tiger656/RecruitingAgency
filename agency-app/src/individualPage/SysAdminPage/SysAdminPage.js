@@ -6,6 +6,9 @@ import axios from "axios";
 import authHeader from "../../auth/header";
 import {toast} from "react-toastify";
 import {Notification} from "../AdminPage/components/Notification";
+import {saveAs} from 'file-saver';
+import {ModalCreateReport} from "./ModalCreateReport";
+
 
 const styles = {
     popupFade: {
@@ -107,8 +110,13 @@ export const SysAdminPage = () => {
     const [allCities, setAllCities] = useState([]);
     const [idForEditing, setForEditing] = useState();
     const [loading, setLoading] = useState(true);
+    const [pdfFileLoading, setPdfFileLoading] = useState(false);
+    const [xlsFileLoading, setXlsFileLoading] = useState(false);
+    const [modalIsOpen,setModalIsOpen]=useState(false);
 
-    console.log(allAgencies);
+    const toggleModalIsOpen = () => setModalIsOpen(!modalIsOpen);
+
+
 
 
     const toggleShowModal = () => setShowModal(!showModal);
@@ -162,6 +170,36 @@ export const SysAdminPage = () => {
 
             .catch((err) => errorNotify(err.response.data.error))
     };
+
+    const getReportPDF = () => {
+        setPdfFileLoading(true)
+        axios
+            .get('http://localhost:8080/api/report/PDF', {responseType: 'arraybuffer'})
+            .then((result) => {
+                let file = new Blob([result.data], {type: 'application/pdf'});
+                let fileURL = URL.createObjectURL(file);
+                window.open(fileURL, '_blank', '');
+                setPdfFileLoading(false);
+            })
+
+            .catch((err) => errorNotify(err.response.data.error))
+    }
+    const getReportXls = () => {
+        setXlsFileLoading(true)
+        axios
+            .get('http://localhost:8080/api/report/XLS', {responseType: 'arraybuffer'})
+            .then((result) => {
+                let file = new Blob([result.data], {type: 'application/xls'});
+                // let fileURL = URL.createObjectURL(file);
+                saveAs(file, "agenciesPaymentReport.xls");
+                // window.open(fileURL, '_blank', '');
+                setXlsFileLoading(false);
+            })
+
+            .catch((err) => errorNotify(err.response.data.error))
+
+
+    }
     const updateAgency = (agency) => {
         axios
             .put('http://localhost:8080/api/agency', agency, {headers: authHeader()})
@@ -171,12 +209,13 @@ export const SysAdminPage = () => {
             })
             .catch((err) => errorNotify(err.response.data.error))
     };
+    /*!*/
     const deleteAgency = (id) => {
         axios
             .delete('http://localhost:8080/api/agency/' + id, {headers: authHeader()})
-            .then(() => {
-                setAllAgencies(allAgencies.filter(agency => agency.id !== id))
-                successNotify("Agency  deleted successfully")
+            .then((result) => {
+                setAllAgencies(allAgencies.map(agency => (agency.id === id ? result.data : agency)))
+                successNotify("Agency deactivated successfully")
             })
             .catch((err) => errorNotify(err.response.data.error))
     };
@@ -197,7 +236,6 @@ export const SysAdminPage = () => {
         toast.warn(message, {position: toast.POSITION.TOP_RIGHT});
     }
 
-
     const editAgency = (id) => {
         setForEditing(id);
         toggleShowEditModal()
@@ -207,7 +245,7 @@ export const SysAdminPage = () => {
     return (
 
         <div>
-
+            {modalIsOpen && <ModalCreateReport toggleModalIsOpen={toggleModalIsOpen}/>}
             <div>
                 <link
                     href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -288,6 +326,8 @@ export const SysAdminPage = () => {
                                     <div className="fh5co-text">
                                         <h2 style={{color: "black"}}>{agency.name}</h2>
                                         <span>Deposit: {agency.deposit}</span>
+                                        <br/>
+                                        <span>Active: {agency.isDeleted ? ' Not active' : 'active'} </span>
                                     </div>
                                 </a>
                             </div>
@@ -300,6 +340,27 @@ export const SysAdminPage = () => {
                     <button type="button" className="btn-block  btn-primary" onClick={toggleShowModal}
                             style={styles.button}>Add agency
                     </button>
+                    <br/>
+                    <div style={{display: 'flex'}}>
+                        <button type="button" className="btn-block  btn-primary"
+                                onClick={getReportPDF}
+                            // onClick={toggleModalIsOpen}
+                                style={styles.button}>
+                            {pdfFileLoading && (
+                                <span className="spinner-border spinner-border-sm"/>
+                            )}
+                            Create report .pdf
+                        </button>
+                        <button type="button" className="btn-block  btn-primary"
+                                onClick={getReportXls}
+                                style={styles.button}>
+                            {xlsFileLoading && (
+                                <span className="spinner-border spinner-border-sm"/>
+                            )}
+                            Create report .xls
+                        </button>
+                    </div>
+                    {/*<DatePicker selected={startDate} onChange={date => setStartDate(date)} />*/}
                 </div>
 
             </section>

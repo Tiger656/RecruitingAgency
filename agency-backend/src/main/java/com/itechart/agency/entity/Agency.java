@@ -11,6 +11,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -46,10 +48,13 @@ public class Agency {
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
+    @Column(name = "date_activate")
+    private LocalDate activateDate;
+
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
-    @OneToMany(mappedBy = "agency")
+    @OneToMany(mappedBy = "agency",fetch = FetchType.EAGER)
     @JsonIgnore
     private List<User> users;
 

@@ -24,6 +24,7 @@ public class UserDto {
     private String email;
     private String agencyName;
     private Long agencyId;
+    private Boolean isDeactivated;
     private Boolean isDeleted;
     private List<Role> roles;
 
