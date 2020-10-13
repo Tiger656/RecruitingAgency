@@ -68,4 +68,11 @@ public class EmployeeContractController {
         return employeeContractService.findAll();
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @GetMapping("/all-for-manager/{agencyId}")
+    public List<EmployeeContractDto> getAllEmployeeContractsByAgencyId(@PathVariable Long agencyId) {
+        LOGGER.info("REST request. Path:/employee-contract/all method: GET.");
+        return employeeContractService.findByAgencyId(agencyId);
+    }
+
 }

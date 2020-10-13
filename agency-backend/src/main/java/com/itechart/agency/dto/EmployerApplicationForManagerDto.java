@@ -21,17 +21,30 @@ import java.util.List;
 @ToString
 public class EmployerApplicationForManagerDto {
 
-    private Long id;
+    /*private Long id;
     private Agency agency;
-    private String application_number;
-    private Date application_date;
+    private Date creation_date;
     private Employer employer;
-    private String application_name;
     private Profession profession;
     private double salary;
     private EmploymentType employmentType;
     private String expert_personal_name;
     private Date end_date;
-    private Status status;
-    private List<Feature> features;
+    private Status status;*/
+
+    private Long id;
+    private Long agencyId;//
+    private String agencyName;
+    private Long employerId;//
+    private String employerName;
+    private Date creationDate;
+    private Date endDate;
+    private String statusName;//
+    private String professionName;//
+    private double salary;
+    private String employmentTypeName;
+    private /*Enums.Experience*/String experience;
+    private /*Enums.AgeRestriction*/String ageRestriction;
+    private String comment;
+    private String expertPersonalName;
 }

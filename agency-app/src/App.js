@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import SecretaryPage from "./individualPage/SecretaryPage";
 import {ManagerPageMain} from "./individualPage/ManagerPages/ManagerPageMain";
 import Login from "./auth/component/Login";
+import {ExpertPage} from "./individualPage/ExpertPage/ExpertPage";
 
 
 export const App = () => {
@@ -28,10 +29,8 @@ export const App = () => {
         <section className="App">
             <input className="checkbox" type="checkbox" id="codepen" onChange={handler}/>
             <label htmlFor="codepen"/>
-
             <HeaderMenu logo={logo} lang={lang} id='1'/>
-
-            {/*<Contacts/>*/}
+            <Contacts/>
         </section>
     )
 }

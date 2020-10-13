@@ -44,4 +44,38 @@
 .add-btn-1:hover:before {
     transform: scale(0.8);
     color: #fff;
+
+
+}
+
+.react-datepicker__input-container input {
+    font-size: 16px;
+    color: #000000;
+    line-height: 1.2;
+    display: block;
+    width: 100%;
+    height: 62px;
+    background: transparent;
+    padding: 0 20px 0 23px;
+}
+
+.button
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+    min-width: 160px;
+    height: 50px;
+    background-color: black;
+    border-radius: 25px;
+    font-size: 14px;
+    color: #fff;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.button:hover {
+    background-color: #17a2b8;
+    color: #fff;
 }

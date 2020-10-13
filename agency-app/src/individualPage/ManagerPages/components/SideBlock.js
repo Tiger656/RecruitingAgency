@@ -28,13 +28,12 @@ export default function SideBlock(props){
                 </svg>
             </div>
             <div style={{display: 'none'}} id='sideBlockMainInfo'>
-                    <p>Employer: {props.data.employer.name}</p>
-                    <p>Profession: {props.data.profession.name}</p>
-                    <p>Salary: {props.data.salary}</p>
-                    <p>Features:</p>
-                    {props.data.features.map((feature) => {
-                        return <p>{feature.name}</p>
-                    })}
+                {props.data.employerName === undefined ? true : <p>Employer: {props.data.employerName}</p>}
+                {props.data.name === undefined ? true :<p>Employer: {props.data.surname + " " + props.data.name}</p>}
+                    <p>Profession: {props.data.professionName}</p>
+                {props.data.salary === undefined ? true : <p>Salary: {props.data.salary}</p>}
+                {props.data.experience === undefined ? true : <p>Experience: {props.data.experience} </p>}
+                {props.data.experienceYears === undefined ? true : <p>Experience: {props.data.experienceYears} </p>}
             </div>
         </div>
     )

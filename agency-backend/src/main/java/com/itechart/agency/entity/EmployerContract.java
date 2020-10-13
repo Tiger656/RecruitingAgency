@@ -13,7 +13,6 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class EmployerContract {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,21 +30,21 @@ public class EmployerContract {
 
     @NotNull(message = "Daily payment in contract cannot be null")
     @Column(name = "daily_payment")
-    private double daily_payment;
+    private double dailyPayment;
 
     @NotNull(message = "Contract creation date cannot be null")
     @Column(name = "contract_creation_date")
-    private Date contract_creation_date;
+    private Date contractCreationDate;
 
     @NotNull(message = "Contract end date cannot be null")
     @Column(name = "contract_end_date")
-    private Date contract_end_date;
+    private Date contractEndDate;
 
     @NotNull(message = "Field is_suspended in contract cannot be null")
     @Column(name = "is_suspended")
-    private boolean is_suspended;
+    private boolean isSuspended;
 
     @NotNull(message = "Field is_deleted in contract cannot be null")
     @Column(name = "is_deleted")
-    private boolean is_deleted;
+    private boolean isDeleted;
 }

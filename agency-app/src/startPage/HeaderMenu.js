@@ -11,6 +11,8 @@ import {SysAdminPage} from "../individualPage/SysAdminPage/SysAdminPage";
 import {IncorrectUrl} from "../auth/component/InсorrectUrl";
 import AuthService from "../auth/auth.service";
 import SecretaryPage from "../individualPage/SecretaryPage";
+import {ManagerPageMain} from "../individualPage/ManagerPages/ManagerPageMain";
+import {ExpertPage} from "../individualPage/ExpertPage/ExpertPage";
 import PaymentPage from "../individualPage/Payment/PaymentPage";
 
 
@@ -142,6 +144,7 @@ const  fetchingUserFromStorage=()=>{
             setShowOwner(resp.roles.includes("OWNER"));
             setShowSecretary(resp.roles.includes("SECRETARY"));
             setShowManager(resp.roles.includes("MANAGER"));
+
 
 
         }
@@ -330,9 +333,6 @@ if(isLoading) return <></>
                             </li>
 
 
-
-
-
                             {showAdmin && (
                                 <li>
                                     <Link to={"/admin-page"} className="nav-link" style={st}>
@@ -407,7 +407,6 @@ if(isLoading) return <></>
 
                                 </li>
 
-
                             )}
 
 
@@ -430,9 +429,9 @@ if(isLoading) return <></>
                             <Route exact path="/employee-page"><EmployeePage lang={lang}/></Route>}
                         {userRole.includes('SYSADMIN') && <Route exact path="/sysadmin-page"   component={SysAdminPage}/>}
                         {/*{userRole.includes('OWNER') && <Route exact path="/owner-page" component={}/>}*/}
-                        {userRole.includes('SECRETARY') &&
-                            <Route exact path="/secretary-page"><SecretaryPage lang={lang}/></Route>}
-                        {/*{userRole.includes('MANAGER') && <Route exact path="/manager-page" component={}/>}*/}
+                        {userRole.includes('SECRETARY') && <Route exact path="/secretary-page"><SecretaryPage lang={lang}/></Route>}
+                        {userRole.includes('MANAGER') && <Route exact path="/manager-page" component={ManagerPageMain}/>}
+                        {userRole.includes('EXPERT') && <Route exact path="/expert-page" component={ExpertPage}/>}
 
                         <Route path='*' component={IncorrectUrl}/>
 
@@ -443,6 +442,7 @@ if(isLoading) return <></>
 
                 </BrowserRouter>
             </header>
+
 
 
         </section>

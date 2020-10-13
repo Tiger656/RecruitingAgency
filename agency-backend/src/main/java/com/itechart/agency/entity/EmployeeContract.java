@@ -21,7 +21,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class EmployeeContract {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,12 +34,12 @@ public class EmployeeContract {
     @NotNull(message = "Min salary in employee contract cannot be null")
     @Size(min = 1, max = 38, message = "Min salary in employee contract must be between 1 and 50 characters")
     @Column(name = "min_salary")
-    private double min_salary;
+    private double minSalary;
 
     @NotNull(message = "Price usd in employee contract cannot be null")
     @Size(min = 1, max = 38, message = "Price usd in employee contract must be between 1 and 50 characters")
     @Column(name = "price_usd")
-    private double price_usd;
+    private double priceUsd;
 
     @NotNull(message = "Compensation in employee contract cannot be null")
     @Size(min = 1, max = 38, message = "Compensation in employee contract must be between 1 and 50 characters")
@@ -49,15 +48,15 @@ public class EmployeeContract {
 
     @NotNull(message = "Creation date in employee contract cannot be null")
     @Column(name = "creation_date")
-    private Date creation_date;
+    private Date creationDate;
 
     @NotNull(message = "End date in employee contract cannot be null")
     @Column(name = "end_date")
-    private Date end_date;
+    private Date endDate;
 
     @NotNull(message = "Field is_deleted in employee contract cannot be null")
     @Column(name = "is_deleted")
-    private boolean is_deleted;
+    private boolean isDeleted;
 
     @NotNull(message = "Employee name cannot be null")
     @Size(min = 1, max = 50, message = "Employee name must be between 1 and 50 characters")
@@ -72,11 +71,11 @@ public class EmployeeContract {
     @NotNull(message = "Employee experience years cannot be null")
     @Size(min = 1, max = 3, message = "Employee experience years must be between 1 and 3 characters")
     @Column(name = "experience_years")
-    private int experience_years;
+    private int experienceYears;
 
     @NotNull(message = "Employee birth date cannot be null")
     @Column(name = "birth_date")
-    private Date birth_date;
+    private Date birthDate;
 
     //notnull
     @ManyToOne
@@ -102,7 +101,7 @@ public class EmployeeContract {
     @NotNull(message = "Employee's telephone number cannot be null")
     @Size(min = 1, max = 50, message = "Employee's telephone number must be between 1 and 50 characters")
     @Column(name = "telephone_number")
-    private String telephone_number;
+    private String telephoneNumber;
 
     @NotNull(message = "Profession in contract cannot be null")
     @ManyToOne
@@ -112,19 +111,12 @@ public class EmployeeContract {
 
     @NotNull(message = "Account usd in employee contract cannot be null")
     @Column(name = "account_usd")
-    private double account_usd;
+    private double accountUsd;
 
     @NotNull(message = "Contract status cannot be null")
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
-
-    /* @OneToOne
-    @JoinColumn(name = "agency_employee_contract_id", referencedColumnName = "id")
-    private EmployeeContract employeeContract;
-    @OneToOne
-    @JoinColumn(name = "employee_type_id", referencedColumnName = "id")
-    private EmploymentType employmentType;*/
 
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "employee_employment_type", joinColumns = {
@@ -132,17 +124,9 @@ public class EmployeeContract {
             @JoinColumn(name = "employee_type_id")})
     private List<EmploymentType> employmentTypes;
 
-    /*@ManyToOne
-    @JoinColumn(name = "employee_contract_id")
-    private EmployeeContract employeeContract;
-    @OneToOne
-    @JoinColumn(name = "feature_id", referencedColumnName = "id")
-    private Feature feature;*/
-
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "employee_contract_feature", joinColumns = {
             @JoinColumn(name = "employee_contract_id")}, inverseJoinColumns = {
             @JoinColumn(name = "feature_id")})
     private List<Feature> features;
-
 }

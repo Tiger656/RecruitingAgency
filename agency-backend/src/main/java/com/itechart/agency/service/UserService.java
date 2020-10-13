@@ -27,4 +27,5 @@ public interface UserService {
     User getUserByEmailForPayment(String email);
     void deactivateAllUsersByAgencyId(Long id);
 
+    Long getUserIdByUserEmail(String email);
 }

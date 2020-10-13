@@ -75,11 +75,11 @@ public class EmployerApplicationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
-    @GetMapping("/all-for-manager")
-    public ResponseEntity<?> getAllEmployerApplicationsForManager() {
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @GetMapping("/all-for-manager/{agencyId}")
+    public ResponseEntity<?> getAllEmployerApplicationsForManager(@PathVariable Long agencyId) {
         LOGGER.info("REST request. Path:/employerApplication/all-for-manager method: GET.");
-        final List<EmployerApplicationForManagerDto> employerAppDtos = employerApplicationService.findAllForManager();
+        final List<EmployerApplicationForManagerDto> employerAppDtos = employerApplicationService.findAllForManagerByAgency(agencyId);
         return new ResponseEntity<>(employerAppDtos, HttpStatus.OK);
     }
 

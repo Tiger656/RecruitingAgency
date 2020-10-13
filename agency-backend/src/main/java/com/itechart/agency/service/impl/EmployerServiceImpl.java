@@ -22,22 +22,17 @@ public class EmployerServiceImpl implements CrudService<EmployerDto> {
     private final EmployerApplicationRepository employerApplicationRepository;
     private final UserRepository userRepository;
     private final AgencyRepository agencyRepository;
-    private final CityRepository cityRepository;
-    private final AddressRepository addressRepository;
     private final EmployerContractRepository employerContractRepository;
 
     @Autowired
     public EmployerServiceImpl(EmployerApplicationRepository employerApplicationRepository,
                                UserRepository userRepository, AgencyRepository agencyRepository,
-                               EmployerRepository employerRepository, EmployerContractRepository employerContractRepository,
-                               CityRepository cityRepository, AddressRepository addressRepository) {
+                               EmployerRepository employerRepository, EmployerContractRepository employerContractRepository) {
         this.employerApplicationRepository = employerApplicationRepository;
         this.userRepository = userRepository;
         this.agencyRepository = agencyRepository;
         this.employerRepository = employerRepository;
         this.employerContractRepository = employerContractRepository;
-        this.cityRepository = cityRepository;
-        this.addressRepository = addressRepository;
     }
 
     @Override
@@ -76,8 +71,6 @@ public class EmployerServiceImpl implements CrudService<EmployerDto> {
         if (employerDto.getId() <= 0L)
             throw new BadRequestException("Not valid data");
         if (employerRepository.findById(employerDto.getId()).isPresent()) {
-            //не помню, надо ли. Кажется, нет
-            //employerRepository.delete(employerRepository.findById(employerDto.getId()).get());
             employerRepository.save(employer);
             return employer.getId();
         } else {
@@ -91,9 +84,8 @@ public class EmployerServiceImpl implements CrudService<EmployerDto> {
                 throw new NotFoundException("Employer application doesn't exist");
         }
         if (agencyRepository.findById(employerDto.getAgencyId()).isEmpty() || userRepository.findById(employerDto.getUserId()).isEmpty()
-                || cityRepository.findById(employerDto.getCityId()).isEmpty() || addressRepository.findById(employerDto.getAddressId()).isEmpty()
                 || employerContractRepository.findById(employerDto.getEmployerContractId()).isEmpty())
-            throw new NotFoundException("Agency, or/and user, or/and city, or/and address, or/and employer contract doesn't exist");
+            throw new NotFoundException("Agency, or/and user, or/and employer contract doesn't exist");
 
         Employer employer = EmployerConvert.convertDtoToEntity(employerDto);
         List<EmployerApplication> applications = employerDto.getApplicationsIds().stream()
@@ -102,8 +94,6 @@ public class EmployerServiceImpl implements CrudService<EmployerDto> {
         employer.setApplications(applications);
         employer.setAgency(agencyRepository.findById(employerDto.getAgencyId()).get());
         employer.setUser(userRepository.findById(employerDto.getUserId()).get());
-        employer.setCity(cityRepository.findById(employerDto.getCityId()).get());
-        employer.setAddress(addressRepository.findById(employerDto.getAddressId()).get());
         employer.setEmployerContract(employerContractRepository.findById(employerDto.getEmployerContractId()).get());
         return employer;
     }
