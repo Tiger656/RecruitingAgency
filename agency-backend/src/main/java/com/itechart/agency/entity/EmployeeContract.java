@@ -30,9 +30,6 @@ public class EmployeeContract {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contract_number")
-    private Long contractNumber;
 
     @NotNull(message = "Agency id in employee contract cannot be null")
     @ManyToOne(cascade = CascadeType.ALL)
@@ -131,10 +128,5 @@ public class EmployeeContract {
             @JoinColumn(name = "agency_employee_contract_id")}, inverseJoinColumns = {
             @JoinColumn(name = "employee_type_id")})
     private List<EmploymentType> employmentTypes;
-
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinTable(name = "employee_contract_feature", joinColumns = {
-            @JoinColumn(name = "employee_contract_id")}, inverseJoinColumns = {
-            @JoinColumn(name = "feature_id")})
-    private List<Feature> features;*/
+*/
 }

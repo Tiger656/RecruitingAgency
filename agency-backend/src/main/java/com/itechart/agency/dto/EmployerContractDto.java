@@ -11,7 +11,7 @@ public class EmployerContractDto {
     private Long id;
 
     private Long contractTypeId;
-    private Long fileId;
+    private String file;
     private double dailyPayment;
     private Date contractCreationDate;
     private Date contractEndDate;
@@ -46,8 +46,8 @@ public class EmployerContractDto {
             return this;
         }
 
-        public EmployerContractDto.Builder withFileId(final Long fileId) {
-            EmployerContractDto.this.fileId = fileId;
+        public EmployerContractDto.Builder withFile(final String file) {
+            EmployerContractDto.this.file = file;
             return this;
         }
 

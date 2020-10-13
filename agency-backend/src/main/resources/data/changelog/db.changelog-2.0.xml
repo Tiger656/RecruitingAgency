@@ -306,30 +306,30 @@
             <column name="description" value="This is type of contract"></column>
         </insert>
 
-        <createTable tableName="files">
-            <column autoIncrement="true" name="id" type="bigserial">
-                <constraints nullable="false" primaryKey="true"/>
-            </column>
-            <column name="name" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="file_path" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="creation_date" type="date">
-                <constraints nullable="false"/>
-            </column>
-            <column name="is_deleted" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <!--Ilya-->
-        <insert tableName="files">
-            <column name="name" value="file 1"></column>
-            <column name="file_path" value="../path"></column>
-            <column name="creation_date" valueDate="2020-08-11"></column>
-            <column name="is_deleted" valueBoolean="1"></column>
-        </insert>
+<!--        <createTable tableName="files">-->
+<!--            <column autoIncrement="true" name="id" type="bigserial">-->
+<!--                <constraints nullable="false" primaryKey="true"/>-->
+<!--            </column>-->
+<!--            <column name="name" type="varchar(50)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="file_path" type="varchar(50)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="creation_date" type="date">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="is_deleted" type="boolean">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--        </createTable>-->
+<!--        &lt;!&ndash;Ilya&ndash;&gt;-->
+<!--        <insert tableName="files">-->
+<!--            <column name="name" value="file 1"></column>-->
+<!--            <column name="file_path" value="../path"></column>-->
+<!--            <column name="creation_date" valueDate="2020-08-11"></column>-->
+<!--            <column name="is_deleted" valueBoolean="1"></column>-->
+<!--        </insert>-->
 
         <createTable tableName="agency_employer_contracts">
             <column autoIncrement="true" name="id" type="bigserial">
@@ -339,9 +339,8 @@
                 <constraints nullable="false" foreignKeyName="fk_agency_employer_contracts_agency_contract_types"
                              references="agency_contract_types(id)"/>
             </column>
-            <column name="file_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_agency_employer_contracts_files"
-                             references="files(id)"/>
+            <column name="file" type="varchar(100)">
+                <constraints nullable="false"/>
             </column>
             <column name="daily_payment" type="money">
                 <constraints nullable="false"/>
@@ -559,9 +558,6 @@
             <column name="user_id" type="bigint">
                 <constraints foreignKeyName="fk_agency_employee_contract_users"
                              references="users(id)"/>
-            </column>
-            <column autoIncrement="true" name="contract_number" type="bigserial">
-<!--                <constraints nullable="false"/>-->
             </column>
             <column name="agency_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_agency_employee_contract_agencies"
