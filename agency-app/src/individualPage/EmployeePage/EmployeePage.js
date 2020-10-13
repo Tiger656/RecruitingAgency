@@ -1,16 +1,17 @@
-import React from 'react';
-import "../cssForIndividualPage/animate.css";
-import "../cssForIndividualPage/icomoon.css";
-import "../cssForIndividualPage/simple-line-icons.css";
-import "../cssForIndividualPage/magnific-popup.css";
-import "../cssForIndividualPage/style.css";
+import React, {useEffect, useState} from 'react';
+import "../../cssForIndividualPage/animate.css";
+import "../../cssForIndividualPage/icomoon.css";
+import "../../cssForIndividualPage/simple-line-icons.css";
+import "../../cssForIndividualPage/magnific-popup.css";
+import "../../cssForIndividualPage/style.css";
+import EmployeeInterview from "./EmployeeInterview";
+import axios from "axios";
+import authHeader from "../../auth/header";
 
 
 function EmployeePage(props) {
     let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
     let personEmail = JSON.parse(localStorage.getItem('response')).email;
-    const name = props.name;
-    const email = props.email;
     const lang = props.lang;
     let langConst = [];
     if (lang === 'en') {
@@ -24,9 +25,36 @@ function EmployeePage(props) {
         langConst.push('Интервью');
         langConst.push('Интервью');
     }
+    const id = 1;
+    let isSuspended;
+    const [contract, setContract] = useState({contract: []})
+    const [interviews, setInterviews] = useState([]);
+    useEffect(() => {
+        getAllInterviews();
+        getContract();
+    }, [])
+    const getAllInterviews = () => {
+        axios
+            .get("http://localhost:8080/interview/" + id, {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .then(data => {
+                setInterviews(data.data);
+            })
+            .catch(err => alert(err))
+    }
+    const getContract = () => {
+        axios
+            .get("http://localhost:8080/employeeContract/" + id, {headers: authHeader()})
+            .then(data => {
+                setContract({contract: data.data})
+            })
+            .catch(err => alert(err))
+    }
+    if (contract.contract.isDeleted === true)
+        isSuspended = 'Контракт не дйствителен';
+    else isSuspended = 'Контракт действителен';
     return (
 
-        <div >
+        <div>
 
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -61,25 +89,7 @@ function EmployeePage(props) {
                     </div>
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
-                        <div className="col-md-4 col-sm-6">
-                            <a href="../images/work_1.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_1.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
-                                    <h2>{langConst[0]} 1</h2>
-                                    <span>{langConst[2]} </span>
-                                </div>
-                            </a>
-                        </div>
-                        <div className="col-md-4 col-sm-6">
-                            <a href="../images/work_2.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_2.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
-                                    <h2>{langConst[0]} 2</h2>
-                                    <span>{langConst[2]} </span>
-                                </div>
-                            </a>
-                        </div>
-
+                        {interviews.map(interview => (<EmployeeInterview interview={interview} key={interview.id}/>))}
                     </div>
                     <br/><br/>
                 </div>
@@ -96,10 +106,22 @@ function EmployeePage(props) {
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
                         <div className="col-md-4 col-sm-6 ">
-                            <a href="../images/work_1.jpg" className="fh5co-project-item image-popup to-animate">
-                                <img src="../images/work_1.jpg" alt="Image" className="img-responsive"/>
-                                <div className="fh5co-text">
-                                    <h2>{langConst[1]} </h2>
+                            <a className="fh5co-project-item image-popup to-animate">
+                                <div style={{
+                                    color: "black",
+                                    textAlign: 'left',
+                                    paddingBottom: '20px',
+                                    paddingLeft: '20px',
+                                    paddingRight: '20px'
+                                }}>
+                                    <br/>
+                                    <h6><b>{isSuspended}</b></h6>
+                                    <h10> Дата создания контракта: {contract.contract.creationDate}</h10>
+                                    <br/>
+                                    <h10> Дата окончания контракта: {contract.contract.endDate}</h10>
+                                    <br/>
+                                    <h10> Статус контракта: {contract.contract.statusId}</h10>
+
                                 </div>
                             </a>
                         </div>

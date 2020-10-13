@@ -65,7 +65,8 @@ public class EmployeeContractServiceImpl implements CrudService<EmployeeContract
 
     @Override
     public List<EmployeeContractDto> findAll() {
-        List<EmployeeContract> contracts = employeeContractRepository.findAllByIs_deletedIsFalse();
+        List<EmployeeContract> contracts = employeeContractRepository.findAll();
+        //List<EmployeeContract> contracts = employeeContractRepository.findAllByIs_deletedIsFalse();
         return contracts.stream().map((EmployeeContractConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
@@ -94,14 +95,10 @@ public class EmployeeContractServiceImpl implements CrudService<EmployeeContract
     }
 
     private EmployeeContract setData(EmployeeContractDto contractDto) {
-        for (long id : contractDto.getFeaturesIds()) {
-            if (featureRepository.findById(id).isEmpty())
-                throw new NotFoundException("Feature doesn't exist");
-        }
-        for (long id : contractDto.getEmploymentTypesIds()) {
+        /*for (long id : contractDto.getEmploymentTypesIds()) {
             if (employmentTypeRepository.findById(id).isEmpty())
                 throw new NotFoundException("Employment type doesn't exist");
-        }
+        }*/
         if (addressRepository.findById(contractDto.getAddressId()).isEmpty() ||
                 cityRepository.findById(contractDto.getCityId()).isEmpty() || agencyRepository.findById(contractDto.getAgencyId()).isEmpty() ||
                 professionRepository.findById(contractDto.getProfessionId()).isEmpty() || statusRepository.findById(contractDto.getStatusId()).isEmpty())

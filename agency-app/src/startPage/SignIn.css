@@ -155,12 +155,11 @@ iframe {
 
 .wrap-login100 {
     background: #fff;
-    border-radius: 10px;
     overflow: hidden;
 
     box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
-    -webkit-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0 3px 200px 0px rgba(0, 0, 0, 0.5);
     -o-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
     -ms-box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
 }
@@ -218,7 +217,7 @@ iframe {
     -ms-box-shadow: 0 5px 30px 0px rgba(0, 0, 0, 0.2);
 }
 
-.container-login100-form-btn {
+.container-login100-form-btn, .container-login100-form-btn-cancel {
     width: 100%;
     display: -webkit-box;
     display: -webkit-flex;
@@ -229,7 +228,7 @@ iframe {
     justify-content: center;
 }
 
-.login100-form-btn {
+.login100-form-btn, .login100-form-btn-cancel {
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
@@ -257,6 +256,9 @@ iframe {
 .login100-form-btn:hover {
     background-color: #17a2b8db;
 
+}
+.login100-form-btn-cancel:hover {
+    background-color: #e00a0a;
 }
 /*ilya*/
 .login101-form-btn {

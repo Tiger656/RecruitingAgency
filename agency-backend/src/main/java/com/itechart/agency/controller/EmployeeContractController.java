@@ -1,6 +1,7 @@
 package com.itechart.agency.controller;
 
 import com.itechart.agency.dto.EmployeeContractDto;
+import com.itechart.agency.dto.EmployerContractDto;
 import com.itechart.agency.service.impl.EmployeeContractServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,9 @@ public class EmployeeContractController {
 
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYEE')")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOneEmployeeContract(@PathVariable("id") Long id) {
-        LOGGER.info("REST request. Path:/employee-contract/{} method: GET.", id);
-        final EmployeeContractDto employeeContractDto = employeeContractService.findById(id);
-        return Objects.isNull(employeeContractDto) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                ResponseEntity.ok().body(employeeContractDto);
+    public EmployeeContractDto getOneEmployeeContract(@PathVariable("id") Long id) {
+        LOGGER.info("REST request. Path:/employeeContract/{} method: GET.", id);
+        return employeeContractService.findById(id);
     }
 
 

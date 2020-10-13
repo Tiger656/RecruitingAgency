@@ -37,9 +37,10 @@ public class FileServiceImpl {
     public void downloadFile(Long id, String file) {
         try {
             if (id <= 0L) throw new BadRequestException("Not valid id");
-            if(fileRepository.findById(id).isEmpty())
+           /* if(fileRepository.findById(id).isEmpty())
                 throw new NotFoundException("File not found");
-            String fileName = fileRepository.findById(id).get().getFile_path();
+            String fileName = fileRepository.findById(id).get().getFile_path();*/
+            String fileName = "1.docx";
             String fullPath = props.getProperty("file.path") + fileName;
             OutputStream out = new FileOutputStream(file);
             FileInputStream in = new FileInputStream(fullPath);

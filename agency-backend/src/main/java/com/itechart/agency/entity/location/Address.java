@@ -30,8 +30,7 @@ public class Address {
     @Column(name = "building")
     private String building;
 
-    @NotNull(message = "Apartment number cannot be null")
-    @Size(min = 1, max = 50, message = "Apartment number must be between 1 and 50 characters")
+    @Size(max = 50, message = "Apartment number must be shorter than 50 characters")
     @Column(name = "apartment")
     private String apartment;
 
@@ -43,6 +42,16 @@ public class Address {
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Agency> agencies;
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "street='" + street + '\'' +
+                ", building='" + building + '\'' +
+                ", apartment='" + apartment + '\'' +
+                ", agencies=" + agencies +
+                '}';
+    }
 
     public Address(@NotNull(message = "Street name cannot be null") @Size(min = 1, max = 50, message = "Street name must be between 1 and 50 characters") String street, @NotNull(message = "Building number cannot be null") @Size(min = 1, max = 50, message = "Building number must be between 1 and 50 characters") String building, @NotNull(message = "Apartment number cannot be null") @Size(min = 1, max = 50, message = "Apartment number must be between 1 and 50 characters") String apartment) {
         this.street = street;

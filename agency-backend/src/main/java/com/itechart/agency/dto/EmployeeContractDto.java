@@ -1,8 +1,13 @@
 package com.itechart.agency.dto;
 
+import com.itechart.agency.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.List;
 
@@ -12,6 +17,8 @@ public class EmployeeContractDto {
     private Long id;
 
     private Long agencyId;
+    private Long userId;
+    private Long contractNumber;
     private double minSalary;
     private double priceUsd;
     private double compensation;
@@ -31,6 +38,5 @@ public class EmployeeContractDto {
     private String professionName; //
     private double accountUsd;
     private Long statusId;
-    private List<Long> employmentTypesIds;
-    private List<Long> featuresIds;
+   // private List<Long> employmentTypesIds;
 }

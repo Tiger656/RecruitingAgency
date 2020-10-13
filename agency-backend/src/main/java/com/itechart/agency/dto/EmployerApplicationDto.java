@@ -1,6 +1,5 @@
 package com.itechart.agency.dto;
 
-import com.itechart.agency.entity.Enums;
 import lombok.Getter;
 import lombok.Setter;
 import java.sql.Date;
@@ -11,6 +10,7 @@ public class EmployerApplicationDto {
 
     private Long id;
 
+    private Long applicationNumber;
     private Long agencyId;//
     private Long employerId;//
     private Date creationDate;
@@ -18,15 +18,28 @@ public class EmployerApplicationDto {
     private String statusName;//
     private String professionName;//
     private double salary;
-    private String employmentTypeName;
-    private /*Enums.Experience*/String experience;
-    private /*Enums.AgeRestriction*/String ageRestriction;
+    private String employmentTypeName;//
+    private String experienceName;//
+    private String ageRestrictionName;//
+    //    private Enums.Experience experience;
+//    private Enums.AgeRestriction ageRestriction;
     private String countryName;//
     private String cityName;//
     private Long addressId;//
     private String comment;
-    private String expertPersonalName;
+    private String expertPersonalName;//
     private boolean isDeleted;
+
+    @Override
+    public String toString() {
+        return "EmployerApplicationDto{" + ", agencyId=" + agencyId + ", employerId=" + employerId +
+                ", creationDate=" + creationDate + ", endDate=" + endDate + ", statusName=" + statusName +
+                ", professionName=" + professionName + ", salary=" + salary +
+                ", employmentTypeName=" + employmentTypeName + ", experience=" + experienceName +
+                ", ageRestriction=" + ageRestrictionName + ", countryName=" + countryName + ", cityName=" + cityName +
+                ", addressId=" + addressId + ", comment=" + comment + ", expertPersonalName=" + expertPersonalName +
+                ", isDeleted=" + isDeleted + '}';
+    }
 /*
     public static Builder builder() {
         return new EmployerApplicationDto().new Builder();

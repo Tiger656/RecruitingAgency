@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
-import {UserTable} from "../AdminPage/components/UserTable"
+import {UserTable} from "./components/UserTable"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'animate.css/animate.min.css'
+//import 'animate.css/animate.min.css'
 import axios from 'axios'
 import {Modal} from "./components/Modal";
 import {Filter} from "./components/Filter";
