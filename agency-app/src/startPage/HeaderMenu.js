@@ -5,15 +5,17 @@ import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
 import InformationInPicture from "./InformationInPicture";
 import Login from "../auth/component/Login";
 import {AdminPage} from "../individualPage/AdminPage/AdminPage";
-import EmployerPage from "../individualPage/EmployerPage";
-import EmployeePage from "../individualPage/EmployeePage";
-import {SysAdminPage} from "../individualPage/SysAdminPage";
+
+
 import {IncorrectUrl} from "../auth/component/InсorrectUrl";
 import AuthService from "../auth/auth.service";
 import SecretaryPage from "../individualPage/SecretaryPage";
 import {ManagerPageMain} from "../individualPage/ManagerPages/ManagerPageMain";
 import {ExpertPage} from "../individualPage/ExpertPage/ExpertPage";
 import PaymentPage from "../individualPage/Payment/PaymentPage";
+import EmployeePage from "../individualPage/EmployeePage/EmployeePage";
+import EmployerPage from "../individualPage/EmployerPage/EmployerPage";
+import {SysAdminPage} from "../individualPage/SysAdminPage/SysAdminPage";
 
 
 const styles = {
