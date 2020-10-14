@@ -116,6 +116,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
     const [showOwner,setShowOwner]=useState(false);
     const [showSecretary,setShowSecretary]=useState(false);
     const [showManager,setShowManager]=useState(false);
+    const [showExpert,setShowExpert]=useState(false);
 
     const [currentUser, setCurrentUser] = useState();
     const [userRole, setUserRoles] = useState([]);
@@ -134,6 +135,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
             setShowOwner(resp.roles.includes("OWNER"));
             setShowSecretary(resp.roles.includes("SECRETARY"));
             setShowManager(resp.roles.includes("MANAGER"));
+            setShowExpert(resp.roles.includes("EXPERT"));
 
 
 
@@ -253,6 +255,13 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                             </Link>
                                         </li>
                                     )}
+                                    {showExpert && (
+                                        <li className="nav-item">
+                                            <Link to={"/expert-page"} className="nav-link" style={styles.a}>
+                                                EXPERT
+                                            </Link>
+                                        </li>
+                                    )}
 
 
                                     <li className="position-static  nav-item">
@@ -365,6 +374,13 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                 <li>
                                     <Link to={"/employee-page"} className="nav-link" style={st}>
                                         EMPLOYEE
+                                    </Link>
+                                </li>
+                            )}
+                            {showExpert && (
+                                <li>
+                                    <Link to={"/expert-page"} className="nav-link" style={st}>
+                                        EXPERT
                                     </Link>
                                 </li>
                             )}

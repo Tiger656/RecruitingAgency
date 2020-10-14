@@ -21,11 +21,23 @@ import getHours from "date-fns/getHours"
 import getDate from "date-fns/getDate"
 import authHeader from "../../auth/header";
 import {Filter} from "../AdminPage/components/Filter";
-
-
-
+import {UpdateInterviewModal} from "./components/UpdateInterviewModal";
+import {Notification} from "../AdminPage/components/Notification";
+import {toast} from "react-toastify";
 
 const styles = {
+    popupFade: {
+        position: 'fixed',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100
+    },
     img: {
         width: '100px'
     },
@@ -50,17 +62,14 @@ const styles = {
         textAlign: 'center'
     },
     divSign: {
-        zIndex: '999',
-        height: '700px',
-        width: '500px',
-        position: 'absolute',
-        margin: '0 0 0 -350px',
-        left: '50%',
-        display: 'none',
-        paddingLeft: '30px',
-        paddingRight: '30px',
-        paddingTop: '5px',
-        paddingBottom: '30px'
+        paddingTop: '0px',
+        marginTop: '5%',
+        backgroundColor: 'white',
+        width: '50%',
+        height: '85%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     divFacebookGoogle: {
         paddingBottom: '50px',
@@ -105,15 +114,17 @@ export const ManagerPageMain =  () => {
     const [erApplications,setErApplications] = useState([])
     const [eeApplications,setEeApplications] = useState([])
     const [isAddExpertModalCreate, setIsAddExpertModalCreate] = useState(true)
-    const [startDate, setStartDate] = useState(setHours(setMinutes(new Date(), 0), 9))
+    const [isUpdateInterviewModalCreate, setIsUpdateInterviewModalCreate] = useState(true)
+    const [updateStatusInterviewData, setUpdateStatusInterviewData] = useState({currentIntStatusId: null, interviewId: null });
+    const [startDate, setStartDate] = useState(/*setHours(setMinutes(new Date(), 0), 9)*/)
     const [endDate, setEndDate] = useState(null/*setHours(setMinutes(new Date(), 30), 16)*/)
-    const [busyHours, setBusyHours] = useState({busyHours:[], busyStartHours:[], busyEndHours:[]});
+    const [busyHours, setBusyHours] = useState({busyHours: [], busyStartHours:[], busyEndHours:[]});
     const [interviews, setInterviews] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [myInterviewsShow, setMyInterviewShow] = useState(false);
     const [myInterviewsShowBtnStls, setMyInterviewsShowBtnStls] = useState({backgroundColor: "black", color: "#fff"})
-
+    const [showInterviewCreateForm, setShowInterviewCreateForm] = useState(false);
 
 
     useEffect(() => {
@@ -127,6 +138,16 @@ export const ManagerPageMain =  () => {
 
     const modalCreateClickHandler = () => setIsAddExpertModalCreate(false);
     const modalCloseClickHandler = () => setIsAddExpertModalCreate(true);
+
+    const updateIntrvModalCreateClickHandler = (interviewId, interviewStatusId) => {
+        setUpdateStatusInterviewData({currentIntStatusId: interviewStatusId, interviewId: interviewId });
+        setIsUpdateInterviewModalCreate(false);
+    }
+    const updateIntrvModalCloseClickHandler = () => {
+        setIsUpdateInterviewModalCreate(true);
+        myInterviewsShow === false ? getAllInterviews() : getMyInterviews()
+        setUpdateStatusInterviewData(null);
+    }
     const getExperts = () => {
         axios
             .get("http://localhost:8080/expert", {headers: authHeader()})
@@ -136,16 +157,14 @@ export const ManagerPageMain =  () => {
             .catch(err => alert(err))
 
     }
-
     const getEmployeeApplications = () => {
         axios
             .get("http://localhost:8080/employeeContract/all-for-manager/" + JSON.parse(localStorage.getItem("response")).agency.id, {headers: authHeader()})
             .then(data => {
                 console.log(data);
                 setEeApplications(data.data)
-
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Unable to get get Applications. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
     };
     const getEmployerApplications = () => {
         axios
@@ -155,12 +174,11 @@ export const ManagerPageMain =  () => {
                 setErApplications(data.data)
 
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Unable to get get Applications. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
     };
-
-
     const showInterviewForm = id => {
-        document.getElementById("interviewForm").style.display = "block";
+        setShowInterviewCreateForm(true)
+        //document.getElementById("interviewForm").style.display = "block";
         if (interviewAppIds.employeeApplicationId === undefined) {
             setInterviewAppIds({...interviewAppIds, employeeApplicationId: id});
         }
@@ -168,8 +186,10 @@ export const ManagerPageMain =  () => {
             setInterviewAppIds({...interviewAppIds, employerApplicationId: id});
         }
     }
+
     const closeInterviewForm = () => {
-        document.getElementById("interviewForm").style.display = "none";
+        setShowInterviewCreateForm(false);
+        //document.getElementById("interviewForm").style.display = "none";
     }
     const addToTempAppEmployer = (application, evnt) => {
         setInterviewAppIds({...interviewAppIds, employerApplicationId: application.id});
@@ -203,6 +223,7 @@ export const ManagerPageMain =  () => {
     }
     const resetData = () => {
         setSideBlockStyle({display:'none'});
+        setShowInterviewCreateForm(false);
         document.getElementsByClassName("employer-section")[0].style.display = "block";
         document.getElementsByClassName("employee-section")[0].style.display = "block";
         let list = document.getElementsByClassName("add-temp")
@@ -213,40 +234,72 @@ export const ManagerPageMain =  () => {
         for (let i = 0; i < list.length; i++) {
             list.item(i).style.display = "none";
         }
-        document.getElementById("interviewForm").style.display = "none";
+
+
+        //document.getElementById("interviewForm").style.display = "none";
     }
     const createInterview = () => {
         let data = new Object();
-        data.agencyId = 1;
+        data.agencyId = JSON.parse(localStorage.getItem('response')).agency.id;
         data.employerApplicationId = interviewAppIds.employerApplicationId;
         data.employeeContractId = interviewAppIds.employeeApplicationId;
-        data.managerId = 1;
+        data.managerId = JSON.parse(localStorage.getItem('response')).userId;
         data.interviewStatusId = 1;
         data.expertId = document.getElementById("expert").value;
         data.startDateTime = format(startDate, 'yyyy-MM-dd HH:mm');
         data.endDateTime = format(endDate, 'yyyy-MM-dd HH:mm');
         /*document.getElementById("date").value*;*/
         data.managerComment = document.getElementById("manager-comment").value;
+        console.log(data);
         axios
             .post("http://localhost:8080/interview", data, {headers: authHeader()})
             .then(data => {
                 resetData();
+                toast.success("Interview has been created", {position: toast.POSITION.TOP_RIGHT})
                 getAllInterviews()
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Interview hasn't been created", {position: toast.POSITION.TOP_RIGHT}))
 
     }
     const changeStartDateTime = date => {
         setStartDate(date);
         setEndDate(null);
+        let allBusyHours = {busyHours:new Set(), busyStartHours: new Set(), busyEndHours: new Set()};
         axios
-            .get("http://localhost:8080/interview/get-time/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ document.getElementById("expert").value + "/" +
-                getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .get("http://localhost:8080/interview/get-busytime-expert/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ document.getElementById("expert").value + "/" +
+                getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()})
             .then(data => {
-                console.log(data.data);
-                setBusyHours(data.data)
+                data = data.data;
+                data.busyHours.forEach(hour => allBusyHours.busyHours.add(hour));
+                data.busyStartHours.forEach(hour => allBusyHours.busyStartHours.add(hour))
+                data.busyEndHours.forEach(hour => allBusyHours.busyEndHours.add(hour))
+                axios
+                    .get("http://localhost:8080/interview/get-busytime-manager/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ JSON.parse(localStorage.getItem("response")).userId + "/" +
+                        getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()})
+                    .then(data => {
+                        data = data.data;
+                        data.busyHours.forEach(hour => allBusyHours.busyHours.add(hour));
+                        data.busyStartHours.forEach(hour => allBusyHours.busyStartHours.add(hour))
+                        data.busyEndHours.forEach(hour => allBusyHours.busyEndHours.add(hour))
+                        axios
+                            .get("http://localhost:8080/interview/get-busytime-employee/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ interviewAppIds.employeeApplicationId + "/" +
+                                getYear(date) + "/" + (getMonth(date)+1) + "/" + getDate(date), {headers: authHeader()})
+                            .then(data => {
+                                data = data.data;
+                                data.busyHours.forEach(hour => allBusyHours.busyHours.add(hour));
+                                data.busyStartHours.forEach(hour => allBusyHours.busyStartHours.add(hour))
+                                data.busyEndHours.forEach(hour => allBusyHours.busyEndHours.add(hour))
+                                setBusyHours({busyHours: [...allBusyHours.busyHours],
+                                    busyStartHours: [...allBusyHours.busyStartHours],
+                                    busyEndHours: [...allBusyHours.busyEndHours]
+                                });
+                            })
+                            .catch(err => toast.error("Unable to get interview time. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
+                    })
+                    .catch(err => toast.error("Unable to get interview time. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Unable to get interview time. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
+
     }
     const calcMaxTime = () => {
         let filtered = busyHours.busyHours.filter(hour => hour > getHours(startDate)).filter(hour => busyHours.busyStartHours.includes(hour));
@@ -257,21 +310,22 @@ export const ManagerPageMain =  () => {
         axios
             .get("http://localhost:8080/interview/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ JSON.parse(localStorage.getItem("response")).userId , {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
+                console.log("My interview userId" + JSON.parse(localStorage.getItem("response")).agency.id)
                 console.log(data.data);
                 setInterviews(data.data);
                 setSearchResults(data.data);
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Unable to get interviews. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
     };
     const getAllInterviews = () => {
         axios
-            .get("http://localhost:8080/interview/" + 1/*JSON.parse(localStorage.getItem("response")).agency.id*/ /*document.getElementById("MANAGER_ID").value*/ , {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .get("http://localhost:8080/interview/" + JSON.parse(localStorage.getItem("response")).agency.id/*JSON.parse(localStorage.getItem("response")).agency.id*/ /*document.getElementById("MANAGER_ID").value*/ , {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
                 console.log(data.data);
                 setInterviews(data.data);
                 setSearchResults(data.data);
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Unable to get interviews. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
     }
 
     const handleSearchChange = e => {
@@ -282,102 +336,30 @@ export const ManagerPageMain =  () => {
     const changeMyInterviewShow = () => {
         if (myInterviewsShow === true) {
             setMyInterviewsShowBtnStls({backgroundColor: "black", color: "#fff"})
-            //getAllInterviews()
+            getAllInterviews()
             setMyInterviewShow(false);
         } else {
             setMyInterviewsShowBtnStls({backgroundColor: "#17a2b8", color: "#fff"})
-            //getMyInterviews();
+            getMyInterviews();
             setMyInterviewShow(true);
         }
-    }
-    const showInterview = () => {
-
     }
 
     return (
 
         <div style={{marginTop: '-52px'}}>
+            <Notification/>
             <SideBlock display={sideBlockStyle.display} data={sideBlockData}/>
             {!isAddExpertModalCreate &&
             <AddExpertModal onModalCloseClick={modalCloseClickHandler} getExperts={getExperts}/>
+            }
+            {!isUpdateInterviewModalCreate &&
+            <UpdateInterviewModal onModalCloseClick={updateIntrvModalCloseClickHandler} updateStatusInterviewData={updateStatusInterviewData} />
             }
 
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
-            <div className="wrap-login100 " id="interviewForm" style={styles.divSign}>
-                <form className="login100-form validate-form">
-                    <div className="cl-btn-7" onClick={closeInterviewForm}/>
-                    <br/>
-                    <span style={styles.span}>
-					            ADD INTERVIEW
-                    </span>
-                    <div style={styles.select100}>
-                            <select  id="expert" style={styles.select100} name="expert" >
-                                {experts.experts.map(expert =>
-                                    <option style={styles.option100} key={expert.id} value={expert.id}
-                                    >{expert.name}</option>)}
-                            </select>
-                            <span className="focus-input100"/>
-                            <div className="add-btn-1" onClick={modalCreateClickHandler}/>
-                    </div>
-                    <div style={styles.divEnterData} >
-                        <DatePicker
-                            selected={startDate}
-                            onChange={date => changeStartDateTime(date)/*setStartDate(date)*/}
-                            showTimeSelect
-                            minDate={new Date()}
-                            minTime={setHours(setMinutes(new Date(), 0), 9)}
-                            maxTime={setHours(setMinutes(new Date(), 0), 18)}
-                            timeIntervals={60}
-                            placeholderText='Enter start time'
-                            excludeTimes={
-                                busyHours.busyHours.filter(hour =>
-                                    !busyHours.busyEndHours.includes(hour)
-                                ).map(hour => {
-                                    return setHours(setMinutes(new Date(), 0), hour)
-                                })
-                            }
-
-                            dateFormat="yyyy-MM-dd HH:mm"
-                        />
-                        <span className="focus-input100"/>
-                    </div>
-                    <div style={styles.divEnterData} >
-                        <DatePicker
-                            selected={endDate}
-                            onChange={date => setEndDate(date)}
-                            showTimeSelect
-                            minDate={startDate}
-                            maxDate={startDate}
-                            timeIntervals={60}
-                            minTime={setHours(setMinutes(new Date(), 0), getHours(startDate))}
-                            maxTime={setHours(setMinutes(new Date(), 0), calcMaxTime())}
-                            dateFormat="yyyy-MM-dd HH:mm"
-                            placeholderText='Enter end time'
-                            excludeTimes={
-                                busyHours.busyHours.filter(hour =>
-                                    !busyHours.busyStartHours.includes(hour)).map(hour => {return setHours(setMinutes(new Date(), 0), hour)})
-                            }
-
-                        />
-                        <span className="focus-input100"/>
-                    </div>
-                    <div style={styles.divEnterData} data-validate="Enter password">
-                        <input className="input100" type="text" style={styles.input} id="manager-comment"
-                               name="manager_comment"
-                               placeholder="Manager's comment"/>
-                        <span className="focus-input100"/>
-                    </div>
-
-                </form>
-                <div className="container-login100-form-btn">
-                    <button className="login100-form-btn" onClick={createInterview}>
-                        Submit
-                    </button>
-                </div>
-
-            </div>
 
 
             <section id="fh5co-home" className="section section-6" data-section="home"
@@ -385,6 +367,85 @@ export const ManagerPageMain =  () => {
                      data-stellar-background-ratio="0.5">
 
                 <div className="gradient"/>
+                <div className="container" >
+
+                    {showInterviewCreateForm===true && <div style={styles.popupFade}><div  id="interviewForm" style={styles.divSign}>
+                        <form className="login100-form validate-form" style={{width: "600px"}}>
+                            <div className="cl-btn-7" onClick={closeInterviewForm}/>
+                            <br/>
+                            <span style={styles.span}>
+                                        ADD INTERVIEW
+                            </span>
+                            <div>Choose expert</div>
+                            <div style={styles.select100}>
+
+                                <select  id="expert" style={styles.select100} name="expert" onChange={() => changeStartDateTime(setHours(setMinutes(new Date(), 0), 9))}>
+                                    <option value="" disabled selected>Choose expert</option>
+                                    {experts.experts.map(expert =>
+                                        <option style={styles.option100} key={expert.id} value={expert.id}
+                                        >{expert.name}</option>)}
+                                </select>
+                                <span className="focus-input100"/>
+                                <div className="add-btn-1" onClick={modalCreateClickHandler}/>
+                            </div>
+                            <div style={styles.divEnterData} >
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={date => changeStartDateTime(date)/*setStartDate(date)*/}
+                                    showTimeSelect
+                                    minDate={new Date()}
+                                    minTime={setHours(setMinutes(new Date(), 0), 9)}
+                                    maxTime={setHours(setMinutes(new Date(), 0), 18)}
+                                    timeIntervals={60}
+                                    placeholderText='Enter start time'
+                                    excludeTimes={
+                                        busyHours.busyHours.filter(hour =>
+                                            !busyHours.busyEndHours.includes(hour)
+                                        ).map(hour => {
+                                            return setHours(setMinutes(new Date(), 0), hour)
+                                        })
+                                    }
+
+                                    dateFormat="yyyy-MM-dd HH:mm"
+                                />
+                                <span className="focus-input100"/>
+                            </div>
+                            <div style={styles.divEnterData} >
+                                <DatePicker
+                                    selected={endDate}
+                                    onChange={date => setEndDate(date)}
+                                    showTimeSelect
+                                    minDate={startDate}
+                                    maxDate={startDate}
+                                    timeIntervals={60}
+                                    minTime={setHours(setMinutes(new Date(), 0), getHours(startDate))}
+                                    maxTime={setHours(setMinutes(new Date(), 0), calcMaxTime())}
+                                    dateFormat="yyyy-MM-dd HH:mm"
+                                    placeholderText='Enter end time'
+                                    excludeTimes={
+                                        busyHours.busyHours.filter(hour =>
+                                            !busyHours.busyStartHours.includes(hour)).map(hour => {return setHours(setMinutes(new Date(), 0), hour)})
+                                    }
+
+                                />
+                                <span className="focus-input100"/>
+                            </div>
+                            <div style={styles.divEnterData} data-validate="Enter password">
+                                <input className="input100" type="text" style={styles.input} id="manager-comment"
+                                       name="manager_comment"
+                                       placeholder="Manager's comment"/>
+                                <span className="focus-input100"/>
+                            </div>
+                            <div className="container-login100-form-btn">
+                                <button className="login100-form-btn" type="button" onClick={createInterview}>
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    </div>}
+
+                </div>
                 <div className="container">
                     <div className="text-wrap">
                         <div className="text-inner">
@@ -479,7 +540,7 @@ export const ManagerPageMain =  () => {
                     backgroundColor: myInterviewsShowBtnStls.backgroundColor,
                     color: myInterviewsShowBtnStls.color,
                     }} onClick={changeMyInterviewShow}>
-                        Показать Мои
+                        Show my
                     </button>
                 </div>
             </div>
@@ -502,9 +563,9 @@ export const ManagerPageMain =  () => {
                                     <p>Start: {interview.startDateTime.replace('T', ' ')}</p>
                                     <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                     <p>Manag. comment: {interview.managerComment}</p>
-                                    {/*<button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn"  onClick={showInterview}> будет окно с поялми коммента, update статуса и вопросами*/}
-                                    {/*    Выбрать*/}
-                                    {/*</button>*/}
+                                    <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn"  onClick={() => updateIntrvModalCreateClickHandler(interview.id, interview.interviewStatusId)}>
+                                        Update status
+                                    </button>
 
                                 </div>
                             </div>

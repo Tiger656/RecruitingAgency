@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "experts")
+@Table(name = "managers")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 public class Manager {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
