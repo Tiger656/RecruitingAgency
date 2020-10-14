@@ -13,6 +13,7 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class EmployerContract {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

@@ -86,15 +86,16 @@ const getDepositByAgencyId = ()=>{
         .then((data) => setDeposit(data.data))
         .catch((err) => errorNotify(err.response.data.error))
 }
-    const addUser = user => {
+    const addUser = (user,contract) => {
         setIsModalCreate(true)
-
+let employerAndContract ={user,contract}
+        console.log(employerAndContract)
         axios
-            .post('http://localhost:8080/api/user', user, {headers: authHeader()})
-            .then(resp => {
-                setUsers([...users, resp.data]);
-                successNotify("User with email: " + user.email + " created successfully!");
-            })
+            .post('http://localhost:8080/api/user', employerAndContract, {headers: authHeader()})
+            // .then(resp => {
+            //     setUsers([...users, resp.data]);
+            //     successNotify("User with email: " + user.email + " created successfully!");
+            // })
             .catch((err) => errorNotify(err.response.data.error))
     }
 

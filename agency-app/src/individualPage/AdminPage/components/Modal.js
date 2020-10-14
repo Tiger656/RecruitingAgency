@@ -89,13 +89,25 @@ const styles = {
 }
 
 
-export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', agencyId = '', roleIds = [], roles = [], allRoles, allAgencies, buttonName}) => {
+export const Modal = ({submitHandler, onModalCloseClick, id = null, email = '', agencyId = '', roleIds = [], roles = [], allRoles, allAgencies, buttonName,file = '',contractTypeId='',dailyPayment=''}) => {
     let currentAgencyId = JSON.parse(localStorage.getItem('response')).agency.id;
     const initialFormState = {id, email, agencyId, roleIds, roles};
     const [user, setUser] = useState(initialFormState)
     const [rolesIds] = useState([]);
-    const [employerContractModal,setEmployerContractModal]=useState(false);
 
+    const initialContractState = {file,contractTypeId,dailyPayment}
+    const [contract, setContract] = useState(initialContractState);
+    const [employerContractModal, setEmployerContractModal] = useState(false);
+    const [employeeContractModal, setEmployeeContractModal] = useState(false);
+    const handleInputEmployerContractChange = event => {
+        const {name, value} = event.currentTarget
+        setContract({...contract, [name]: value})
+        console.log(contract)
+
+
+    }
+    const isEmployerFields = ()=>setEmployerContractModal(!employerContractModal);
+    const isEmployeeModalFields = ()=>setEmployeeContractModal(!employeeContractModal);
     const handleInputChange = event => {
         const {name, value} = event.currentTarget
         setUser({...user, [name]: value, roleIds: rolesIds})
@@ -120,6 +132,7 @@ const isEmployerModal=()=>setEmployerContractModal(!employerContractModal);
             return roles.filter(role => role.id !== roleId)
         return [...roles, allRoles.find(role => role.id === roleId)];
     }
+
     const handleSubmit = event => {
         event.preventDefault()
         /*fix*/
@@ -129,21 +142,35 @@ const isEmployerModal=()=>setEmployerContractModal(!employerContractModal);
 
         if (user.roles.some(role => role.name === 'EMPLOYEE') && user.roles.some(role => role.name === 'EMPLOYER')) {
             warnEnterAllFieldsNotify("You cannot assign EMPLOYEE and EMPLOYER roles to the same user");
-        }
-        else{
-            if(user.roles.some(role=>role.name==="EMPLOYER")){
-                setEmployerContractModal(true);
+        } else {
+            if (user.roles.some(role => role.name === "EMPLOYER")) {
 
-                // submitHandler(user)
-                console.log('employer');
+                setEmployeeContractModal(false)
+                isEmployerFields();
+                if (!contract.file || !contract.contractTypeId || !contract.dailyPayment) {
+                    warnEnterAllFieldsNotify("Contract cannot be empty!");
+                } else {
+                    submitHandler(user,contract);
 
+                    setEmployerContractModal(false);
+
+
+                }
             }
 
-            if(user.roles.some(role=>role.name==="EMPLOYEE")) {
-                console.log('employee');
-                setEmployerContractModal(true);
+            if (user.roles.some(role => role.name === "EMPLOYEE")) {
+                setEmployerContractModal(false)
+                isEmployeeModalFields();
 
-                // submitHandler(user)
+                if (!contract.number) {
+                    warnEnterAllFieldsNotify("Fields cannot be empty!");
+                } else {
+                    submitHandler(user);
+
+                    setEmployeeContractModal(false);
+
+
+                }
 
             }
 
@@ -152,7 +179,6 @@ const isEmployerModal=()=>setEmployerContractModal(!employerContractModal);
             //     console.log(user);
             //     setUser(initialFormState)
             // }
-
 
 
         }
@@ -172,11 +198,7 @@ const isEmployerModal=()=>setEmployerContractModal(!employerContractModal);
     return (
         <div style={styles.popupFade}>
             <Notification/>
-            {employerContractModal &&
-            <EmployerContractModal isEmployerModal={isEmployerModal}
 
-            />
-            }
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
@@ -226,6 +248,47 @@ const isEmployerModal=()=>setEmployerContractModal(!employerContractModal);
                             )}
                         </div>
                     </div>
+                    {employerContractModal &&
+                    <div>
+                        <div style={styles.divEnterData}>
+                            <input className="input100" type="text" style={styles.input}
+                                   name="file"
+                                   placeholder="Contract number"
+
+                                   onChange={handleInputEmployerContractChange}/>
+                            <span className="focus-input100"/>
+                        </div>
+                        <div style={styles.divEnterData}>
+                            <input className="input100" type="text" style={styles.input}
+                                   name="contractTypeId"
+                                   placeholder="Contract type"
+
+                                   onChange={handleInputEmployerContractChange}/>
+                            <span className="focus-input100"/>
+                        </div>
+                        <div style={styles.divEnterData}>
+                            <input className="input100" type="text" style={styles.input}
+                                   name="dailyPayment"
+                                   placeholder="Daily payment"
+
+                                   onChange={handleInputEmployerContractChange}/>
+                            <span className="focus-input100"/>
+                        </div>
+                    </div>
+                    }
+                    {employeeContractModal &&
+
+                    <div style={styles.divEnterData}>
+                        <input className="input100" type="email" style={styles.input}
+                               name="contractId"
+                               placeholder="Employee"
+
+                               onChange={handleInputChange}/>
+                        <span className="focus-input100"/>
+                    </div>
+
+
+                    }
 
 
                     <br/>
