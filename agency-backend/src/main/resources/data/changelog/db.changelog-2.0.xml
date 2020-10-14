@@ -339,7 +339,7 @@
                 <constraints nullable="false" foreignKeyName="fk_agency_employer_contracts_agency_contract_types"
                              references="agency_contract_types(id)"/>
             </column>
-            <column name="file" type="varchar(100)">
+            <column name="file" type="varchar(100)">а
                 <constraints nullable="false"/>
             </column>
             <column name="daily_payment" type="money">
@@ -360,7 +360,7 @@
         </createTable>
         <insert tableName="agency_employer_contracts">
             <column name="contract_type_id" valueNumeric="1"></column>
-            <column name="file_id" valueNumeric="1"></column>
+            <column name="file" valueNumeric="1"></column>
             <column name="daily_payment" valueNumeric="200"></column>
             <column name="contract_creation_date" valueDate="2020-08-11"></column>
             <column name="contract_end_date" valueDate="2020-08-11"></column>

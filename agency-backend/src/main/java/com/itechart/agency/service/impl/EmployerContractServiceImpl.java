@@ -19,16 +19,15 @@ public class EmployerContractServiceImpl implements CrudService<EmployerContract
 
 
     private final EmployerContractRepository employerContractRepository;
-    private final FileRepository fileRepository;
+    //private final FileRepository fileRepository;
     private final ContractTypeRepository contractTypeRepository;
 
 
     @Autowired
-    public EmployerContractServiceImpl(EmployerContractRepository employerContractRepository,
-                                       FileRepository fileRepository, ContractTypeRepository contractTypeRepository) {
+    public EmployerContractServiceImpl(EmployerContractRepository employerContractRepository, ContractTypeRepository contractTypeRepository) {
 
         this.employerContractRepository = employerContractRepository;
-        this.fileRepository = fileRepository;
+       // this.fileRepository = fileRepository;
         this.contractTypeRepository = contractTypeRepository;
     }
 
@@ -82,12 +81,12 @@ public class EmployerContractServiceImpl implements CrudService<EmployerContract
     }
 
     private EmployerContract setData(EmployerContractDto contractDto) {
-        if (contractTypeRepository.findById(contractDto.getContractTypeId()).isEmpty() ||
-                fileRepository.findById(contractDto.getFileId()).isEmpty())
-            throw new NotFoundException("Contract type or/and file doesn't exist");
+        if (contractTypeRepository.findById(contractDto.getContractTypeId()).isEmpty())
+//                fileRepository.findById(contractDto.getFileId()).isEmpty())
+            throw new NotFoundException("Contract type doesn't exist");
 
         EmployerContract contract = EmployerContractConvert.convertDtoToEntity(contractDto);
-        contract.setFile(fileRepository.findById(contractDto.getFileId()).get());
+        //contract.setFile(fileRepository.findById(contractDto.getFileId()).get());
         contract.setContractType(contractTypeRepository.findById(contractDto.getContractTypeId()).get());
         return contract;
     }

@@ -2,7 +2,7 @@ package com.itechart.agency.service.impl;
 
 import com.itechart.agency.exception.BadRequestException;
 import com.itechart.agency.exception.NotFoundException;
-import com.itechart.agency.repository.FileRepository;
+//import com.itechart.agency.repository.FileRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,13 @@ public class FileServiceImpl {
         }
     }
 
-    private final FileRepository fileRepository;
+   /* private final FileRepository fileRepository;
 
     @Autowired
     public FileServiceImpl(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
     }
-
+*/
 //file- response output stream
     public void downloadFile(Long id, String file) {
         try {
