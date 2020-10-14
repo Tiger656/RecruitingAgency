@@ -25,7 +25,11 @@ public class UserController {
         this.userService = userService;
     }
 
-
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    @GetMapping
+//    public List<UserDto> getAll() {
+//        return userService.findAll();
+//    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
@@ -55,6 +59,7 @@ public class UserController {
     public void deleteById(@PathVariable(name = "id") Long id) {
         userService.deleteById(id);
     }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping

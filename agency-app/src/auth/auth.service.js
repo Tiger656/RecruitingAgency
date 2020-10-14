@@ -13,9 +13,9 @@ const login = (email, password) => {
                 let tok = response.data.token;
                 if (tok) {
                     localStorage.setItem("response", JSON.stringify(response.data));
-                    console.log(JSON.parse(localStorage.getItem("response")));
+
                 }
-                console.log(response.data);
+
                 return response.data;
             });
 

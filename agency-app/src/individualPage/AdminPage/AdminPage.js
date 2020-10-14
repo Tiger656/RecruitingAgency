@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from "react";
-import {UserTable} from "../AdminPage/components/UserTable"
+import React, {useState, useEffect} from "react";
+import {UserTable} from "./components/UserTable"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'animate.css/animate.min.css'
+//import 'animate.css/animate.min.css'
 import axios from 'axios'
 import {Modal} from "./components/Modal";
 import {Filter} from "./components/Filter";
 import {Notification} from "./components/Notification";
 import authHeader from "../../auth/header";
 import {toast} from "react-toastify";
+import Form from "react-validation/build/form";
+import PaymentPage from "../Payment/PaymentPage";
 
 
 export const AdminPage = () => {
@@ -21,18 +23,21 @@ export const AdminPage = () => {
     const [allAgencies, setAllAgencies] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [deposit, setDeposit] = useState("");
 
     useEffect(() => {
         getUsers();
         // getAgencies();
+        getDepositByAgencyId();
         getRoles();
     }, []);
-    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    let agency = JSON.parse(localStorage.getItem('response')).agency;
     let personEmail = JSON.parse(localStorage.getItem('response')).email;
+
 
     const getUsers = () => {
         axios
-            .get('http://localhost:8080/api/user?name=' + agencyName, {headers: authHeader()})
+            .get('http://localhost:8080/api/user?name=' + agency.name, {headers: authHeader()})
             .then((data) => {
                 setUsers(data.data)
                 setLoading(false)
@@ -45,7 +50,7 @@ export const AdminPage = () => {
     const deleteUs = id => {
         axios
             .delete('http://localhost:8080/api/user/' + id, {headers: authHeader()})
-            .then(()=>successNotify('User delete successfully!'))
+            .then(() => successNotify('User delete successfully!'))
             .catch((err) => errorNotify(err.response.data.error))
     };
 
@@ -73,6 +78,14 @@ export const AdminPage = () => {
 
     const modalCloseClickHandler = () => setIsModalCreate(true);
 
+    const modalEditCloseClickHandler = () => setEditing(false);
+
+const getDepositByAgencyId = ()=>{
+    axios
+        .get('http://localhost:8080/api/agency/deposit/' + agency.id, {headers: authHeader()})
+        .then((data) => setDeposit(data.data))
+        .catch((err) => errorNotify(err.response.data.error))
+}
     const addUser = user => {
         setIsModalCreate(true)
 
@@ -80,7 +93,7 @@ export const AdminPage = () => {
             .post('http://localhost:8080/api/user', user, {headers: authHeader()})
             .then(resp => {
                 setUsers([...users, resp.data]);
-                successNotify("User with email: "+user.email+" created successfully!");
+                successNotify("User with email: " + user.email + " created successfully!");
             })
             .catch((err) => errorNotify(err.response.data.error))
     }
@@ -89,8 +102,11 @@ export const AdminPage = () => {
         setLoading(true)
         axios
             .put('http://localhost:8080/api/user', user, {headers: authHeader()})
-            .then(resp => {setUsers(users.map(user => (user.id === resp.data.id ? resp.data : user)));
-                successNotify('User is update successfully!')})
+            .then(resp => {
+                setUsers(users.map(user => (user.id === resp.data.id ? resp.data : user)))
+            })
+            .then(() => successNotify('User is update successfully!'))
+
             .then(() => setLoading(false))
             .catch((err) => errorNotify(err.response.data.error))
     }
@@ -101,6 +117,7 @@ export const AdminPage = () => {
     }
 
     const updateUser = updatedUser => {
+
         setEditing(false)
         update(updatedUser);
         setUsers(users.map(user => (user.id === updatedUser.id ? updatedUser : user)))
@@ -120,15 +137,13 @@ export const AdminPage = () => {
     const errorNotify = (error) => {
         toast.error(error, {position: toast.POSITION.TOP_RIGHT});
     }
-    const successNotify =(message)=>{
+    const successNotify = (message) => {
         toast.success(message, {position: toast.POSITION.TOP_RIGHT});
     }
 
-
-
     return (
         <div>
-            <Notification />
+            <Notification/>
             <div>
                 <link
                     href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -143,7 +158,7 @@ export const AdminPage = () => {
                                 <div className="row">
                                     <div className="col-md-8"
                                          style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                        <h1 className="to-animate">{agencyName}</h1>
+                                        <h1 className="to-animate">{agency.name}</h1>
                                         <h2 className="to-animate"> Email: {personEmail}</h2>
 
                                     </div>
@@ -174,7 +189,7 @@ export const AdminPage = () => {
                                         agency={currentUser?.agency}
                                         allRoles={allRoles}
                                         allAgencies={allAgencies}
-                                        onModalCloseClick={modalCloseClickHandler}
+                                        onModalCloseClick={modalEditCloseClickHandler}
                                         buttonName={'Update'}
                                     />
                                 }
@@ -200,13 +215,49 @@ export const AdminPage = () => {
 
                                         <UserTable users={searchResults.length < 1 ? users : searchResults}
                                                    editRow={editRow} deleteUser={deleteUser} loading={loading}
-                                                   allAgencies={allAgencies}/>
+                                                   allAgencies={allAgencies}
+                                                   currentUserEmail={personEmail}
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <br/><br/>
+                </section>
+
+                <section id="fh5co-work" className="section section-6" data-section="work">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12 section-heading text-center">
+                                <h2 className="to-animate">
+                                    Top up balance </h2>
+                                <h2 className="to-animate">
+                                    Your balance: {deposit}</h2>
+                                <br/>
+                                {/*<div className="input-group mb-3">*/}
+                                {/*    <div className="input-group-prepend">*/}
+                                {/*        <span className="input-group-text" id="basic-addon1">$</span>*/}
+                                {/*    </div>*/}
+                                {/*    <input type="text" className="form-control"*/}
+                                {/*           placeholder="Enter the amount of money ($) "*/}
+                                {/*           aria-label="Enter the amount of money " aria-describedby="basic-addon1"/>*/}
+                                {/*</div>*/}
+                                {/*<br/>*/}
+                                {/*<div className="container-login100-form-btn">*/}
+                                {/*    <button type='button' className="login101-form-btn" style={{marginBottom: '15px'}}*/}
+
+                                {/*    >*/}
+                                {/*        Pay*/}
+                                {/*    </button>*/}
+                                {/*</div>*/}
+                            <PaymentPage/>
+                            </div>
+                        </div>
+                        <br/><br/>
+
+
+                    </div>
                 </section>
             </div>
         </div>

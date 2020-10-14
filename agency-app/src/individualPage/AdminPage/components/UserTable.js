@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const UserTable = ({users,editRow,deleteUser,loading}) => {
+export const UserTable = ({users,editRow,deleteUser,loading,currentUserEmail}) => {
     let i =1;
     const handleDeleteUser = id => {
         let answer = window.confirm("Are you sure?")
@@ -39,7 +39,9 @@ export const UserTable = ({users,editRow,deleteUser,loading}) => {
             </thead>
             <tbody>
             {users.length > 0 ? (
-                users.map(user => (
+                users
+                    .filter(us=>us.email!==currentUserEmail)
+                    .map(user => (
                     <tr key={user.id}>
                         <td>{i++}</td>
                         <td>{user.email}</td>

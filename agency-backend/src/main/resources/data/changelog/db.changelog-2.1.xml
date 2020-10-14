@@ -197,14 +197,15 @@
             <column name="email" value="manager.anton@gmail.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="0"></column>
         </insert>
         <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="2"></column>
+            <column name="user_id" valueNumeric="4"></column>
             <column name="role_id" valueNumeric="7"></column>
         </insert>
         <insert tableName="managers">
-            <column name="user_id" valueNumeric="2"></column>
+            <column name="user_id" valueNumeric="4"></column>
             <column name="name" value="Anton Arkhipets"></column>
         </insert>
 
@@ -212,14 +213,15 @@
             <column name="email" value="manager.ivan@gmail.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="0"></column>
         </insert>
         <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="3"></column>
+            <column name="user_id" valueNumeric="5"></column>
             <column name="role_id" valueNumeric="7"></column>
         </insert>
         <insert tableName="managers">
-            <column name="user_id" valueNumeric="3"></column>
+            <column name="user_id" valueNumeric="5"></column>
             <column name="name" value="Ivan Susanin"></column>
         </insert>
 
@@ -229,14 +231,15 @@
             <column name="email" value="expert.dima@gmail.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="0"></column>
         </insert>
         <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="4"></column>
+            <column name="user_id" valueNumeric="6"></column>
             <column name="role_id" valueNumeric="8"></column>
         </insert>
         <insert tableName="experts">
-            <column name="user_id" valueNumeric="4"></column>
+            <column name="user_id" valueNumeric="6"></column>
             <column name="name" value="Dmitri Glukhovski"></column>
         </insert>
 
@@ -244,14 +247,15 @@
             <column name="email" value="expert.ivan@gmail.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="0"></column>
         </insert>
         <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="5"></column>
+            <column name="user_id" valueNumeric="7"></column>
             <column name="role_id" valueNumeric="8"></column>
         </insert>
         <insert tableName="experts">
-            <column name="user_id" valueNumeric="5"></column>
+            <column name="user_id" valueNumeric="7"></column>
             <column name="name" value="Ivan Bunin"></column>
         </insert>
 
@@ -259,14 +263,15 @@
             <column name="email" value="expert.serg@gmail.com"></column>
             <column name="password" value="$2a$12$eIaHQlyj/kXLHLpf0p6TbecJbgvs33JT3wa0HhEEFMdn8EGMdOEWC"></column>
             <column name="agency_id" valueNumeric="1"></column>
+            <column name="is_deactivated" valueBoolean="1"></column>
             <column name="is_deleted" valueBoolean="0"></column>
         </insert>
         <insert tableName="user_roles">
-            <column name="user_id" valueNumeric="6"></column>
+            <column name="user_id" valueNumeric="8"></column>
             <column name="role_id" valueNumeric="8"></column>
         </insert>
         <insert tableName="experts">
-            <column name="user_id" valueNumeric="6"></column>
+            <column name="user_id" valueNumeric="8"></column>
             <column name="name" value="Sergei Esenin"></column>
         </insert>
 <!--interviews -->

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import './SignIn.css';
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
@@ -13,6 +13,7 @@ import AuthService from "../auth/auth.service";
 import SecretaryPage from "../individualPage/SecretaryPage";
 import {ManagerPageMain} from "../individualPage/ManagerPages/ManagerPageMain";
 import {ExpertPage} from "../individualPage/ExpertPage/ExpertPage";
+import PaymentPage from "../individualPage/Payment/PaymentPage";
 
 
 const styles = {
@@ -113,17 +114,25 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
     const [showAdmin, setShowAdmin] = useState(false);
     const [showEmployer, setShowEmployer] = useState(false);
     const [showEmployee, setShowEmployee] = useState(false);
-    const [showOwner,setShowOwner]=useState(false);
-    const [showSecretary,setShowSecretary]=useState(false);
-    const [showManager,setShowManager]=useState(false);
+    const [showOwner, setShowOwner] = useState(false);
+    const [showSecretary, setShowSecretary] = useState(false);
+    const [showManager, setShowManager] = useState(false);
     const [showExpert,setShowExpert]=useState(false);
-
     const [currentUser, setCurrentUser] = useState();
     const [userRole, setUserRoles] = useState([]);
 
+const [isLoading,setIsLoading] = useState(true);
+
+const  fetchingUserFromStorage=()=>{
+    setIsLoading(true);
+    const resp = AuthService.getCurrentUser();
+    setIsLoading(false);
+    return resp;
+    }
+
 
     useEffect(() => {
-        const resp = AuthService.getCurrentUser();
+        const resp = fetchingUserFromStorage();
 
         if (resp) {
             setUserRoles(resp.roles);
@@ -172,6 +181,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
     const st = {width: '150px', color: 'white', backgroundColor: 'black', marginLeft: '-23px'};
     const ulStyle = {height: '0', lineStyleType: 'none', overflow: 'hidden', opacity: '0', width: '0'};
 
+if(isLoading) return <></>
     return (
         <section>
 
@@ -302,6 +312,10 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                             <Link to={"/login"} className="nav-link" style={styles.a}>
                                                 Login
                                             </Link>
+                                            <Link to={"/payment"} className="nav-link" style={styles.a}>
+                                                Pay
+                                            </Link>
+
                                         </li>
 
 
@@ -343,21 +357,21 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                 </li>
                             )}
                             {showOwner && (
-                                <li >
+                                <li>
                                     <Link to={"/owner-page"} className="nav-link" style={st}>
                                         OWNER
                                     </Link>
                                 </li>
                             )}
                             {showSecretary && (
-                                <li >
+                                <li>
                                     <Link to={"/secretary-page"} className="nav-link" style={st}>
                                         SECRETARY
                                     </Link>
                                 </li>
                             )}
                             {showManager && (
-                                <li >
+                                <li>
                                     <Link to={"/manager-page"} className="nav-link" style={st}>
                                         MANAGER
                                     </Link>
@@ -400,6 +414,12 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                                     <Link to={"/login"} className="nav-link" style={st}>
                                         Login
                                     </Link>
+
+                                    <Link to={"/payment"} className="nav-link" style={st}>
+                                        Pay
+                                    </Link>
+
+
                                 </li>
 
                             )}
@@ -409,16 +429,20 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
                     </nav>
                     <Switch>
                         <Route exact path="/">
-                            <InformationInPicture lang={lang} />
+                            <InformationInPicture lang={lang}/>
                         </Route>
 
 
                         <Route exact path="/login" component={Login}/>
+                        <Route exact path="/payment" component={PaymentPage}/>
 
-                        {userRole.includes('ADMIN') && <Route exact path="/admin-page" component={AdminPage}/>}
-                        {userRole.includes('EMPLOYER') && <Route exact path="/employer-page" ><EmployerPage lang={lang}/></Route>}
-                        {userRole.includes('EMPLOYEE') && <Route exact path="/employee-page"><EmployeePage lang={lang}/></Route>}
-                        {userRole.includes('SYSADMIN') && <Route exact path="/sysadmin-page" component={SysAdminPage}/>}
+
+                        {userRole.includes('ADMIN') &&  <Route exact path="/admin-page"  component={AdminPage}/>}
+                        {userRole.includes('EMPLOYER') &&
+                            <Route exact path="/employer-page"><EmployerPage lang={lang}/></Route>}
+                        {userRole.includes('EMPLOYEE') &&
+                            <Route exact path="/employee-page"><EmployeePage lang={lang}/></Route>}
+                        {userRole.includes('SYSADMIN') && <Route exact path="/sysadmin-page"   component={SysAdminPage}/>}
                         {/*{userRole.includes('OWNER') && <Route exact path="/owner-page" component={}/>}*/}
                         {userRole.includes('SECRETARY') && <Route exact path="/secretary-page"><SecretaryPage lang={lang}/></Route>}
                         {userRole.includes('MANAGER') && <Route exact path="/manager-page" component={ManagerPageMain}/>}
@@ -426,7 +450,10 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
 
                         <Route path='*' component={IncorrectUrl}/>
 
+
+
                     </Switch>
+
 
                 </BrowserRouter>
             </header>

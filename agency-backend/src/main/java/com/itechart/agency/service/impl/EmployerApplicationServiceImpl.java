@@ -29,13 +29,16 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     private final AddressRepository addressRepository;
     private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
+    private final AgeRestrictionRepository ageRestrictionRepository;
+    private final ExperienceRepository experienceRepository;
 
     @Autowired
     public EmployerApplicationServiceImpl(EmployerApplicationRepository employerApplicationRepository,
                                           AgencyRepository agencyRepository, EmployerRepository employerRepository,
                                           AddressRepository addressRepository, CityRepository cityRepository,
                                           EmploymentTypeRepository employmentTypeRepository, CountryRepository countryRepository,
-                                          ProfessionRepository professionRepository, StatusRepository statusRepository) {
+                                          ProfessionRepository professionRepository, StatusRepository statusRepository,
+                                          AgeRestrictionRepository ageRestrictionRepository, ExperienceRepository experienceRepository) {
         this.employerApplicationRepository = employerApplicationRepository;
         this.agencyRepository = agencyRepository;
         this.employerRepository = employerRepository;
@@ -45,6 +48,8 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
         this.cityRepository = cityRepository;
         this.addressRepository = addressRepository;
         this.countryRepository = countryRepository;
+        this.ageRestrictionRepository = ageRestrictionRepository;
+        this.experienceRepository = experienceRepository;
     }
 
     @Override
@@ -127,13 +132,35 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
 
 
     private EmployerApplication setData(EmployerApplicationDto applicationDto) {
+        if (agencyRepository.findById(applicationDto.getAgencyId()).isEmpty()) System.out.println("agency");
+        if (employerRepository.findById(applicationDto.getEmployerId()).isEmpty()) System.out.println("employer");
+        if (employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).isEmpty()) System.out.println("empl type");
+        if (countryRepository.findByName(applicationDto.getCountryName()).isEmpty()) System.out.println("country");
+        if (cityRepository.findByName(applicationDto.getCityName()).isEmpty()) System.out.println("city");
+        if (professionRepository.findByName(applicationDto.getProfessionName()).isEmpty()) System.out.println("profession");
+        if (statusRepository.findByName(applicationDto.getStatusName()).isEmpty()) System.out.println("status");
+        if (addressRepository.findById(applicationDto.getAddressId()).isEmpty()) System.out.println("address");
+        if (ageRestrictionRepository.findByName(applicationDto.getAgeRestrictionName()).isEmpty()) System.out.println("age");
+        if (experienceRepository.findByName(applicationDto.getExperienceName()).isEmpty()) System.out.println("experience");
+
         if (agencyRepository.findById(applicationDto.getAgencyId()).isEmpty() || employerRepository.findById(applicationDto.getEmployerId()).isEmpty()
                 || employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).isEmpty() || countryRepository.findByName(applicationDto.getCountryName()).isEmpty()
                 || professionRepository.findByName(applicationDto.getProfessionName()).isEmpty() || statusRepository.findByName(applicationDto.getStatusName()).isEmpty()
-                || addressRepository.findById(applicationDto.getAddressId()).isEmpty() || cityRepository.findByName(applicationDto.getCityName()).isEmpty())
-            throw new NotFoundException("Agency, or/and employer, or/and employment type, or/and profession, or/and status, or/and country, or/and address, or/and city  doesn't exist");
+                || addressRepository.findById(applicationDto.getAddressId()).isEmpty() || cityRepository.findByName(applicationDto.getCityName()).isEmpty()
+                || ageRestrictionRepository.findByName(applicationDto.getAgeRestrictionName()).isEmpty() || experienceRepository.findByName(applicationDto.getExperienceName()).isEmpty())
+            throw new NotFoundException("Agency, or/and employer, or/and employment type, or/and profession, or/and status, " +
+                    "or/and country, or/and address, or/and city, or/and experience, or/and age restriction  doesn't exist");
 
-        EmployerApplication application = EmployerApplicationConvert.convertDtoToEntity(applicationDto);
+        EmployerApplication application = new EmployerApplication();
+        application.setCreationDate(applicationDto.getCreationDate());
+        application.setEndDate(applicationDto.getEndDate());
+        application.setSalary(applicationDto.getSalary());
+        application.setComment(applicationDto.getComment());
+        application.setDeleted(false);
+        application.setApplicationNumber(applicationDto.getApplicationNumber());
+        //EmployerApplication application = EmployerApplicationConvert.convertDtoToEntity(applicationDto);
+        application.setExperience(experienceRepository.findByName(applicationDto.getExperienceName()).get());
+        application.setAgeRestriction(ageRestrictionRepository.findByName(applicationDto.getAgeRestrictionName()).get());
         application.setAgency(agencyRepository.findById(applicationDto.getAgencyId()).get());
         application.setEmployer(employerRepository.findById(applicationDto.getEmployerId()).get());
         application.setEmploymentType(employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).get());
@@ -149,7 +176,9 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     public void deleteById(Long id) {
         if (id <= 0L) throw new BadRequestException("Not valid id");
         if (employerApplicationRepository.findById(id).isPresent()) {
-            employerApplicationRepository.deleteById(id);
+            EmployerApplication app = employerApplicationRepository.findById(id).get();
+            app.setDeleted(true);
+            employerApplicationRepository.save(app);
         } else {
             throw new NotFoundException("Employer application doesn't exist");
         }

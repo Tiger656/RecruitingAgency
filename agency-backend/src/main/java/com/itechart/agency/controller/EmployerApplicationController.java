@@ -4,8 +4,8 @@ import com.itechart.agency.dto.EmployerApplicationDto;
 import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.service.impl.EmailServiceImpl;
 import com.itechart.agency.service.impl.EmployerApplicationServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,8 @@ import java.util.Objects;
 @RequestMapping("/employerApplication")
 public class EmployerApplicationController {
     private final EmployerApplicationServiceImpl employerApplicationService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmployerApplicationController.class);
+    private static final Logger LOGGER = Logger.getLogger(EmployerApplicationController.class);
+
 
     @Autowired
     public EmployerApplicationController(final EmployerApplicationServiceImpl employerApplicationService) {
@@ -33,7 +34,7 @@ public class EmployerApplicationController {
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/sendEmail")
     public ResponseEntity<?> sendEmail(final @Valid @RequestBody String[] email) throws MessagingException {
-        LOGGER.info("REST request. Path:/employerApplication/sendEmail method: POST. email: {}", "to " + email[0] + ", message: " + email[2]);
+        LOGGER.info("REST request. Path:/employerApplication/sendEmail method: POST. email: to " + email[0] + ", message: " + email[2]);
         EmailServiceImpl.send(email[0], email[1], email[2]);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -42,7 +43,7 @@ public class EmployerApplicationController {
     @PreAuthorize("hasAuthority('SECRETARY')or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getOneEmployerApplication(@PathVariable("id") Long id) {
-        LOGGER.info("REST request. Path:/employerApplication/{} method: GET.", id);
+        LOGGER.info("REST request. Path:/employerApplication/" + id + " method: GET.");
         final EmployerApplicationDto employerApplicationDto = employerApplicationService.findById(id);
         return Objects.isNull(employerApplicationDto) ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 ResponseEntity.ok().body(employerApplicationDto);
@@ -52,15 +53,15 @@ public class EmployerApplicationController {
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PutMapping("/edit")
     public ResponseEntity<?> editEmployerApplication(final @Valid @RequestBody EmployerApplicationDto employerApplicationDto) {
-        LOGGER.info("REST request. Path:/employerApplication/edit method: POST. employer: {}", employerApplicationDto);
+        LOGGER.info("REST request. Path:/employerApplication/edit method: POST. " + employerApplicationDto.toString());
         employerApplicationService.update(employerApplicationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER')")
-    @PutMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<?> createEmployerApplication(final @Valid @RequestBody EmployerApplicationDto employerApplicationDto) {
-        LOGGER.info("REST request. Path:/employerApplication/create method: POST. employer: {}", employerApplicationDto);
+        LOGGER.info("REST request. Path:/employerApplication/create method: POST. " + employerApplicationDto.toString());
         employerApplicationService.create(employerApplicationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -70,7 +71,7 @@ public class EmployerApplicationController {
     @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeEmployerApplication(@PathVariable("id") Long id) {
-        LOGGER.info("REST request. Path:/employerApplication/{} method: DELETE.", id);
+        LOGGER.info("REST request. Path:/employerApplication/" + id + " method: DELETE.");
         employerApplicationService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -94,7 +95,7 @@ public class EmployerApplicationController {
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PutMapping("/change-status/{id}/{statusNew}")
     public EmployerApplicationDto changeEmployerApplicationStatus(@PathVariable("id") Long id, @PathVariable("statusNew") String statusName) {
-        LOGGER.info("REST request. Path:/employerApplication/change-status/{id}/{statusId} method: PUT. employerId and statusName: {}", id + ", " + statusName);
+        LOGGER.info("REST request. Path:/employerApplication/change-status/{id}/{statusId} method: PUT. employerId: " + id + " and statusName: " + statusName);
         System.out.println(statusName);
         if (statusName.contains("-")) {
             String status = statusName.replace('-', ' ');
@@ -105,11 +106,12 @@ public class EmployerApplicationController {
     @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
     @GetMapping("/getAllByStatus/{status}")
     public List<EmployerApplicationDto> getAllEmployerApplicationByStatus(@PathVariable("status") String status) {
-        LOGGER.info("REST request. Path:/employerApplication/getAllByStatus/{} method: GET.", status);
+        LOGGER.info("REST request. Path:/employerApplication/getAllByStatus/" + status + " method: GET.");
         System.out.println(status);
         if (status.contains("-")) {
             String statusN = status.replace('-', ' ');
             return employerApplicationService.getApplicationsByStatus(statusN);
         } else return employerApplicationService.getApplicationsByStatus(status);
     }
+
 }

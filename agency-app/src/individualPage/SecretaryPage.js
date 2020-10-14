@@ -72,11 +72,11 @@ const styles = {
         paddingRight: '30px'
     },
     smallPopUp: {
-        top: '350px',
-        width: '60%',
+        top: '80px',
+        width: '80%',
         position: 'absolute',
         zIndex: '999',
-        margin: '0 0 0 -30%',
+        margin: '0 0 0 -40%',
         left: '50%',
         display: 'none',
         paddingLeft: '30px',
@@ -126,20 +126,20 @@ function SecretaryPage(props) {
 
     }
     const getEmployeeContracts = () => {
- /*       axios
-            .get("http://localhost:8080/employeeContract/all")
+        axios
+            .get("http://localhost:8080/employeeContract/all", {headers: authHeader()})
             .then(data => {
                 console.log(data.data)
                 setEmployeeContracts({employeeContracts: data.data})
                 setLoading(false)
             })
             .catch(err => alert(err))
-*/
+
     }
 
     const updateApp = (idApp, newStatus) => {
         axios
-            .put('http://localhost:8080/employerApplication/change-status/' + idApp + "/" + newStatus, null)
+            .put('http://localhost:8080/employerApplication/change-status/' + idApp + "/" + newStatus, null, {headers: authHeader()})
             .then()
             .catch((err) => alert(err))
     }
@@ -148,7 +148,7 @@ function SecretaryPage(props) {
         setLoading(true)
         const email = ['mariaz_email@mail.ru', subject, message]
         axios
-            .post('http://localhost:8080/employerApplication/sendEmail', email)
+            .post('http://localhost:8080/employerApplication/sendEmail', email, {headers: authHeader()})
             .then(() => {
                 setLoading(false)
             })
@@ -164,11 +164,11 @@ function SecretaryPage(props) {
         )
     }
     let appId;
+    let appNumber;
     let index = 1;
     let index2 = 1;
     return (
-        <div style={{marginTop: '-52px'}}>
-
+        <div>
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
@@ -182,11 +182,12 @@ function SecretaryPage(props) {
                     }}/>
                     <br/>
                     <span className="login100-form-title p-b-37"
-                          style={styles.span}>{langConst[0]}</span>
+                          style={styles.span}>Не рассмотренные заявки работодателей</span>
 
                     <div style={styles.divEnterData}>
-                        <input type="text" style={styles.input} value='Номер заявки: ' readOnly="readOnly"/>
-                        <input type="text" style={styles.input} id='appNumber' value='' readOnly="readOnly"/>
+                        <input type="text" style={styles.input} value='Тип занятости: ' readOnly="readOnly"/>
+                        <input type="text" style={styles.input} id='appEmploymentTypeName' value=''
+                               readOnly="readOnly"/>
                         <span className="focus-input100"/>
                     </div>
                     <div style={styles.divEnterData}>
@@ -197,6 +198,21 @@ function SecretaryPage(props) {
                     <div style={styles.divEnterData}>
                         <input type="text" style={styles.input} value={'Специальность: '} readOnly="readOnly"/>
                         <input type="text" style={styles.input} id='appProfession' value='' readOnly="readOnly"/>
+                        <span className="focus-input100"/>
+                    </div>
+                    <div style={styles.divEnterData}>
+                        <input type="text" style={styles.input} value={"Необходимый опыт: "} readOnly="readOnly"/>
+                        <input type="text" style={styles.input} id='appExperience' value='' readOnly="readOnly"/>
+                        <span className="focus-input100"/>
+                    </div>
+                    <div style={styles.divEnterData}>
+                        <input type="text" style={styles.input} value={'Возрастные ограничения: '} readOnly="readOnly"/>
+                        <input type="text" style={styles.input} id='appAge' value='' readOnly="readOnly"/>
+                        <span className="focus-input100"/>
+                    </div>
+                    <div style={styles.divEnterData}>
+                        <input type="text" style={styles.input} value={'Локация: '} readOnly="readOnly"/>
+                        <input type="text" style={styles.input} id='appLocation' value='' readOnly="readOnly"/>
                         <span className="focus-input100"/>
                     </div>
                     <div className="container-login100-form-btn">
@@ -218,7 +234,7 @@ function SecretaryPage(props) {
                 </form>
             </div>
 
-            <div className="wrap-login100" id='appOk' style={styles.smallPopUp}>
+            <div className="wrap-login100" id='appOk' style={styles.popUp}>
                 <form className="login100-form validate-form">
                     <div className="cl-btn-7" onClick={function () {
                         updateApp(appId, "NOT-REVIEWED");
@@ -234,7 +250,7 @@ function SecretaryPage(props) {
                     <div className="container-login100-form-btn">
                         <button type='button' className="login100-form-btn" onClick={function () {
                             updateApp(appId, "ACCEPTED");
-                            sendEmail('Ваша заявка одобрена', 'Здравствуйте! Ваша заявка о поиске соискателя ' +
+                            sendEmail('Ваша заявка одобрена', 'Здравствуйте! Ваша заявка номер ' + appNumber + ' о поиске соискателя ' +
                                 'одобрена. Стоимость услуг: ' + document.getElementById('cost').value + '. ' +
                                 'Подтвердите согласие в вашем личном кабинете.');
                             document.getElementById('appOk').style.display = 'none';
@@ -244,7 +260,7 @@ function SecretaryPage(props) {
                     </div>
                 </form>
             </div>
-            <div className="wrap-login100" id='appNotOk' style={styles.smallPopUp}>
+            <div className="wrap-login100" id='appNotOk' style={styles.popUp}>
                 <form className="login100-form validate-form">
                     <div className="cl-btn-7" onClick={function () {
                         updateApp(appId, "NOT-REVIEWED");
@@ -260,7 +276,7 @@ function SecretaryPage(props) {
                     <div className="container-login100-form-btn">
                         <button type='button' className="login100-form-btn" onClick={function () {
                             updateApp(appId, "REJECTED");
-                            sendEmail('Ваша заявка отклонена', 'Здравствуйте! Ваша заявка о поиске соискателя ' +
+                            sendEmail('Ваша заявка отклонена', 'Здравствуйте! Ваша заявка номер ' + appNumber + ' о поиске соискателя ' +
                                 'отклонена по следующей причине: ' + document.getElementById('rejectionReason').value);
                             document.getElementById('appOk').style.display = 'none';
                         }}>Отказать в заявке
@@ -287,27 +303,31 @@ function SecretaryPage(props) {
                         }}>
                         <tr>
                             <th scope="col">№</th>
-                            <th scope="col">Application number</th>
-                            <th scope="col">Employment type id</th>
+                            <th scope="col">Creation date</th>
+                            <th scope="col">Profession</th>
                             <th scope="col">Check</th>
                         </tr>
                         </thead>
                         <tbody>
                         {applications.applications.map(app => (
 
-                            <tr key={app.application_number}>
+                            <tr key={app.id}>
                                 <th scope="row">{index++}</th>
-                                <td>{app.application_number}</td>
-                                <td>{app.employmentTypeId}</td>
+                                <td>{app.creationDate}</td>
+                                <td>{app.professionName}</td>
                                 <td>
                                     <button type='button' style={styles.tableButton} onClick={
                                         function () {
                                             document.getElementById("searchApplication").style.display = "none";
                                             updateApp(app.id, "CONSIDERED");
                                             appId = app.id;
-                                            document.getElementById("appNumber").value = app.application_number;
+                                            appNumber = app.applicationNumber;
+                                            document.getElementById("appEmploymentTypeName").value = app.employmentTypeName;
                                             document.getElementById("appSalary").value = app.salary;
-                                            document.getElementById("appProfession").value = app.professionId;
+                                            document.getElementById("appProfession").value = app.professionName;
+                                            document.getElementById("appExperience").value = app.experience;
+                                            document.getElementById("appAge").value = app.ageRestriction;
+                                            document.getElementById("appLocation").value = app.countryName + ', ' + app.cityName;
                                             document.getElementById("application").style.display = 'block';
                                         }}>Рассмотреть
                                     </button>
@@ -351,7 +371,7 @@ function SecretaryPage(props) {
                                     <button type='button' style={styles.tableButton} onClick={
                                         function () {
                                             document.getElementById("searchEmployeeContracts").style.display = "none";
-                                       }}>Рассмотреть
+                                        }}>Рассмотреть
                                     </button>
                                 </td>
                             </tr>
@@ -392,15 +412,13 @@ function SecretaryPage(props) {
                     <button type="submit" className="btn-block  btn-primary"
                             style={styles.button} onClick={function () {
                         document.getElementById("searchApplication").style.display = "block";
-                    }}>1. {langConst[1]}</button>
-                    <button type="submit" className="btn-block  btn-primary"
-                            style={styles.button}>2. {langConst[2]}</button>
+                    }}>1. Просмотреть не рассмотренные заявки работодателей
+                    </button>
                     <button type="submit" className="btn-block  btn-primary"
                             style={styles.button} onClick={function () {
                         document.getElementById("searchEmployeeContracts").style.display = "block";
-                    }}>3. {langConst[4]}</button>
-                    <button type="submit" className="btn-block  btn-primary"
-                            style={styles.button}>4. {langConst[5]}</button>
+                    }}>2. Просмотреть не рассмотренные заявки соискателей
+                    </button>
                 </div>
 
             </section>

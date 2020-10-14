@@ -23,8 +23,13 @@ import java.util.List;
 @NoArgsConstructor
 public class EmployeeContract {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
 
     @NotNull(message = "Agency id in employee contract cannot be null")
     @ManyToOne(cascade = CascadeType.ALL)
@@ -118,15 +123,10 @@ public class EmployeeContract {
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
 
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+   /* @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "employee_employment_type", joinColumns = {
             @JoinColumn(name = "agency_employee_contract_id")}, inverseJoinColumns = {
             @JoinColumn(name = "employee_type_id")})
     private List<EmploymentType> employmentTypes;
-
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinTable(name = "employee_contract_feature", joinColumns = {
-            @JoinColumn(name = "employee_contract_id")}, inverseJoinColumns = {
-            @JoinColumn(name = "feature_id")})
-    private List<Feature> features;
+*/
 }

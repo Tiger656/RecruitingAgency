@@ -2,8 +2,8 @@ import React, {useCallback, useState} from 'react';
 import HeaderMenu from "./startPage/HeaderMenu";
 import InformationInPicture from "./startPage/InformationInPicture";
 import './App.css';
-import EmployerPage from "./individualPage/EmployerPage";
-import EmployeePage from "./individualPage/EmployeePage";
+import EmployerPage from "./individualPage/EmployerPage/EmployerPage";
+import EmployeePage from "./individualPage/EmployeePage/EmployeePage";
 import Contacts from "./startPage/Contacts";
 import './startPage/Toggle.css';
 import {BrowserRouter as Router, Route} from "react-router-dom";
@@ -11,6 +11,7 @@ import {AdminPage} from "./individualPage/AdminPage/AdminPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SecretaryPage from "./individualPage/SecretaryPage";
 import {ManagerPageMain} from "./individualPage/ManagerPages/ManagerPageMain";
+import Login from "./auth/component/Login";
 import {ExpertPage} from "./individualPage/ExpertPage/ExpertPage";
 
 

@@ -24,9 +24,8 @@ public class EmployerContract {
     private ContractType contractType;
 
     @NotNull(message = "File in contract cannot be null")
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "file_id", referencedColumnName = "id")
-    private File file;
+    @Column(name = "file")
+    private String file;
 
     @NotNull(message = "Daily payment in contract cannot be null")
     @Column(name = "daily_payment")

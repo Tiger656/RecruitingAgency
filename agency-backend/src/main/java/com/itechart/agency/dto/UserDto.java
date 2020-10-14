@@ -24,6 +24,7 @@ public class UserDto {
     private String email;
     private String agencyName;
     private Long agencyId;
+    private Boolean isDeactivated;
     private Boolean isDeleted;
     private List<Role> roles;
 
@@ -31,6 +32,13 @@ public class UserDto {
         return new UserDto().new Builder();
     }
 
+
+
+    public UserDto(String email, Long agencyId) {
+        this.email = email;
+        this.agencyId = agencyId;
+
+    }
 
     public class Builder {
         private Builder() {

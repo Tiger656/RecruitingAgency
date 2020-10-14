@@ -14,6 +14,9 @@ public interface EmployerApplicationRepository extends JpaRepository<EmployerApp
 
     List<EmployerApplication> findByStatus(Status status);
 
+    @Query(value = "SELECT * FROM public.employer_application WHERE is_deleted = :false", nativeQuery = true)
+    List<EmployerApplication> findByDeletedFalse();
+
 
     List<EmployerApplication> findByAgencyIdAndIsDeletedFalse(Long agencyId);
 }

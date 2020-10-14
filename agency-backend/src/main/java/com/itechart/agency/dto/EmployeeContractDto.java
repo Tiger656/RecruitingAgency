@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -12,6 +11,7 @@ public class EmployeeContractDto {
     private Long id;
 
     private Long agencyId;
+    private Long userId;
     private double minSalary;
     private double priceUsd;
     private double compensation;
@@ -31,6 +31,5 @@ public class EmployeeContractDto {
     private String professionName; //
     private double accountUsd;
     private Long statusId;
-    private List<Long> employmentTypesIds;
-    private List<Long> featuresIds;
+   // private List<Long> employmentTypesIds;
 }

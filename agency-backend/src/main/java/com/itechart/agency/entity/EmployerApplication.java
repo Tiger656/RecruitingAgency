@@ -19,8 +19,12 @@ import java.sql.Date;
 @NoArgsConstructor
 public class EmployerApplication {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "application_number")
+    private Long applicationNumber;
 
     @NotNull(message = "Agency for employer cannot be null")
     @ManyToOne
@@ -62,17 +66,13 @@ public class EmployerApplication {
     @JoinColumn(name = "employment_type_id", referencedColumnName = "id")
     private EmploymentType employmentType;
 
-    /*@Enumerated(EnumType.ORDINAL)
-    @Column(name = "experience")
-    private Enums.Experience experience;*/
-    @Column(name = "experience")
-    private String experience;
+    @ManyToOne
+    @JoinColumn(name = "experience_id", referencedColumnName = "id")
+    private Experience experience;
 
-    @Column(name = "age_restriction")
-    private String ageRestriction;
-   /* @Enumerated(EnumType.ORDINAL)
-    @Column(name = "age_restriction")
-    private Enums.AgeRestriction ageRestriction;*/
+    @ManyToOne
+    @JoinColumn(name = "age_restriction_id", referencedColumnName = "id")
+    private AgeRestriction ageRestriction;
 
     @ManyToOne
     @JoinColumn(name = "country_id", referencedColumnName = "id")

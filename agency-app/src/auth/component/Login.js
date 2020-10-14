@@ -1,15 +1,13 @@
-import React, {useState, useRef} from "react";
+import React, {useState} from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
 
 import AuthService from "../auth.service";
-import InformationInPicture from "../../startPage/InformationInPicture";
-import {toast} from "react-toastify";
 
 
 const required = (value) => {
     if (!value) {
+
         return (
             <div className="alert alert-danger" role="alert">
                 This field is required!
@@ -105,7 +103,7 @@ const Login = (props) => {
 
                 if (error.response.data.status === 401 || error.response.data.status === 404) {
                     setLoading(false);
-                    setMessage("Login and / or password are incorrect");
+                    setMessage( error.response.data.error);
                 }
             }
         );
@@ -116,14 +114,14 @@ const Login = (props) => {
     return (
         <div className="col-md-12">
 
-            <div className="card card-container">
+            <div className="card card-container" style={{height:'600px'}}>
                 <img
                     src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
                     alt="profile-img"
                     className="profile-img-card"
                 />
 
-                <Form onSubmit={handleLogin} className="login100-form validate-form">
+                <Form onSubmit={handleLogin} className="login100-form validate-form" >
 
                     <div className="form-group" style={styles.divEnterData}>
                         <label htmlFor="Email">Email</label>
