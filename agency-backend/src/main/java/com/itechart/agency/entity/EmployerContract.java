@@ -5,7 +5,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.time.LocalDate;
+
+
 
 @Entity
 @Table(name = "agency_employer_contracts")
@@ -16,7 +18,7 @@ import java.sql.Date;
 @ToString
 public class EmployerContract {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Contract type cannot be null")
@@ -34,11 +36,11 @@ public class EmployerContract {
 
     @NotNull(message = "Contract creation date cannot be null")
     @Column(name = "contract_creation_date")
-    private Date contractCreationDate;
+    private LocalDate contractCreationDate;
 
     @NotNull(message = "Contract end date cannot be null")
     @Column(name = "contract_end_date")
-    private Date contractEndDate;
+    private LocalDate contractEndDate;
 
     @NotNull(message = "Field is_suspended in contract cannot be null")
     @Column(name = "is_suspended")

@@ -2,11 +2,13 @@ package com.itechart.agency.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Date;
 
 @Setter
 @Getter
+@ToString
 public class EmployerContractDto {
     private Long id;
 
@@ -15,6 +17,8 @@ public class EmployerContractDto {
     private double dailyPayment;
     private Date contractCreationDate;
     private Date contractEndDate;
+    private String name;
+    private Long contractId;
     private boolean isSuspended;
     private boolean isDeleted;
 

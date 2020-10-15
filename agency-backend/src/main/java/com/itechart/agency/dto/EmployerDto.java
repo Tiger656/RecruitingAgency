@@ -1,9 +1,11 @@
 package com.itechart.agency.dto;
 
+import com.itechart.agency.entity.Agency;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Setter
@@ -16,9 +18,17 @@ public class EmployerDto {
     private Long employerContractId;
     private List<Long> applicationsIds;
 
-    public static EmployerDto.Builder builder() {
-        return new EmployerDto().new Builder();
+    public EmployerDto(Long agencyId,Long userId,String name,Long employerContractId) {
+        this.agencyId=agencyId;
+        this.userId=userId;
+        this.name =name;
+
     }
+
+
+//    public static EmployerDto.Builder builder() {
+//        return new EmployerDto().new Builder();
+//    }
 
     public class Builder {
         public Builder() {

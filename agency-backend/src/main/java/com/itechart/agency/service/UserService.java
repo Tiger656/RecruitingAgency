@@ -1,14 +1,16 @@
 package com.itechart.agency.service;
 
+import com.itechart.agency.dto.EmployerContractDto;
 import com.itechart.agency.dto.UserDto;
 import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.User;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface UserService {
     UserDto create(final UserDto t);
-
+UserDto createUserWithContract(UserDto userDto,EmployerContractDto employerContractDto);
     UserDto findById(final Long id);
 
     List<UserDto> findAll();

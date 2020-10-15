@@ -54,7 +54,7 @@ public class EmailServiceImpl {
            try{
                Transport.send(message);
            }catch (MessagingException e){
-               throw new NotFoundException("Correct your email!");
+               throw new NotFoundException("The entered Email does not exist");
            }
 
 

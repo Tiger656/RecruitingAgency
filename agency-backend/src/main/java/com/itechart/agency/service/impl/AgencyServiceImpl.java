@@ -41,6 +41,7 @@ public class AgencyServiceImpl implements AgencyService {
 
         userService.createUserByRole(agencyDto.getOwnerEmail(), agencyDto1.getId(), ROLE_OWNER);
         userService.createUserByRole(agencyDto.getAdminEmail(), agencyDto1.getId(), ROLE_ADMIN);
+
         return agencyDto1;
     }
 

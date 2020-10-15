@@ -1,6 +1,7 @@
 package com.itechart.agency.entity;
 
 import com.itechart.agency.dto.EmployerContractDto;
+import com.itechart.agency.dto.UserDto;
 import lombok.*;
 
 @Getter
@@ -9,6 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class EmployerAndContract {
-    private User user;
+    private UserDto user;
     private EmployerContractDto contract;
 }

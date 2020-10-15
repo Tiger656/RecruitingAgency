@@ -12,4 +12,6 @@ public interface EmployerContractRepository extends JpaRepository<EmployerContra
     @Query(value = "SELECT * FROM public.agency_employer_contracts WHERE is_deleted = :false", nativeQuery = true)
     List<EmployerContract> findAllByIs_deletedIsFalse();
 
+
+
 }

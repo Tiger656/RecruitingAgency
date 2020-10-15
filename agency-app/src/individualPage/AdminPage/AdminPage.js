@@ -11,7 +11,20 @@ import {toast} from "react-toastify";
 import Form from "react-validation/build/form";
 import PaymentPage from "../Payment/PaymentPage";
 
-
+const styles = {
+    popupFade: {
+        position: 'fixed',
+        width: '100%',
+        height: '100%',
+        top: 0,
+        left: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 100
+    }
+}
 export const AdminPage = () => {
     const [editing, setEditing] = useState(false)
     const initialFormState = {id: null, email: '', agencyName: '', agencyId: '', agency: {}, roleIds: [], roles: []}
@@ -24,10 +37,13 @@ export const AdminPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [deposit, setDeposit] = useState("");
+    const [allEmployerContractTypes, setAllEmployerContractTypes] = useState([]);
+    const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
     useEffect(() => {
         getUsers();
         // getAgencies();
+        getAllContractTypes();
         getDepositByAgencyId();
         getRoles();
     }, []);
@@ -35,6 +51,16 @@ export const AdminPage = () => {
     let personEmail = JSON.parse(localStorage.getItem('response')).email;
 
 
+    const getAllContractTypes = () => {
+        axios
+            .get('http://localhost:8080/employer-contract/types', {headers: authHeader()})
+            .then((data) => {
+                setAllEmployerContractTypes(data.data)
+            })
+            .catch((err) => errorNotify(err.response.data.error))
+        console.log(allEmployerContractTypes);
+
+    }
     const getUsers = () => {
         axios
             .get('http://localhost:8080/api/user?name=' + agency.name, {headers: authHeader()})
@@ -79,28 +105,37 @@ export const AdminPage = () => {
     const modalCloseClickHandler = () => setIsModalCreate(true);
 
     const modalEditCloseClickHandler = () => setEditing(false);
+    const toggleIsPaymentOpen = () => setIsPaymentOpen(!isPaymentOpen);
 
-const getDepositByAgencyId = ()=>{
-    axios
-        .get('http://localhost:8080/api/agency/deposit/' + agency.id, {headers: authHeader()})
-        .then((data) => setDeposit(data.data))
-        .catch((err) => errorNotify(err.response.data.error))
-}
-    const addUser = (user,contract) => {
-        setIsModalCreate(true)
-let employerAndContract ={user,contract}
+    const getDepositByAgencyId = () => {
+        axios
+            .get('http://localhost:8080/api/agency/deposit/' + agency.id, {headers: authHeader()})
+            .then((data) => setDeposit(data.data))
+            .catch((err) => errorNotify(err.response.data.error))
+    }
+    const [addUserLoading, setAddUserLoading] = useState(false);
+
+    const addUser = (user, contract) => {
+        setIsModalCreate(true);
+        setAddUserLoading(true);
+        let employerAndContract = {user, contract}
         console.log(employerAndContract)
         axios
             .post('http://localhost:8080/api/user', employerAndContract, {headers: authHeader()})
-            // .then(resp => {
-            //     setUsers([...users, resp.data]);
-            //     successNotify("User with email: " + user.email + " created successfully!");
-            // })
-            .catch((err) => errorNotify(err.response.data.error))
+            .then(resp => {
+                setUsers([...users, resp.data]);
+                setAddUserLoading(false);
+                successNotify("User with email: " + user.email + " created successfully!");
+            })
+            .catch((err) => {
+                setAddUserLoading(false);
+                errorNotify(err.response.data.error)
+            })
     }
 
-    const update = user => {
+    const update = (user) => {
         setLoading(true)
+        console.log(user);
         axios
             .put('http://localhost:8080/api/user', user, {headers: authHeader()})
             .then(resp => {
@@ -145,6 +180,13 @@ let employerAndContract ={user,contract}
     return (
         <div>
             <Notification/>
+            {addUserLoading &&
+            <div style={styles.popupFade}>
+                <div className="spinner-border text-primary" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+            }
             <div>
                 <link
                     href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -162,6 +204,9 @@ let employerAndContract ={user,contract}
                                         <h1 className="to-animate">{agency.name}</h1>
                                         <h2 className="to-animate"> Email: {personEmail}</h2>
 
+                                        <h2 className="to-animate">
+                                            Agency's balance: {deposit}</h2>
+                                        <br/>
                                     </div>
                                 </div>
                             </div>
@@ -188,10 +233,11 @@ let employerAndContract ={user,contract}
                                         roleIds={currentUser?.roleIds}
                                         roles={currentUser?.roles}
                                         agency={currentUser?.agency}
-                                        allRoles={allRoles}
+                                        allRoles={allRoles.filter(role => role.name !== "EMPLOYEE" && role.name !== "EMPLOYER")}
                                         allAgencies={allAgencies}
                                         onModalCloseClick={modalEditCloseClickHandler}
                                         buttonName={'Update'}
+                                        allEmployerContractTypes={allEmployerContractTypes}
                                     />
                                 }
 
@@ -201,11 +247,17 @@ let employerAndContract ={user,contract}
                                             <button className="btn btn-dark" onClick={modalCreateClickHandler}>Add new
                                                 user
                                             </button>
+
+                                            <button style={{marginLeft: "20px"}} className="btn btn-dark"
+                                                    onClick={toggleIsPaymentOpen}
+                                            >Payment
+                                            </button>
                                             {!isModalCreate &&
                                             <Modal submitHandler={addUser} onModalCloseClick={modalCloseClickHandler}
                                                    allRoles={allRoles}
                                                    allAgencies={allAgencies}
                                                    buttonName={'Create'}
+                                                   allEmployerContractTypes={allEmployerContractTypes}
                                             />}
                                         </div>
                                     </div>
@@ -252,7 +304,19 @@ let employerAndContract ={user,contract}
                                 {/*        Pay*/}
                                 {/*    </button>*/}
                                 {/*</div>*/}
-                            <PaymentPage/>
+                                {isPaymentOpen &&
+                                <div style={styles.popupFade}>
+                                    <div className="animate__animated animate__backInLeft"
+                                         style={{marginTop: '30px', height: '750px', width: "80%"}}>
+                                        <button type="button" className="cl-btn-7" onClick={toggleIsPaymentOpen}
+                                                style={{top: '80px', left: '-350px'}}
+                                        />
+                                        <br/>
+                                        <PaymentPage/>
+                                    </div>
+                                </div>
+                                }
+
                             </div>
                         </div>
                         <br/><br/>

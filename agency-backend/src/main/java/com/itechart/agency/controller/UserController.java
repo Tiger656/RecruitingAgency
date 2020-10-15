@@ -1,10 +1,10 @@
 package com.itechart.agency.controller;
 
 
+import com.itechart.agency.dto.EmployerContractDto;
 import com.itechart.agency.dto.UserDto;
 import com.itechart.agency.entity.EmployerAndContract;
 import com.itechart.agency.service.UserService;
-import com.itechart.agency.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,13 +49,13 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public void createUser(@RequestBody EmployerAndContract employerAndContract) {
+    public ResponseEntity<UserDto> createUser(@RequestBody EmployerAndContract employerAndContract) {
         System.out.println(
                 employerAndContract.getUser()
         );
-//        System.out.println(employerAndContract.getContract());
+        System.out.println(employerAndContract.getContract());
 //        System.out.println(employerAndContract.getEmployerContract());
-//        return new ResponseEntity<>(userService.create(userDto), HttpStatus.OK);
+        return new ResponseEntity<>(userService.createUserWithContract(employerAndContract.getUser(),employerAndContract.getContract()),HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

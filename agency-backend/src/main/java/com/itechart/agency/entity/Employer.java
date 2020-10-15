@@ -1,6 +1,7 @@
 package com.itechart.agency.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.itechart.agency.dto.AgencyDto;
 import com.itechart.agency.entity.location.City;
 import com.itechart.agency.entity.location.Address;
 import lombok.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "employer")
@@ -19,7 +21,7 @@ import java.util.List;
 @ToString
 public class Employer {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Employer name cannot be null")
@@ -46,4 +48,6 @@ public class Employer {
     @OneToMany(mappedBy = "employer")
     @JsonIgnore
     private List<EmployerApplication> applications;
+
+
 }
