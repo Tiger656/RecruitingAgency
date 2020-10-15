@@ -9,43 +9,40 @@ import axios from "axios";
 import authHeader from "../../auth/header";
 
 
-function EmployeePage(props) {
-    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
-    let personEmail = JSON.parse(localStorage.getItem('response')).email;
-    const lang = props.lang;
-    let langConst = [];
-    if (lang === 'en') {
-        langConst.push('Status');
-        langConst.push('Contract');
-        langConst.push('Interview');
-        langConst.push('Interviews');
-    } else {
-        langConst.push('Статус');
-        langConst.push('Контракт');
-        langConst.push('Интервью');
-        langConst.push('Интервью');
-    }
-    const id = 1;
+function EmployeePage() {
+    const agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    const personEmail = JSON.parse(localStorage.getItem('response')).email;
+    const userId = JSON.parse(localStorage.getItem('response')).userId;
     let isSuspended;
     const [contract, setContract] = useState({contract: []})
     const [interviews, setInterviews] = useState([]);
+    const [contractStatus, setContractStatus] = useState([]);
     useEffect(() => {
-        getAllInterviews();
         getContract();
     }, [])
-    const getAllInterviews = () => {
+    const getContract = () => {
         axios
-            .get("http://localhost:8080/interview/" + id, {headers: authHeader()}) //agency_id/expert_id/year/month/day
+            .get("http://localhost:8080/employeeContract/getByUserId/" + userId, {headers: authHeader()})
+            .then(data => {
+                setContract({contract: data.data})
+                getAllInterviews(data.data.id)
+                getStatus(data.data.statusId)
+            })
+            .catch(err => alert(err))
+    }
+    const getAllInterviews = (contractId) => {
+        axios
+            .get("http://localhost:8080/interview/get-by-contract-id/" + contractId, {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
                 setInterviews(data.data);
             })
             .catch(err => alert(err))
     }
-    const getContract = () => {
+    const getStatus = (statusId) => {
         axios
-            .get("http://localhost:8080/employeeContract/" + id, {headers: authHeader()})
+            .get("http://localhost:8080/status/" + statusId, {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
-                setContract({contract: data.data})
+                setContractStatus(data.data.name);
             })
             .catch(err => alert(err))
     }
@@ -70,7 +67,8 @@ function EmployeePage(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{agencyName}</h1>
+                                    <h1 className="to-animate">{contract.contract.name + ' ' + contract.contract.surname}</h1>
+                                    <h2 className="to-animate">Agency: {agencyName}</h2>
                                     <h2 className="to-animate"> Email: {personEmail}</h2>
                                 </div>
                             </div>
@@ -84,12 +82,14 @@ function EmployeePage(props) {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 section-heading text-center">
-                            <h2 className="to-animate">{langConst[3]}</h2>
+                            <h2 className="to-animate">Interviews</h2>
                         </div>
                     </div>
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
-                        {interviews.map(interview => (<EmployeeInterview interview={interview} key={interview.id}/>))}
+                        {interviews.map(interview => (
+                            <EmployeeInterview interview={interview} key={interview.id}/>
+                        ))}
                     </div>
                     <br/><br/>
                 </div>
@@ -100,7 +100,7 @@ function EmployeePage(props) {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 section-heading text-center">
-                            <h2 className="to-animate">{langConst[1]}</h2>
+                            <h2 className="to-animate">Contracts</h2>
                         </div>
                     </div>
                     <br/><br/>
@@ -116,11 +116,11 @@ function EmployeePage(props) {
                                 }}>
                                     <br/>
                                     <h6><b>{isSuspended}</b></h6>
-                                    <h10> Дата создания контракта: {contract.contract.creationDate}</h10>
+                                    <h7> Дата создания контракта: {contract.contract.creationDate}</h7>
                                     <br/>
-                                    <h10> Дата окончания контракта: {contract.contract.endDate}</h10>
+                                    <h7> Дата окончания контракта: {contract.contract.endDate}</h7>
                                     <br/>
-                                    <h10> Статус контракта: {contract.contract.statusId}</h10>
+                                    <h7> Статус контракта: {contractStatus}</h7>
 
                                 </div>
                             </a>

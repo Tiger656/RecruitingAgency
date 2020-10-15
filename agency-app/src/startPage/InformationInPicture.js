@@ -2,9 +2,8 @@ import React from 'react';
 import AboutCompany from "./AboutCompany";
 import Clients from "./Clients";
 import Services from "./Services";
-import {Notification} from "../individualPage/AdminPage/components/Notification";
-import {toast} from "react-toastify";
-
+import EmployeeContract from "../individualPage/EmployeePage/EmployeeContract";
+import EmployerApplication from "../individualPage/EmployerPage/EmployerApplication";
 
 const styles = {
     div: {
@@ -27,7 +26,7 @@ const styles = {
 };
 
 function InformationInPicture(props) {
-    let personEmail = JSON.parse(localStorage.getItem('response')) ? JSON.parse(localStorage.getItem('response')).email :null;
+    //let personEmail = JSON.parse(localStorage.getItem('response')) ? JSON.parse(localStorage.getItem('response')).email : null;
     let lang = props.lang;
     let langConst = [];
     if (lang === 'en') {
@@ -66,14 +65,48 @@ function InformationInPicture(props) {
 
             <section className="section section-1" id="sec-ab20" style={{marginTop: '-100px'}}>
 
+                <div className="wrap-login100" id="employeeContract" style={{
+                    top: '80px', width: '360px', position: 'absolute', zIndex: '999',
+                    margin: '0 0 0 -180px', left: '50%', display: 'none',
+                    paddingLeft: '30px', paddingTop: '5px', paddingBottom: '30px', paddingRight: '30px'
+                }}>
+                    <form className="login100-form validate-form">
+                        <div className="cl-btn-7" onClick={function () {
+                            document.getElementById('employeeContract').style.display = 'none';
+                        }}/>
+                        <br/>
+                        <EmployeeContract/>
+                    </form>
+                </div>
+                <div className="wrap-login100" id="employerApplication" style={{
+                    top: '80px', width: '360px', position: 'absolute', zIndex: '999',
+                    margin: '0 0 0 -180px', left: '50%', display: 'none',
+                    paddingLeft: '30px', paddingTop: '5px', paddingBottom: '30px', paddingRight: '30px'
+                }}>
+
+                    <form className="login100-form validate-form">
+                        <div className="cl-btn-7" onClick={function () {
+                            document.getElementById('employerApplication').style.display = 'none';
+                        }}/>
+                        <EmployerApplication endDate={Date.now() + new Date(0, 3, 0)}/>
+                    </form>
+
+                </div>
+
                 <div style={styles.div}><br/><br/><br/><br/><br/><br/>
                     <p style={{textAlign: 'left', color: 'white', fontSize: 'x-large'}}>{langConst[0]}</p>
                     <h5 style={{textAlign: 'left', color: 'white', fontSize: '3em'}}>{langConst[1]}</h5>
-                    <button type="submit" className="btn-block"
-                            style={styles.button}>{langConst[2]}</button>
+                    <button type="button" className="btn-block"
+                            style={styles.button} onClick={function () {
+                        document.getElementById('employerApplication').style.display = 'block';
+                    }}>{langConst[2]}</button>
                     <p style={{textAlign: 'right', color: 'white', fontSize: 'x-large'}}>{langConst[3]}</p>
                     <h5 style={{textAlign: 'right', color: 'white', fontSize: '3em'}}> {langConst[4]}</h5>
-                    <button type="submit" className="btn-block" style={rightBtn}>{langConst[5]}</button>
+                    <button type="button" className="btn-block" style={rightBtn} onClick={
+                        function () {
+                            document.getElementById('employeeContract').style.display = 'block';
+                        }
+                    }>{langConst[5]}</button>
                 </div>
             </section>
             <a name="aboutCompany"/>

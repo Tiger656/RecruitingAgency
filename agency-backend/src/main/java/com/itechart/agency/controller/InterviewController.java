@@ -1,5 +1,9 @@
 package com.itechart.agency.controller;
 
+import com.itechart.agency.dto.BusyHoursDto;
+import com.itechart.agency.dto.EmployeeContractDto;
+import com.itechart.agency.dto.InterviewGetDto;
+import com.itechart.agency.dto.InterviewSaveDto;
 import com.itechart.agency.dto.*;
 import com.itechart.agency.dto.converter.InterviewGetConverter;
 import com.itechart.agency.dto.converter.InterviewSaveConverter;
@@ -54,6 +58,13 @@ public class InterviewController {
         Interview interview = InterviewSaveConverter.toEntity(interviewSaveDto);
         interview = interviewService.create(interview);
         return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYEE')")
+    @GetMapping("get-by-contract-id/{id}")
+    public List<InterviewGetDto> getInterviewsByContractId(@PathVariable("id") Long id) {
+        LOGGER.info("REST request. Path:/interview/get-by-contract-id/{} method: GET.", id);
+        return interviewService.findByContractId(id);
     }
 
     @PreAuthorize("hasAuthority('MANAGER')")

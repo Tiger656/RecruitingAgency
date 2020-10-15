@@ -22,9 +22,8 @@ public class EmployerApplication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "application_number")
-    private Long applicationNumber;
+    @Column(name = "price")
+    private double price;
 
     @NotNull(message = "Agency for employer cannot be null")
     @ManyToOne

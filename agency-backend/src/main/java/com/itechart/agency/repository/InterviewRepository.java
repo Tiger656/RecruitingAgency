@@ -24,6 +24,8 @@ public interface InterviewRepository extends JpaRepository<Interview,Long> {
 
     List<Interview> findByAgencyIdAndExpertIdAndInterviewStatusId(Long agencyId, Long managerId, Long statusId);
 
+    List<Interview> findByEmployeeContractId(Long contractId);
+
     @Query(value = "select  EXTRACT(HOUR from i.start_date_time), EXTRACT(HOUR from end_date_time) start_date_time FROM interviews i" +
             " where i.agency_id = :agencyId and i.employee_contract_id = :employeeContractId and EXTRACT(YEAR from start_date_time) = :year AND EXTRACT(MONTH from start_date_time) = :month AND EXTRACT(DAY from start_date_time) = :day", nativeQuery = true)
     List<Object[]> getEmployeeContrBusyHours(@Param("agencyId") Long agencyId, @Param("employeeContractId") Long employeeContractId, @Param("year") Integer year, @Param("month") Integer month, @Param("day") Integer day);

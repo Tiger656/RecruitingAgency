@@ -302,10 +302,17 @@
             </column>
         </createTable>
         <insert tableName="agency_contract_types">
-            <column name="name" value="Contract 1"></column>
-            <column name="description" value="This is type of contract"></column>
+            <column name="name" value="Monthly"/>
+            <column name="description" value="Fix payment every month"/>
         </insert>
-
+        <insert tableName="agency_contract_types">
+            <column name="name" value="Quarterly"/>
+            <column name="description" value="Fix payment every quart"/>
+        </insert>
+        <insert tableName="agency_contract_types">
+            <column name="name" value="Personal"/>
+            <column name="description" value="Not fix payment for each found employee"/>
+        </insert>
 <!--        <createTable tableName="files">-->
 <!--            <column autoIncrement="true" name="id" type="bigserial">-->
 <!--                <constraints nullable="false" primaryKey="true"/>-->
@@ -359,9 +366,9 @@
             </column>
         </createTable>
         <insert tableName="agency_employer_contracts">
-            <column name="contract_type_id" valueNumeric="1"></column>
+            <column name="contract_type_id" valueNumeric="3"></column>
             <column name="file" valueNumeric="1"></column>
-            <column name="daily_payment" valueNumeric="200"></column>
+            <column name="daily_payment" valueNumeric="0"></column>
             <column name="contract_creation_date" valueDate="2020-08-11"></column>
             <column name="contract_end_date" valueDate="2020-08-11"></column>
             <column name="is_suspended" valueBoolean="1"></column>
@@ -476,9 +483,7 @@
             <column autoIncrement="true" name="id" type="bigserial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column autoIncrement="true" name="application_number" type="bigserial">
-<!--                <constraints nullable="false"/>-->
-            </column>
+            <column name="price" type="numeric(38)"/>
             <column name="agency_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_employer_application_agencies"
                              references="agencies(id)"/>
@@ -537,6 +542,7 @@
             <column name="agency_id" valueNumeric="1"/>
             <column name="employer_id" valueNumeric="1"/>
             <column name="profession_id" valueNumeric="1"/>
+            <column name="price" valueNumeric="200"/>
             <column name="salary" valueNumeric="200"/>
             <column name="employment_type_id" valueNumeric="1"/>
             <column name="experience_id" value="2"/>
@@ -568,9 +574,9 @@
             <column name="min_salary" type="numeric(38)">
                 <constraints nullable="false"/>
             </column>
-            <column name="price_usd" type="numeric(38)">
-                <constraints nullable="false"/>
-            </column>
+<!--            <column name="price_usd" type="numeric(38)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
             <column name="compensation" type="numeric(38)">
                 <constraints nullable="false"/>
             </column>
@@ -589,8 +595,9 @@
             <column name="surname" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="experience_years" type="integer">
-                <constraints nullable="false"/>
+            <column name="experience_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_agency_employee_contract_experience"
+                             references="experience(id)"/>
             </column>
             <column name="birth_date" type="date">
                 <constraints nullable="false"/>
@@ -628,14 +635,14 @@
             <column name="user_id" valueNumeric="1"/>
             <column name="agency_id" valueNumeric="1"/>
             <column name="min_salary" valueNumeric="100"/>
-            <column name="price_usd" valueNumeric="20"/>
+<!--            <column name="price_usd" valueNumeric="20"/>-->
             <column name="compensation" valueNumeric="80"/>
             <column name="creation_date" valueDate="2020-08-11"/>
             <column name="end_date" valueDate="2021-08-11"/>
             <column name="is_deleted" valueBoolean="1"/>
             <column name="name" value="Ilya"/>
             <column name="surname" value="Sherbenko"/>
-            <column name="experience_years" valueNumeric="3"/>
+            <column name="experience_id" valueNumeric="3"/>
             <column name="birth_date" valueDate="2020-08-11"/>
             <column name="city_id" valueNumeric="1"/>
             <column name="address_id" valueNumeric="1"/>

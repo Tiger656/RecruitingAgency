@@ -12,24 +12,26 @@ public class EmployeeContractDto {
 
     private Long agencyId;
     private Long userId;
-    private double minSalary;
-    private double priceUsd;
-    private double compensation;
-    private Date creationDate;
-    private Date endDate;
-    private boolean isDeleted;
+
     private String name;
     private String surname;
-    private int experienceYears;
+    private double minSalary;
+    private String email;
+    private String telephoneNumber;
+
+    private Long professionId;
+    private Long experienceId;
     private Date birthDate;
     private Long cityId;
     private Long addressId;
     private String passport;
-    private String email;
-    private String telephoneNumber;
-    private Long professionId;
-    private String professionName; //
+
     private double accountUsd;
     private Long statusId;
-   // private List<Long> employmentTypesIds;
+    //private double priceUsd;
+    private double compensation;
+    private Date creationDate;
+    private Date endDate;
+    private boolean isDeleted;
+    // private List<Long> employmentTypesIds;
 }

@@ -1,28 +1,31 @@
 package com.itechart.agency.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Setter
 @Getter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployerContractDto {
     private Long id;
 
     private Long contractTypeId;
     private String file;
     private double dailyPayment;
-    private Date contractCreationDate;
-    private Date contractEndDate;
+   /* private Date contractCreationDate;
+    private Date contractEndDate;*/
+    private LocalDate contractCreationDate;
+    private LocalDate contractEndDate;
     private String name;
     private Long contractId;
     private boolean isSuspended;
     private boolean isDeleted;
 
-    public static EmployerContractDto.Builder builder() {
+    /*public static EmployerContractDto.Builder builder() {
         return new EmployerContractDto().new Builder();
     }
 
@@ -73,5 +76,5 @@ public class EmployerContractDto {
         public EmployerContractDto build() {
             return EmployerContractDto.this;
         }
-    }
+    }*/
 }

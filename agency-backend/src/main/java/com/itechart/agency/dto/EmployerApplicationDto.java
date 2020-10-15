@@ -10,7 +10,7 @@ public class EmployerApplicationDto {
 
     private Long id;
 
-    private Long applicationNumber;
+    private double price;
     private Long agencyId;//
     private Long employerId;//
     private Date creationDate;

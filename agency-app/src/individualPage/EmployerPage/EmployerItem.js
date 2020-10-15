@@ -122,7 +122,7 @@ function EmployerItem(props) {
                 }}>
                     <br/>
                     <h6><b>Application</b></h6>
-                    <h10>Application number: {app.applicationNumber} </h10>
+                    <h10>Application number: {app.id} </h10>
                     <br/>
                     <h10>Profession: {app.professionName}</h10>
                     <br/>

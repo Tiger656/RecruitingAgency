@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import "../../cssForIndividualPage/animate.css";
 import "../../cssForIndividualPage/icomoon.css";
 import "../../cssForIndividualPage/simple-line-icons.css";
@@ -13,11 +13,21 @@ const styles = {
         paddingBottom: '20px',
         paddingLeft: '20px',
         paddingRight: '20px'
+    },
+    choiceButton: {
+        fontFamily: 'sans-serif',
+        border: '3px solid #17a2b8db',
+        borderRadius: '99px',
+        color: '#17a2b8db',
+        backgroundColor: 'white'
     }
 };
 
 function EmployeeInterview(props) {
+
     const {interview} = props;
+    let showButton = interview.interviewStatusId === 1 || interview.interviewStatusId === 2;
+    let [status, setStatus] = useState(interview.interviewStatusName);
     return (
         <div className="col-md-4 col-sm-6">
             <a className="fh5co-project-item image-popup to-animate">
@@ -33,8 +43,22 @@ function EmployeeInterview(props) {
                     <h10>Комментарий менеджера: {interview.managerComment} </h10>
                     <br/>
                     <h10>Статус: {interview.interviewStatusName} </h10>
+                    <br/>
+                    {showButton && (<button type="button" className="btn-block  btn-primary"
+                                            id={"interview" + interview.id} style={styles.choiceButton}
+                        // onClick={function () {
+                        //     if (interview.interviewStatusId === 1) {
+                        //
+                        //     } else {
+                        //
+                        //     }
+                        // }
+                        // }
+                    >Approve</button>)}
                 </div>
+
             </a>
+
         </div>)
 
 }

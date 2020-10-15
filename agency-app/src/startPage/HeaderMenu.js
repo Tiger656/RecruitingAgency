@@ -9,7 +9,7 @@ import {AdminPage} from "../individualPage/AdminPage/AdminPage";
 
 import {IncorrectUrl} from "../auth/component/InсorrectUrl";
 import AuthService from "../auth/auth.service";
-import SecretaryPage from "../individualPage/SecretaryPage";
+import SecretaryPage from "../individualPage/SecretaryPage/SecretaryPage";
 import {ManagerPageMain} from "../individualPage/ManagerPages/ManagerPageMain";
 import {ExpertPage} from "../individualPage/ExpertPage/ExpertPage";
 import PaymentPage from "../individualPage/Payment/PaymentPage";

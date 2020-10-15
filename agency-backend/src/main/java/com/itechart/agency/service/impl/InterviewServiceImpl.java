@@ -1,6 +1,11 @@
 package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.BusyHoursDto;
+import com.itechart.agency.dto.InterviewGetDto;
+import com.itechart.agency.dto.converter.InterviewGetConverter;
+import com.itechart.agency.entity.Interview;
+import com.itechart.agency.entity.InterviewStatus;
+import com.itechart.agency.exception.BadRequestException;
 import com.itechart.agency.entity.*;
 import com.itechart.agency.entity.location.Address;
 import com.itechart.agency.exception.NotFoundException;
@@ -14,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -56,6 +62,17 @@ public class InterviewServiceImpl {
         return interviewRepository.save(interview);
     }
 
+    public List<InterviewGetDto> findByContractId(Long id) {
+        List<InterviewGetDto> interviewsGetDto;
+        if (id <= 0L) throw new BadRequestException("Not valid id");
+        if (!interviewRepository.findByEmployeeContractId(id).isEmpty()) {
+            interviewsGetDto = (interviewRepository.findByEmployeeContractId(id)).stream().map((InterviewGetConverter::convertEntityToDto)).collect(Collectors.toList());
+        } else {
+            throw new NotFoundException("Interview not found");
+        }
+        return interviewsGetDto;
+    }
+
 
     public Interview findById(Long id) throws NotFoundException { //Why we should return optional????
         Optional<Interview> interviewOptional = interviewRepository.findById(id);
@@ -75,6 +92,10 @@ public class InterviewServiceImpl {
         List<Interview> interviews = interviewRepository.findByAgencyIdAndManagerId(agencyId, manager.getId());
         return interviews;
     }
+    /*public List<Interview> findAllByAgencyAndManager(Long agencyId, Long managerId) {
+        List<Interview> interviews = interviewRepository.findByAgencyIdAndManagerId(agencyId, managerId);
+        return interviews;
+    }*/
 
     public List<Interview> findAllByAgencyAndExpertAndInterviewStatus(Long agencyId, Long expertUserId, Long interviewStatusId) {
         Long expertId = expertRepository.findByUserId(expertUserId).getId();
@@ -143,8 +164,7 @@ public class InterviewServiceImpl {
             for (Object[] object : listHours) {
                 map.put(((Double) object[0]).intValue(), ((Double) object[1]).intValue());
             }
-        }
-        else {
+        } else {
             return new BusyHoursDto(setOfHours, setOfStartHours, setOfEndHours);
         }
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
