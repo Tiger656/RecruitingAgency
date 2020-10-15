@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'animate.css/animate.min.css'
 import "../../../cssForIndividualPage/animate.css";
@@ -8,8 +8,8 @@ import "../../../cssForIndividualPage/magnific-popup.css";
 import "../../../cssForIndividualPage/style.css";
 import axios from "axios";
 import authHeader from "../../../auth/header";
-import {toast} from "react-toastify";
-import {Notification} from "../../AdminPage/components/Notification"
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
 
 const styles = {
     popupFade: {
@@ -86,30 +86,41 @@ const styles = {
     }
 }
 
-export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
+export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewData}) => {
 
-    const [expert, setExpert] = useState({agencyId: JSON.parse(localStorage.getItem('response')).agency.id})
+    const [interviewUpdateData, setInterviewUpdateData] = useState({interviewId: updateStatusInterviewData.interviewId, interviewStatusId: null})
+    const [interviewStatuses, setInterviewStatuses] = useState([])
+
+    useEffect(() => {
+        getInterviewStatuses();
+        console.log(updateStatusInterviewData);
+    }, [])
+
+    const getInterviewStatuses = () => {
+        axios
+            .get("http://localhost:8080/interview-status", {headers: authHeader()})
+            .then(data => {
+                console.log(data);
+                setInterviewStatuses(data.data);
+
+            })
+            .catch(err => alert(err))
+    }
     const handleInputChange = event => {
-        const {name, value} = event.currentTarget
-        setExpert({...expert, [name]: value});
-
+        console.log("handle");
+        setInterviewUpdateData({interviewId: updateStatusInterviewData.interviewId, interviewStatusId: event.currentTarget.value})
     }
 
-    const createExpert = () => {
-        onModalCloseClick();
+    const updateInterview = () => {
         axios
-            .post("http://localhost:8080/expert", expert, {headers: authHeader()})
+            .put("http://localhost:8080/interview/change-interview-status", {id: interviewUpdateData.interviewId, interviewStatusId: interviewUpdateData.interviewStatusId}, {headers: authHeader()})
             .then(data => {
-                //console.log(data);
-                toast.success("Expert has been added", {position: toast.POSITION.TOP_RIGHT})
-                getExperts();
+                console.log(interviewUpdateData);
+                onModalCloseClick();
             })
-            .catch(err => toast.error("Expert hasn't been added. Smth goes wrong", {position: toast.POSITION.TOP_RIGHT})
-            )
+            .catch(err => alert(err))
     }
     return (
-        <div>
-            <Notification/>
         <div style={styles.popupFade} >
 
             <link
@@ -121,38 +132,32 @@ export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
                     <button className="cl-btn-7" onClick={onModalCloseClick} />
                     <br/>
                     <span style={styles.span}>
-					             ADD EXPERT
+					             Update interview
                     </span>
 
 
-                    <div style={styles.divEnterData} >
-                        <input className="input100" type="email" style={styles.input}
-                               name="email"
-                               placeholder="Email"
-                               onChange={handleInputChange}
-                        />
-                        <span className="focus-input100"/>
-                    </div>
 
-                    <div style={styles.divEnterData} >
-                        <input className="input100" type="text" style={styles.input}
-                               name="expertName"
-                               placeholder="Expert full name"
-                               onChange={handleInputChange}
-                        />
+
+                    <div style={styles.select100}>
+
+                        <select  style={styles.select100} name="interviewStatusId" onChange={handleInputChange}>
+                            <option value="" disabled selected>CHOOSE INTERVIEW STATUS</option>
+                            {interviewStatuses.map(interviewStatus =>
+                                <option style={styles.option100} key={interviewStatus.id} value={interviewStatus.id}
+                                >{interviewStatus.name}</option>)}
+                        </select>
                         <span className="focus-input100"/>
                     </div>
 
                     <br/>
                 </form>
                 <div className="container-login100-form-btn">
-                    <button className="login100-form-btn"  onClick={createExpert} >
+                    <button className="login100-form-btn"  onClick={updateInterview} >
                         Save
                     </button>
                 </div>
 
             </div>
-        </div>
         </div>
     )
 

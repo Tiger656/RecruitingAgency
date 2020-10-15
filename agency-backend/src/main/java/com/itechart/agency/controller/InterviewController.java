@@ -1,14 +1,18 @@
 package com.itechart.agency.controller;
 
-import com.itechart.agency.dto.BusyHoursDto;
-import com.itechart.agency.dto.InterviewGetDto;
-import com.itechart.agency.dto.InterviewSaveDto;
+import com.itechart.agency.dto.*;
 import com.itechart.agency.dto.converter.InterviewGetConverter;
 import com.itechart.agency.dto.converter.InterviewSaveConverter;
+import com.itechart.agency.dto.converter.QuestionGetConverter;
 import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.Interview;
+import com.itechart.agency.entity.Question;
+import com.itechart.agency.repository.ManagerRepository;
+import com.itechart.agency.service.ManagerService;
 import com.itechart.agency.service.impl.AgencyServiceImpl;
 import com.itechart.agency.service.impl.InterviewServiceImpl;
+import com.itechart.agency.service.impl.ManagerServiceImpl;
+import com.itechart.agency.service.impl.QuestionServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -27,43 +32,73 @@ import java.util.List;
 public class InterviewController {
     private InterviewServiceImpl interviewService;
     private AgencyServiceImpl agencyService;
+    private ManagerServiceImpl managerService;
+    private QuestionServiceImpl questionService;
     private ModelMapper modelMapper;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployerContractController.class);
 
     @Autowired
-    public InterviewController(InterviewServiceImpl interviewService, ModelMapper modelMapper, AgencyServiceImpl agencyService) {
+    public InterviewController(InterviewServiceImpl interviewService, ModelMapper modelMapper, AgencyServiceImpl agencyService, ManagerServiceImpl managerService, QuestionServiceImpl questionService) {
         this.interviewService = interviewService;
         this.modelMapper = modelMapper;
         this.agencyService = agencyService;
+        this.managerService = managerService;
+        this.questionService = questionService;
     }
 
     @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<?> createInterview(@RequestBody InterviewSaveDto interviewSaveDto) {
+
         Interview interview = InterviewSaveConverter.toEntity(interviewSaveDto);
-        Long id = interviewService.create(interview);
+        interview = interviewService.create(interview);
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('MANAGER')")
-    @GetMapping("/get-time/{agencyId}/{expertId}/{year}/{month}/{day}")
-    public ResponseEntity<?> getBusyTimeForManager(@PathVariable("agencyId") Long agencyId,
+    @GetMapping("/get-busytime-expert/{agencyId}/{expertId}/{year}/{month}/{day}")
+    public ResponseEntity<?> getBusyTimeExpertForManager(@PathVariable("agencyId") Long agencyId,
                                                    @PathVariable("expertId") Long expertId,
                                                    @PathVariable("year") Integer year,
                                                    @PathVariable("month") Integer month,
                                                    @PathVariable("day") Integer day) {
-        LOGGER.info("REST request. Path:/interview/get-time method: GET.getBusyTimeForManager");
-        BusyHoursDto busyHours = interviewService.getBusyHours(agencyId, expertId, year, month, day);
+        LOGGER.info("REST request. Path:/interview/get-busytime-expert method: GET.getBusyTimeExpertForManager");
+        BusyHoursDto busyHours = interviewService.getExpertsBusyHours(agencyId, expertId, year, month, day);
         return new ResponseEntity<BusyHoursDto>(busyHours, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('MANAGER')")
-    @GetMapping("/{agencyId}/{managerId}")
+    @GetMapping("/get-busytime-manager/{agencyId}/{managerUserId}/{year}/{month}/{day}")
+    public ResponseEntity<?> getBusyTimeManagerForManager(@PathVariable("agencyId") Long agencyId,
+                                                   @PathVariable("managerUserId") Long managerUserId,
+                                                   @PathVariable("year") Integer year,
+                                                   @PathVariable("month") Integer month,
+                                                   @PathVariable("day") Integer day) {
+        LOGGER.info("REST request. Path:/interview/get-busytime-manager method: GET.getBusyTimeManagerForManager");
+        BusyHoursDto busyHours = interviewService.getManagersBusyHours(agencyId, managerUserId, year, month, day);
+        return new ResponseEntity<BusyHoursDto>(busyHours, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @GetMapping("/get-busytime-employee/{agencyId}/{employeeContractId}/{year}/{month}/{day}")
+    public ResponseEntity<?> getBusyTimeEmployeeApplicationForManager(@PathVariable("agencyId") Long agencyId,
+                                                          @PathVariable("employeeContractId") Long employeeContractId,
+                                                          @PathVariable("year") Integer year,
+                                                          @PathVariable("month") Integer month,
+                                                          @PathVariable("day") Integer day) {
+        LOGGER.info("REST request. Path:/interview/get-busytime-manager method: GET.getBusyTimeManagerForManager");
+        BusyHoursDto busyHours = interviewService.getEmployeeAppBusyHours(agencyId, employeeContractId, year, month, day);
+        return new ResponseEntity<BusyHoursDto>(busyHours, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @GetMapping("/{agencyId}/{managerUserId}")
     public ResponseEntity<List<InterviewGetDto>> getInterviewsForManager(@PathVariable("agencyId") Long agencyId,
-                                                                         @PathVariable("managerId") Long managerId
+                                                                         @PathVariable("managerUserId") Long managerUserId
     ) {
         LOGGER.info("REST request. Path:/interview method: GET.getInterviewsForManager");
-        List<Interview> interviews = interviewService.findAllByAgencyAndManager(agencyId, managerId);
+        List<Interview> interviews = interviewService.findAllByAgencyAndManager(agencyId, managerUserId);
         //List<InterviewSaveDto> interviewSaveDtos = new ArrayList<>();
         //interviews.forEach(interview -> interviewSaveDtos.add(InterviewSaveConverter.convertEntityToDto(interview)));
         List<InterviewGetDto> interviewGetDtos = new ArrayList<>();
@@ -95,13 +130,51 @@ public class InterviewController {
     }
 
     @PreAuthorize("hasAuthority('EXPERT')")
-    @GetMapping("/change-interview-status/{interviewId}/{newStatusId}")
-    public ResponseEntity<InterviewGetDto> updateInterviewStatusForExpert(@PathVariable("interviewId") Long interviewId,
-                                                                                  @PathVariable("newStatusId") Long newStatusId
+    @PostMapping("/change-interview-status-expert")
+    public ResponseEntity<?/*InterviewGetDto*/> updateInterviewStatusForExpert(@RequestBody InterviewUpdateByExpertDto interviewUpdateByExpertDto) {
+        LOGGER.info("REST request. Path:/interview/change-interview-status-expert method: GET.updateInterviewStatusForExpert");
+
+        Interview interview = interviewService.updateInterviewStatus(interviewUpdateByExpertDto.getInterviewId(), interviewUpdateByExpertDto.getInterviewStatusId());
+        String expertComment = interviewUpdateByExpertDto.getExpertComment();
+        interview.setExpertComment(expertComment);
+        interview = interviewService.saveInterview(interview);
+        List<QuestionDto> questionDtos = interviewUpdateByExpertDto.getQuestions();
+        for(QuestionDto questionDto : questionDtos){
+            questionService.createQuestion(questionDto, interview);
+        }
+        //questionDtos.forEach((questionDto) -> questionService.createQuestion(questionDto, interview));
+
+        //InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('MANAGER')")
+    @PutMapping("/change-interview-status")
+    public ResponseEntity<InterviewGetDto> updateInterviewStatusForManager(@RequestBody InterviewSaveDto interviewSaveDto
     ) {
-        LOGGER.info("REST request. Path:/interview/change-interview-status method: PUT.updateInterviewStatusForExpert");
-        Interview interview = interviewService.updateInterviewStatus(interviewId, newStatusId);
+        LOGGER.info("REST request. Path:/interview/change-interview-status method: PUT.updateInterviewStatusForManager");
+        Interview interview = interviewService.updateInterviewStatus(interviewSaveDto.getId(), interviewSaveDto.getInterviewStatusId());
         InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);
         return new ResponseEntity<>(interviewGetDto, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EXPERT')or hasAuthority('MANAGER')or hasAuthority('EMPLOYEE')")
+    @GetMapping("/get-interview-by-id/{interviewId}")
+    public ResponseEntity<InterviewGetDto> getInterviewById(@PathVariable("interviewId") Long interviewId) {
+        LOGGER.info("REST request. Path:/interview/get-interview-by-id method: GET.getInterviewById");
+        Interview interview = interviewService.findById(interviewId);
+        InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);
+        return new ResponseEntity<>(interviewGetDto, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EXPERT')or hasAuthority('MANAGER')")
+    @GetMapping("/get-interview-for-conducting/{interviewId}")
+    public ResponseEntity<List<QuestionGetDto>> getInterviewForConducting(@PathVariable("interviewId") Long interviewId) {
+        LOGGER.info("REST request. Path:/interview/get-interview-by-id method: GET.getInterviewById");
+        Interview interview = interviewService.findById(interviewId);
+        List<Question> questions = questionService.getAllQuestionsByInterviewId(interviewId);
+/*        InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);*/
+        List<QuestionGetDto> questionGetDto = questions.stream().map(QuestionGetConverter::convertEntityToDto).collect(Collectors.toList());
+        return new ResponseEntity<List<QuestionGetDto>>(questionGetDto, HttpStatus.OK);
     }
 }

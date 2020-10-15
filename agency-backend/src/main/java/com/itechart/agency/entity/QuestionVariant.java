@@ -17,16 +17,20 @@ import javax.persistence.*;
 public class QuestionVariant {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @Column(name = "answer_variant")
+    @Column(name = "label")
     @NotNull
-    private String answerVariant;
+    private String label;
+
+    @Column(name = "name")
+    @NotNull
+    private String name;
 
 }

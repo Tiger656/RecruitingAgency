@@ -32,6 +32,7 @@ public class ExpertController {
     public List<ExpertForInterviewDto> getAll() {
         return expertService.findAll().stream().map(ExpertForDtoConvert::convertEntityToDto).collect(Collectors.toList());
     }
+
     @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping()
     public ResponseEntity<?> createExpert(@RequestBody ExpertDto expertDto){

@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "interviews")
@@ -65,5 +66,11 @@ public class Interview {
     @Column(name = "expert_comment")
     @NotNull
     private String expertComment;
+
+    /*@ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "interview_questions", joinColumns = {
+            @JoinColumn(name = "interview_id")}, inverseJoinColumns = {
+            @JoinColumn(name = "question_id")})
+    private List<Question> questions;*/
 
 }

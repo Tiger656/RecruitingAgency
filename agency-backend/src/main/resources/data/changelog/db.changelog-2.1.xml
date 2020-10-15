@@ -49,25 +49,32 @@
             <column name="question_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_question_variants_questions" references="questions(id)"></constraints>
             </column>
-            <column name="answer_variant" type="varchar(1000)">
+            <column name="label" type="varchar(100)">
+                <constraints nullable="false"></constraints>
+            </column>
+            <column name="name" type="varchar(1000)">
                 <constraints nullable="false"></constraints>
             </column>
         </createTable>
         <insert tableName="question_variants">
             <column name="question_id" valueNumeric="2"></column>
-            <column name="answer_variant" value="3"></column>
+            <column name="label" value="a"></column>
+            <column name="name" value="3"></column>
         </insert>
         <insert tableName="question_variants">
             <column name="question_id" valueNumeric="2"></column>
-            <column name="answer_variant" value="4"></column>
+            <column name="label" value="b"></column>
+            <column name="name" value="4"></column>
         </insert>
         <insert tableName="question_variants">
             <column name="question_id" valueNumeric="2"></column>
-            <column name="answer_variant" value="5"></column>
+            <column name="label" value="c"></column>
+            <column name="name" value="5"></column>
         </insert>
         <insert tableName="question_variants">
             <column name="question_id" valueNumeric="2"></column>
-            <column name="answer_variant" value="6"></column>
+            <column name="label" value="d"></column>
+            <column name="name" value="6"></column>
         </insert>
 
         <createTable tableName="interview_statuses">
@@ -79,16 +86,16 @@
             </column>
         </createTable>
         <insert tableName="interview_statuses">
-            <column name="name" value="WAITING_APPROVING_EXPERT_AND_EMPLOYEE"></column>
+            <column name="name" value="WAITING APPROVE BY EXPERT AND EMPLOYEE"></column>
         </insert>
         <insert tableName="interview_statuses">
-            <column name="name" value="WAITING_APPROVING_EXPERT"></column>
+            <column name="name" value="WAITING APPROVE BY EXPERT"></column>
         </insert>
         <insert tableName="interview_statuses">
-            <column name="name" value="WAITING_APPROVING_EMPLOYEE"></column>
+            <column name="name" value="WAITING APPROVE BY EMPLOYEE"></column>
         </insert>
         <insert tableName="interview_statuses">
-            <column name="name" value="IN_PROGRESS"></column>
+            <column name="name" value="IN PROGRESS"></column>
         </insert>
         <insert tableName="interview_statuses">
             <column name="name" value="FINISHED"></column>
@@ -97,7 +104,7 @@
             <column name="name" value="CANCELED"></column>
         </insert>
         <insert tableName="interview_statuses">
-            <column name="name" value="CONFIRMED"></column>
+            <column name="name" value="APPROVED"></column>
         </insert>
 
         <createTable tableName="experts">
@@ -158,8 +165,6 @@
             </column>
         </createTable>
 
-
-
         <createTable tableName="interview_questions">
             <column name="id" type="bigserial" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"></constraints>
@@ -171,17 +176,12 @@
                 <constraints nullable="false"></constraints>
             </column>
             <column name="answer" type="varchar(1000)">
-                <constraints nullable="false"></constraints>
-            </column>
-            <column name="is_right" type="boolean">
-                <constraints nullable="false"></constraints>
             </column>
         </createTable>
         <insert tableName="interview_questions">
             <column name="interview_id" valueNumeric="1"></column>
             <column name="question_id" valueNumeric="1"/>
             <column name="answer" value="4 (public, protected, default, private)"/>
-            <column name="is_right" valueBoolean="true"/>
         </insert>
 
 

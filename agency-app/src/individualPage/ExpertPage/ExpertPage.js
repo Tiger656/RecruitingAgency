@@ -3,7 +3,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css/animate.min.css'
 import axios from 'axios'
 import {toast} from "react-toastify";
+import {Notification} from "../AdminPage/components/Notification"
 import authHeader from "../../auth/header";
+import {UpdateInterviewModal} from "./components/UpdateInterviewModal"
+import {ConductInterviewModal} from "./components/ConductInterviewModal"
+
 
 
 
@@ -11,6 +15,10 @@ export const ExpertPage = () => {
 
     const [unconfirmedInterviews, setUnconfirmedInterviews] = useState([])
     const [confirmedInterviews, setConfirmedInterviews] = useState([])
+    const [isUpdateInterviewModalCreate, setIsUpdateInterviewModalCreate] = useState(true)
+    const [updateStatusInterviewData, setUpdateStatusInterviewData] = useState({currentIntStatusId: null, interviewId: null });
+    const [isConductInterviewModalCreate, setIsConductInterviewModalCreate] = useState(false)
+    const [conductingInterviewId, setConductingInterviewId] = useState();
 
     useEffect(() => {
         getUnconfirmedInterviews();
@@ -20,47 +28,75 @@ export const ExpertPage = () => {
     let personEmail = JSON.parse(localStorage.getItem('response')).email;
 
     const getUnconfirmedInterviews = () => { //1,2
-        setUnconfirmedInterviews([]);
+        let unconfirmedInterviews = [];
         axios
             .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId + "/1", {headers: authHeader()})
             .then(data => {
-                setUnconfirmedInterviews(data.data);
+                unconfirmedInterviews = data.data;
+                console.log(data.data);
+                axios
+                    .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId +"/2", {headers: authHeader()})
+                    .then(data => {
+                        unconfirmedInterviews = [...unconfirmedInterviews, ...data.data]
+                        setUnconfirmedInterviews(unconfirmedInterviews);
+                    })
+                    .catch(err => toast.error("Expert has been added", {position: toast.POSITION.TOP_RIGHT})
+                    )
             })
             .catch(err => alert(err))
-        axios
-            .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId +"/2", {headers: authHeader()})
-            .then(data => {
-                setUnconfirmedInterviews([...unconfirmedInterviews, ...data.data]);
-            })
-            .catch(err => alert(err))
+
     }
     const getConfirmedInterviews = () => { //Only 3
+        let confirmedInterview = [];
         axios
             .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId + "/3", {headers: authHeader()})
             .then(data => {
-                setConfirmedInterviews(data.data);
-                console.log(data.data);
+                confirmedInterview = data.data;
+                axios
+                    .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId + "/7", {headers: authHeader()})
+                    .then(data => {
+                        confirmedInterview = [...confirmedInterview, ...data.data];
+                        setConfirmedInterviews(confirmedInterview);
+                    })
+                    .catch(err => alert(err))
 
             })
             .catch(err => alert(err))
     }
-    const confirmInterview = (interviewId, interviewStatusId) => {
-        let newStatusId;
-        if (interviewStatusId === 1) newStatusId = 3;
-        if (interviewStatusId === 2) newStatusId = 7;
-        axios
-            .get("http://localhost:8080/interview/change-interview-status/" + interviewId + "/" + newStatusId,  {headers: authHeader()})
-            .then(data => {
-                getUnconfirmedInterviews();
-                getConfirmedInterviews();
+    const refreshInterviews = () => {
+        getUnconfirmedInterviews();
+        getConfirmedInterviews();
+    }
 
-            })
-            .catch(err => alert(err))
+    const updateIntrvModalCreateClickHandler = (interviewId, interviewStatusId) => {
+        setUpdateStatusInterviewData({currentIntStatusId: interviewStatusId, interviewId: interviewId });
+        setIsUpdateInterviewModalCreate(false);
+    }
+    const updateIntrvModalCloseClickHandler = () => {
+        setIsUpdateInterviewModalCreate(true);
+        //myInterviewsShow === false ? getAllInterviews() : getMyInterviews()
+        setUpdateStatusInterviewData(null);
+    }
+
+    const conductInterviewModalCreateClickHandler = (interviewId) => {
+        setConductingInterviewId(interviewId);
+        setIsConductInterviewModalCreate(true);
+    }
+    const conductInterviewModalCloseClickHandler = () => {
+        setIsConductInterviewModalCreate(false);
     }
 
     return (
         <div>
-            {/*<Notification />*/}
+            <Notification />
+            {!isUpdateInterviewModalCreate &&
+            <UpdateInterviewModal onModalCloseClick={updateIntrvModalCloseClickHandler} updateStatusInterviewData={updateStatusInterviewData} refreshInterviews={refreshInterviews}/>
+            }
+            {isConductInterviewModalCreate &&
+            <ConductInterviewModal onModalCloseClick={conductInterviewModalCloseClickHandler} interviewId={conductingInterviewId}/>
+            }
+
+
             <div>
                 <link
                     href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -102,10 +138,9 @@ export const ExpertPage = () => {
                                         <p>Start: {interview.startDateTime.replace('T', ' ')}</p>
                                         <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                         <p>Manag. comment: {interview.managerComment}</p>
-                                        <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => confirmInterview(interview.id, interview.interviewStatusId)}>
+                                        <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => updateIntrvModalCreateClickHandler(interview.id, interview.interviewStatusId)}>{/*confirmInterview(interview.id, interview.interviewStatusId)*/}
                                             Выбрать
                                         </button>
-
                                     </div>
                                 </div>
                             })}
@@ -131,10 +166,9 @@ export const ExpertPage = () => {
                                         <p>Start: {interview.startDateTime.replace('T', ' ')}</p>
                                         <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                         <p>Manag. comment: {interview.managerComment}</p>
-                                       {/* <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" > будет окно с поялми коммента, update статуса и вопросами
-                                            Выбрать
-                                        </button>*/}
-
+                                        <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => {conductInterviewModalCreateClickHandler(interview.id)}}>
+                                            Conduct interview
+                                        </button>
                                     </div>
                                 </div>
                             }): false}
