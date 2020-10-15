@@ -6,6 +6,7 @@ import {toast} from "react-toastify";
 import {Notification} from "../AdminPage/components/Notification"
 import authHeader from "../../auth/header";
 import {UpdateInterviewModal} from "./components/UpdateInterviewModal"
+import {ConductInterviewModal} from "./components/ConductInterviewModal"
 
 
 
@@ -16,6 +17,8 @@ export const ExpertPage = () => {
     const [confirmedInterviews, setConfirmedInterviews] = useState([])
     const [isUpdateInterviewModalCreate, setIsUpdateInterviewModalCreate] = useState(true)
     const [updateStatusInterviewData, setUpdateStatusInterviewData] = useState({currentIntStatusId: null, interviewId: null });
+    const [isConductInterviewModalCreate, setIsConductInterviewModalCreate] = useState(false)
+    const [conductingInterviewId, setConductingInterviewId] = useState();
 
     useEffect(() => {
         getUnconfirmedInterviews();
@@ -75,11 +78,22 @@ export const ExpertPage = () => {
         setUpdateStatusInterviewData(null);
     }
 
+    const conductInterviewModalCreateClickHandler = (interviewId) => {
+        setConductingInterviewId(interviewId);
+        setIsConductInterviewModalCreate(true);
+    }
+    const conductInterviewModalCloseClickHandler = () => {
+        setIsConductInterviewModalCreate(false);
+    }
+
     return (
         <div>
             <Notification />
             {!isUpdateInterviewModalCreate &&
             <UpdateInterviewModal onModalCloseClick={updateIntrvModalCloseClickHandler} updateStatusInterviewData={updateStatusInterviewData} refreshInterviews={refreshInterviews}/>
+            }
+            {isConductInterviewModalCreate &&
+            <ConductInterviewModal onModalCloseClick={conductInterviewModalCloseClickHandler} interviewId={conductingInterviewId}/>
             }
 
 
@@ -127,7 +141,6 @@ export const ExpertPage = () => {
                                         <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => updateIntrvModalCreateClickHandler(interview.id, interview.interviewStatusId)}>{/*confirmInterview(interview.id, interview.interviewStatusId)*/}
                                             Выбрать
                                         </button>
-
                                     </div>
                                 </div>
                             })}
@@ -153,10 +166,9 @@ export const ExpertPage = () => {
                                         <p>Start: {interview.startDateTime.replace('T', ' ')}</p>
                                         <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                         <p>Manag. comment: {interview.managerComment}</p>
-                                       {/* <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" > будет окно с поялми коммента, update статуса и вопросами
-                                            Выбрать
-                                        </button>*/}
-
+                                        <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => {conductInterviewModalCreateClickHandler(interview.id)}}>
+                                            Conduct interview
+                                        </button>
                                     </div>
                                 </div>
                             }): false}

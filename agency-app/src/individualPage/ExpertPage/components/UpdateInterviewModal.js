@@ -192,8 +192,8 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
                     </div>*/}
                     <div style={styles.divEnterData} >
                         <input className="input100" type="text"  style={styles.input}
-                               name="managerComment"
-                               placeholder="Manager's comment"
+                               name="expertComment"
+                               placeholder="Expert's comment"
                                onChange={handleInputChange}
                         />
                         <span className="focus-input100"/>

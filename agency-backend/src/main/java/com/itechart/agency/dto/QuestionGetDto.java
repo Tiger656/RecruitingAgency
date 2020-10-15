@@ -2,15 +2,17 @@ package com.itechart.agency.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class QuestionVariantDto {
+public class QuestionGetDto {
 
     private Long id;
-    private String label;
     private String name;
-
+    private List<QuestionVariantDto> questionVariants;
+    private String answer;
 }

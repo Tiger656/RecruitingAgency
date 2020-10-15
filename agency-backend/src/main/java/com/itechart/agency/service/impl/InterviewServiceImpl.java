@@ -1,9 +1,8 @@
 package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.BusyHoursDto;
-import com.itechart.agency.entity.Interview;
-import com.itechart.agency.entity.InterviewStatus;
-import com.itechart.agency.entity.Manager;
+import com.itechart.agency.entity.*;
+import com.itechart.agency.entity.location.Address;
 import com.itechart.agency.exception.NotFoundException;
 import com.itechart.agency.repository.ExpertRepository;
 import com.itechart.agency.repository.InterviewRepository;
@@ -12,6 +11,7 @@ import com.itechart.agency.repository.ManagerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -33,9 +33,26 @@ public class InterviewServiceImpl {
     }
 
 
-    public Interview create(Interview interview) {
+    public Interview create(Interview interview)  {
         Manager manager = managerRepository.findByUserId(interview.getManager().getId());
         interview.setManager(manager);
+        interviewRepository.save(interview);
+        /*User expertUser = interview.getExpert().getUser();
+        User employeeUser = interview.getEmployeeContract().getUser();
+        String expertEmail = expertUser.getEmail();
+        String employeeEmail = employeeUser.getEmail();
+        Agency agency = expertUser.getAgency();
+        Address agencyAddressObj = agency.getAddress();
+        String agencyCountry = agency.getCity().getCountry().getName();
+        String agencyCity = agency.getCity().getName();
+        String agencyAddress = agencyAddressObj.getStreet() + " " + agencyAddressObj.getBuilding() + " " + agencyAddressObj.getApartment();
+        String startTime = interview.getStartDateTime().toString();
+        try {
+            EmailServiceImpl.send(employeeEmail, "Invitation to interview", "We invite to to take part int interview by the next address:\n" + agencyCountry + "," + agencyCity + "," + agencyAddress + " by " + startTime + " \nPlease, visit our site to approve invitation and set questions for interview. \n If you have any questions call us by tel: +375293681534");
+            EmailServiceImpl.send(expertEmail, "Invitation to interview", "We invite to to take part int interview by the next address:\n" + agencyCountry + "," + agencyCity + "," + agencyAddress + " by " + startTime + "\nPlease, visit our site to approve invitation and set questions for interview.\nIf you have any questions call us by tel: +375293681534");
+        } catch (MessagingException e) {
+            //ADD LOGGING AND NOTIF????e.printStackTrace();
+        }*/
         return interviewRepository.save(interview);
     }
 
@@ -49,6 +66,9 @@ public class InterviewServiceImpl {
         }
     }
 
+    public Interview saveInterview(Interview interview) {
+        return interviewRepository.save(interview);
+    }
 
     public List<Interview> findAllByAgencyAndManager(Long agencyId, Long managerUserId) {
         Manager manager = managerRepository.findByUserId(managerUserId);

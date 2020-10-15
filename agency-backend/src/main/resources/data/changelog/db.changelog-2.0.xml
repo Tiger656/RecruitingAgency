@@ -551,6 +551,8 @@
             <column name="comment" value="Comment"/>
         </insert>
 
+
+
         <createTable tableName="agency_employee_contract">
             <column autoIncrement="true" name="id" type="bigserial">
                 <constraints nullable="false" primaryKey="true"/>

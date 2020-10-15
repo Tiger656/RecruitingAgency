@@ -165,8 +165,6 @@
             </column>
         </createTable>
 
-
-
         <createTable tableName="interview_questions">
             <column name="id" type="bigserial" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"></constraints>
@@ -178,17 +176,12 @@
                 <constraints nullable="false"></constraints>
             </column>
             <column name="answer" type="varchar(1000)">
-                <constraints nullable="false"></constraints>
-            </column>
-            <column name="is_right" type="boolean">
-                <constraints nullable="false"></constraints>
             </column>
         </createTable>
         <insert tableName="interview_questions">
             <column name="interview_id" valueNumeric="1"></column>
             <column name="question_id" valueNumeric="1"/>
             <column name="answer" value="4 (public, protected, default, private)"/>
-            <column name="is_right" valueBoolean="true"/>
         </insert>
 
 

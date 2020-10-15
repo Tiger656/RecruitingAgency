@@ -19,7 +19,7 @@ public class InterviewUpdateByExpertDto {
     private Long employerApplicationId;
     private Long employeeContractId;*/
     private Long interviewStatusId;
-    private String managerComment;
+    private String expertComment;
     private List<QuestionDto> questions;
    /* private Long managerId;*/
     /*private Long expertId;*/

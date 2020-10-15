@@ -3,8 +3,10 @@ package com.itechart.agency.controller;
 import com.itechart.agency.dto.*;
 import com.itechart.agency.dto.converter.InterviewGetConverter;
 import com.itechart.agency.dto.converter.InterviewSaveConverter;
+import com.itechart.agency.dto.converter.QuestionGetConverter;
 import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.Interview;
+import com.itechart.agency.entity.Question;
 import com.itechart.agency.repository.ManagerRepository;
 import com.itechart.agency.service.ManagerService;
 import com.itechart.agency.service.impl.AgencyServiceImpl;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -132,8 +135,14 @@ public class InterviewController {
         LOGGER.info("REST request. Path:/interview/change-interview-status-expert method: GET.updateInterviewStatusForExpert");
 
         Interview interview = interviewService.updateInterviewStatus(interviewUpdateByExpertDto.getInterviewId(), interviewUpdateByExpertDto.getInterviewStatusId());
+        String expertComment = interviewUpdateByExpertDto.getExpertComment();
+        interview.setExpertComment(expertComment);
+        interview = interviewService.saveInterview(interview);
         List<QuestionDto> questionDtos = interviewUpdateByExpertDto.getQuestions();
-        questionDtos.forEach((questionDto) -> questionService.createQuestion(questionDto));
+        for(QuestionDto questionDto : questionDtos){
+            questionService.createQuestion(questionDto, interview);
+        }
+        //questionDtos.forEach((questionDto) -> questionService.createQuestion(questionDto, interview));
 
         //InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);
         return new ResponseEntity<>(null, HttpStatus.OK);
@@ -156,5 +165,16 @@ public class InterviewController {
         Interview interview = interviewService.findById(interviewId);
         InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);
         return new ResponseEntity<>(interviewGetDto, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EXPERT')or hasAuthority('MANAGER')")
+    @GetMapping("/get-interview-for-conducting/{interviewId}")
+    public ResponseEntity<List<QuestionGetDto>> getInterviewForConducting(@PathVariable("interviewId") Long interviewId) {
+        LOGGER.info("REST request. Path:/interview/get-interview-by-id method: GET.getInterviewById");
+        Interview interview = interviewService.findById(interviewId);
+        List<Question> questions = questionService.getAllQuestionsByInterviewId(interviewId);
+/*        InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);*/
+        List<QuestionGetDto> questionGetDto = questions.stream().map(QuestionGetConverter::convertEntityToDto).collect(Collectors.toList());
+        return new ResponseEntity<List<QuestionGetDto>>(questionGetDto, HttpStatus.OK);
     }
 }
