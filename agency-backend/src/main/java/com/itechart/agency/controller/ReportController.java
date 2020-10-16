@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,14 +34,36 @@ public class ReportController {
 
     @GetMapping("/PDF")
     @ResponseBody
-    public void reportPDF(HttpServletResponse response) {
+    public void reportPDF(HttpServletResponse response,@RequestParam String start,@RequestParam String end) {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
+        LocalDate startDate = LocalDate.parse( start , f );
+        LocalDate endDate = LocalDate.parse( end , f );
+        System.out.println(startDate);
+        System.out.println(endDate);
 
         try {
-            buildReport();
+            buildReport(startDate,endDate);
             response.setContentType("application/x-pdf");
             response.setHeader("Content-Disposition", "inline: filename=product.pdf");
             final OutputStream outputStream = response.getOutputStream();
-            JasperExportManager.exportReportToPdfStream(buildReport(), outputStream);
+            JasperExportManager.exportReportToPdfStream(buildReport(startDate,endDate), outputStream);
+
+
+        } catch (JRException | IOException e) {
+            throw new NotFoundException("Sorry, we can't create report.\n Try again later");
+        }
+    }
+    @GetMapping("/PDF/all")
+    @ResponseBody
+    public void reportPDFAll(HttpServletResponse response) {
+
+
+        try {
+            buildReportForAll();
+            response.setContentType("application/x-pdf");
+            response.setHeader("Content-Disposition", "inline: filename=product.pdf");
+            final OutputStream outputStream = response.getOutputStream();
+            JasperExportManager.exportReportToPdfStream(buildReportForAll(), outputStream);
 
 
         } catch (JRException | IOException e) {
@@ -54,13 +78,13 @@ public class ReportController {
     public void reportXLS(HttpServletResponse response) {
 
         try {
-            buildReport();
+            buildReportForAll();
             response.setContentType("application/x-xls");
             response.setHeader("Content-Disposition", "filename=product.xls");
 
             final OutputStream outputStream = response.getOutputStream();
             JRXlsExporter exporterXLS = new JRXlsExporter();
-            exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, buildReport());
+            exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, buildReportForAll());
             exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, outputStream);
             exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.TRUE);
             exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
@@ -73,7 +97,16 @@ public class ReportController {
         }
 
     }
-    private JasperPrint buildReport() throws JRException {
+    private JasperPrint buildReport(LocalDate start,LocalDate end) throws JRException {
+        InputStream jasperStream = this.getClass().getResourceAsStream("/jasper/agencyPaymentReport.jrxml");
+        JasperDesign design = JRXmlLoader.load(jasperStream);
+        JasperReport report = JasperCompileManager.compileReport(design);
+        JRDataSource jrDataSource = new JRBeanCollectionDataSource(reportService.getAllAgencies(start,end));
+        Map<String, Object> param = new HashMap<>();
+        param.put("profit", reportService.countProfit(reportService.getAllAgencies(start,end)));
+        return JasperFillManager.fillReport(report, param, jrDataSource);
+    }
+    private JasperPrint buildReportForAll() throws JRException {
         InputStream jasperStream = this.getClass().getResourceAsStream("/jasper/agencyPaymentReport.jrxml");
         JasperDesign design = JRXmlLoader.load(jasperStream);
         JasperReport report = JasperCompileManager.compileReport(design);
@@ -82,4 +115,5 @@ public class ReportController {
         param.put("profit", reportService.countProfit(reportService.getAllAgenciesForReport()));
         return JasperFillManager.fillReport(report, param, jrDataSource);
     }
+
 }

@@ -5,8 +5,11 @@ import "../../cssForIndividualPage/simple-line-icons.css";
 import "../../cssForIndividualPage/magnific-popup.css";
 import "../../cssForIndividualPage/style.css";
 import 'react-datepicker/dist/react-datepicker.css'
-
+import format from "date-fns/format";
 import DatePicker from "react-datepicker"
+import axios from "axios";
+import {toast} from "react-toastify";
+import {Notification} from "../AdminPage/components/Notification";
 
 
 const styles = {
@@ -76,39 +79,98 @@ const styles = {
 export const ModalCreateReport = ({toggleModalIsOpen}) => {
 
     const [startDate, setStartDate] = useState(new Date());
+    const [endDate,setEndDate] = useState(new Date());
 
+
+    console.log(format(startDate,'yyyy-MM-dd'));
+    console.log(format(endDate,'yyyy-MM-dd'));
+    const errorNotify = (error) => {
+        toast.error(error, {position: toast.POSITION.TOP_RIGHT});
+    }
+
+    // const handleSubmit = event => {
+    //     event.preventDefault()
+    //     getReportPDF()
+    // }
+    const getReportPDF = () => {
+
+        setAddPdfLoading(true);
+        axios
+            .get('http://localhost:8080/api/report/PDF?start='+format(startDate,'yyyy-MM-dd')+'&end='+format(endDate,'yyyy-MM-dd'), {responseType: 'arraybuffer'})
+            .then((result) => {
+                let file = new Blob([result.data], {type: 'application/pdf'});
+                let fileURL = URL.createObjectURL(file);
+                setAddPdfLoading(false)
+                window.open(fileURL, '_blank', '');
+                toggleModalIsOpen(false)
+            })
+
+            .catch((err) => {
+                toggleModalIsOpen(false)
+                setAddPdfLoading(false)
+                console.log(err.response.data.error)
+                errorNotify(err.response.data.error)})
+    }
+    const getReportPDFForAllPeriod = () => {
+
+        setAddPdfLoading(true);
+        axios
+            .get('http://localhost:8080/api/report/PDF/all', {responseType: 'arraybuffer'})
+            .then((result) => {
+                let file = new Blob([result.data], {type: 'application/pdf'});
+                let fileURL = URL.createObjectURL(file);
+                setAddPdfLoading(false)
+                window.open(fileURL, '_blank', '');
+                toggleModalIsOpen(false)
+            })
+
+            .catch((err) => {
+                toggleModalIsOpen(false)
+                setAddPdfLoading(false)
+                console.log(err.response.data.error)
+                errorNotify(err.response.data.error)})
+    }
+    const [addPdfLoading, setAddPdfLoading] = useState(false);
 
     return (
 
         <div style={styles.popupFade}>
-
+            {addPdfLoading &&
+            <div style={styles.popupFade}>
+                <div className="spinner-border text-primary" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+            }
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
             <div className="wrap-login100 animate__animated animate__backInLeft " id="interviewForm"
                  style={styles.divSign}>
-                <form className="login100-form validate-form">
-                    <div className="cl-btn-7"
-                        // onClick={closeInterviewForm}
-                    />
+                <form className="login100-form validate-form" >
+                    <Notification/>
+                    {/*<div className="cl-btn-7"*/}
+                    {/*     onClick={toggleModalIsOpen}*/}
+                    {/*/>*/}
                     <br/>
                     <span style={styles.span}>
 					            Report criteria
                     </span>
                     <div style={{display: 'flex'}}>
                         <div style={styles.divEnterData}>
-                            <p>FROM</p>
+
 
                             <DatePicker selected={startDate} onChange={date => setStartDate(date)}/>
                             <span className="focus-input100"/>
                         </div>
                         <div style={styles.divEnterData}>
-                            <p>TO</p>
 
-                            <DatePicker selected={startDate} onChange={date => setStartDate(date)}/>
+
+                            <DatePicker selected={endDate} onChange={date => setEndDate(date)}/>
                             <span className="focus-input100"/>
                         </div>
                     </div>
+
                     <p style={{marginTop:"20px"}}>
                                 <p>  Information! </p>
                         We will generate a profit report for the time you
@@ -120,9 +182,17 @@ export const ModalCreateReport = ({toggleModalIsOpen}) => {
                 <div style={{display: 'flex',marginTop:'100px'}}>
                     <div className="container-login100-form-btn">
                         <button className="login100-form-btn"
-                            // onClick={createInterview}
+                           onClick={getReportPDF}
                         >
-                            Submit
+                            Create
+                        </button>
+                    </div>
+                    <div className="container-login100-form-btn">
+                        <button type='button'
+                                className="login101-form-btn"
+                                onClick={getReportPDFForAllPeriod}
+                        >
+                            Get for all period
                         </button>
                     </div>
                     <div className="container-login100-form-btn">
