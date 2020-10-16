@@ -19,6 +19,8 @@ import org.springframework.ui.jasperreports.JasperReportsUtils;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +48,32 @@ public class ReportService {
         }
         return agencyTransactionDtos;
     }
+    public List<AgencyTransactionDto> getAllAgencies(LocalDate start,LocalDate end) {
+
+        List<AgencyTransactionDto> agencyTransactionDtos = agencyTransactionRepository.findAll().stream().map(AgencyTransactionConverter::convertEntityToDto).collect(Collectors.toList());
+        List<AgencyTransactionDto> result = new ArrayList<>();
+        for (AgencyTransactionDto agencyTransactionDto : agencyTransactionDtos
+        ) {
+            if(agencyTransactionDto.getDate().isAfter(start) && agencyTransactionDto.getDate().isBefore(end)){
+                result.add(agencyTransactionDto);
+                Agency agency = agencyRepository.findById(agencyTransactionDto.getAgency().getId()).orElseThrow(() -> new NotFoundException("Agency with id:" + agencyTransactionDto.getAgency().getId() + "not found"));
+                agencyTransactionDto.setAgencyName(agency.getName());
+            }
+
+        }
+        if (result.isEmpty()) {
+
+            AgencyTransactionDto agencyTransactionDto = new AgencyTransactionDto(0L,null,0d,"No agencies",new Agency());
+            result.add(agencyTransactionDto);
+        }
+        return result;
+    }
 
     public Double countProfit(List<AgencyTransactionDto> agencyTransactionDtos){
 
-         return agencyTransactionDtos.stream().map(AgencyTransactionDto::getSum).mapToDouble(Double::doubleValue).sum();
+
+        return agencyTransactionDtos.stream().map(AgencyTransactionDto::getSum).mapToDouble(Double::doubleValue).sum();
 
     }
 }
+
