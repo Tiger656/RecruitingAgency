@@ -1,22 +1,16 @@
 package com.itechart.agency.controller;
 
 import com.itechart.agency.dto.BusyHoursDto;
-import com.itechart.agency.dto.EmployeeContractDto;
 import com.itechart.agency.dto.InterviewGetDto;
 import com.itechart.agency.dto.InterviewSaveDto;
 import com.itechart.agency.dto.*;
 import com.itechart.agency.dto.converter.InterviewGetConverter;
 import com.itechart.agency.dto.converter.InterviewSaveConverter;
 import com.itechart.agency.dto.converter.QuestionGetConverter;
-import com.itechart.agency.entity.Agency;
 import com.itechart.agency.entity.Interview;
+import com.itechart.agency.entity.InterviewStatus;
 import com.itechart.agency.entity.Question;
-import com.itechart.agency.repository.ManagerRepository;
-import com.itechart.agency.service.ManagerService;
-import com.itechart.agency.service.impl.AgencyServiceImpl;
-import com.itechart.agency.service.impl.InterviewServiceImpl;
-import com.itechart.agency.service.impl.ManagerServiceImpl;
-import com.itechart.agency.service.impl.QuestionServiceImpl;
+import com.itechart.agency.service.impl.*;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,21 +28,23 @@ import java.util.stream.Collectors;
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/interview")
 public class InterviewController {
-    private InterviewServiceImpl interviewService;
-    private AgencyServiceImpl agencyService;
-    private ManagerServiceImpl managerService;
-    private QuestionServiceImpl questionService;
+    private final InterviewServiceImpl interviewService;
+    private final AgencyServiceImpl agencyService;
+    private final ManagerServiceImpl managerService;
+    private final QuestionServiceImpl questionService;
+    private final InterviewStatusServiceImpl interviewStatusService;
     private ModelMapper modelMapper;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployerContractController.class);
 
     @Autowired
-    public InterviewController(InterviewServiceImpl interviewService, ModelMapper modelMapper, AgencyServiceImpl agencyService, ManagerServiceImpl managerService, QuestionServiceImpl questionService) {
+    public InterviewController(InterviewServiceImpl interviewService, ModelMapper modelMapper, AgencyServiceImpl agencyService, ManagerServiceImpl managerService, QuestionServiceImpl questionService, InterviewStatusServiceImpl interviewStatusService) {
         this.interviewService = interviewService;
         this.modelMapper = modelMapper;
         this.agencyService = agencyService;
         this.managerService = managerService;
         this.questionService = questionService;
+        this.interviewStatusService = interviewStatusService;
     }
 
     @PreAuthorize("hasAuthority('MANAGER')")
@@ -187,5 +183,24 @@ public class InterviewController {
 /*        InterviewGetDto interviewGetDto = InterviewGetConverter.convertEntityToDto(interview);*/
         List<QuestionGetDto> questionGetDto = questions.stream().map(QuestionGetConverter::convertEntityToDto).collect(Collectors.toList());
         return new ResponseEntity<List<QuestionGetDto>>(questionGetDto, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EXPERT')")
+    @PostMapping("/conduct-interview/{interviewId}")
+    public ResponseEntity<?> saveAnswerQuestions(@RequestBody List<QuestionGetDto> questionGetDtos, @PathVariable Long interviewId) {
+        List<Question> questions = questionGetDtos.stream().map(QuestionGetConverter::toEntity).collect(Collectors.toList());
+        questions.forEach(questionService::saveQuestion);
+        Interview interview = interviewService.findById(interviewId);
+        InterviewStatus interviewStatus= interviewStatusService.findById(5L);
+        interview.setInterviewStatus(interviewStatus);
+        interviewService.saveInterview(interview);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EXPERT')or hasAuthority('MANAGER')or hasAuthority('EMPLOYEE')")
+    @PutMapping("/update-interview-status/{interviewId}/{statusId}")
+    public ResponseEntity<?> changeInterviewStatusByIdAndStatusId(@PathVariable Long statusId, @PathVariable Long interviewId) {
+        Interview interview = interviewService.updateInterviewStatus(interviewId, statusId);
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 }

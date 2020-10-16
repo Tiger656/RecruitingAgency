@@ -29,11 +29,6 @@ public class InterviewQuestion {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @Column(name = "answer")
-    private String answer;
 
-    /*@Column(name = "is_right")
-    @NotNull
-    private String isRight;*/
 
 }

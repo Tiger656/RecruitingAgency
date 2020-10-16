@@ -14,9 +14,14 @@ import {SimpleQuestionModal} from "./SimpleQuestionModal";
 import {CustomQuestionModal} from "./CustomQuestionModal";
 import {toast} from "react-toastify";
 import {Notification} from "../../AdminPage/components/Notification";
+import {Pdf} from "./Pdf";
+import { Page, Text, View, Document, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
+
+
 
 const styles = {
     popupFade: {
+
         position: 'fixed',
         width: '100%',
         height: '100%',
@@ -51,6 +56,7 @@ const styles = {
         textAlign: 'center'
     },
     divSign: {
+
         paddingTop: '0px',
         marginTop: '5%',
         backgroundColor: 'white',
@@ -90,7 +96,9 @@ const styles = {
     }
 }
 
-export const ConductInterviewModal = ({onModalCloseClick, interviewId}) => {
+
+
+export const ConductInterviewModal = ({onModalCloseClick, interviewId, refreshInterviews}) => {
 
     const [questions, setQuestions] = useState([]);
 
@@ -98,7 +106,7 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId}) => {
        getQuestionsForConducting()
     }, [])
 
-   const getQuestionsForConducting = () => {
+    const getQuestionsForConducting = () => {
         axios
             .get("http://localhost:8080/interview/get-interview-for-conducting/" + interviewId, {headers: authHeader()})
             .then(data => {
@@ -123,13 +131,14 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId}) => {
     };
 
 
-    const updateInterview = () => {
+    const saveAnswers = () => {
         axios
-            .post("http://localhost:8080/question/get-interview-by-id/", questions, {headers: authHeader()})
+            .post("http://localhost:8080/interview/conduct-interview/"+interviewId, questions, {headers: authHeader()})
             .then(data => {
-
+                toast.success("Answers saved successfully")
+                refreshInterviews();
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Answers haven't been saved"))
 
     }
     return (
@@ -141,7 +150,7 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId}) => {
                 rel='stylesheet' type='text/css'/>
             <div className="animate__animated animate__backInLeft wrap-login100"  id="interviewForm" style={styles.divSign}>
 
-                <form className="login100-form validate-form ">
+                <form className="login100-form validate-form" style={{overflowY: 'auto'}}>
                     <br/>
                     <span style={styles.span}>
 					             Conduct interview
@@ -163,8 +172,22 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId}) => {
                 </form>
 
                 <div className="container-login100-form-btn">
-                    <button className="login100-form-btn"  onClick={updateInterview}>
+                    <button className="login100-form-btn"  onClick={saveAnswers}>
                         Save
+                    </button>
+                </div>
+                {/*<div >
+                    <PDFDownloadLink document={<Document>
+                        <Page size="A4" style={styles.page}>
+                            <Text style={styles.school}>1</Text>
+                        </Page>
+                    </Document>} fileName="somename.pdf">
+                        {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+                    </PDFDownloadLink>
+                </div>*/}
+                <div className="container-login100-form-btn">
+                    <button className="login100-form-btn" >
+                        Create report
                     </button>
                 </div>
                 <div className="container-login100-form-btn">

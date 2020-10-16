@@ -93,7 +93,7 @@ export const ExpertPage = () => {
             <UpdateInterviewModal onModalCloseClick={updateIntrvModalCloseClickHandler} updateStatusInterviewData={updateStatusInterviewData} refreshInterviews={refreshInterviews}/>
             }
             {isConductInterviewModalCreate &&
-            <ConductInterviewModal onModalCloseClick={conductInterviewModalCloseClickHandler} interviewId={conductingInterviewId}/>
+            <ConductInterviewModal onModalCloseClick={conductInterviewModalCloseClickHandler} interviewId={conductingInterviewId} refreshInterviews={refreshInterviews}/>
             }
 
 
@@ -139,7 +139,7 @@ export const ExpertPage = () => {
                                         <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                         <p>Manag. comment: {interview.managerComment}</p>
                                         <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => updateIntrvModalCreateClickHandler(interview.id, interview.interviewStatusId)}>{/*confirmInterview(interview.id, interview.interviewStatusId)*/}
-                                            Выбрать
+                                            Approve
                                         </button>
                                     </div>
                                 </div>
@@ -166,6 +166,7 @@ export const ExpertPage = () => {
                                         <p>Start: {interview.startDateTime.replace('T', ' ')}</p>
                                         <p>End: {interview.endDateTime.replace('T', ' ')}</p>
                                         <p>Manag. comment: {interview.managerComment}</p>
+                                        <p>Exp. comment: {interview.expertComment}</p>
                                         <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn" onClick={() => {conductInterviewModalCreateClickHandler(interview.id)}}>
                                             Conduct interview
                                         </button>

@@ -36,6 +36,10 @@ public class Question {
     @JsonIgnore
     private List<QuestionVariant> questionVariants;
 
+    @Column(name="answer")
+    @NotNull
+    private String answer;
+
     /*@ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "interview_questions", joinColumns = {
             @JoinColumn(name = "interview_id")}, inverseJoinColumns = {

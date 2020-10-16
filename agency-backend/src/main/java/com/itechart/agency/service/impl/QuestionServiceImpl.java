@@ -42,9 +42,9 @@ public class QuestionServiceImpl implements ManagerService {
         if (questionDto.getVariants() == null) {
             String questionName = questionDto.getQuestionName();
             QuestionType questionType = questionTypeRepository.findById(1L).orElseThrow(() -> new NotFoundException("Question type with status " + 1L + " not found"));
-            Question question = new Question(null, questionName, questionType, null/*, interviewList*/);
+            Question question = new Question(null, questionName, questionType, null, null/*, interviewList*/);
             Question savedQuestion = questionRepository.save(question);
-            interviewQuestionRepository.save(new InterviewQuestion(null, interview, savedQuestion, null));
+            interviewQuestionRepository.save(new InterviewQuestion(null, interview, savedQuestion));
 
         } else {
             String questionName = questionDto.getQuestionName();
@@ -53,9 +53,9 @@ public class QuestionServiceImpl implements ManagerService {
             List<QuestionVariantDto> questionVariantDtos = questionDto.getVariants();
             List<QuestionVariant> questionVariants = questionVariantDtos.stream().map(QuestionVariantConverter::toEntity).collect(Collectors.toList());
 
-            Question question = new Question(null, questionName, questionType, questionVariants/*, interviewList*/);
+            Question question = new Question(null, questionName, questionType, questionVariants, null/*, interviewList*/);
             Question savedQuestion = questionRepository.save(question);
-            interviewQuestionRepository.save(new InterviewQuestion(null, interview, savedQuestion, null));
+            interviewQuestionRepository.save(new InterviewQuestion(null, interview, savedQuestion));
 
 
             for(QuestionVariant questionVariant: questionVariants){
@@ -73,5 +73,7 @@ public class QuestionServiceImpl implements ManagerService {
     }
 
 
-
+    public void saveQuestion(Question question) {
+        questionRepository.save(question);
+    }
 }
