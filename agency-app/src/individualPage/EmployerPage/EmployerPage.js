@@ -79,25 +79,6 @@ function requestNone() {
 }
 
 function EmployerPage(props) {
-    const lang = props.lang;
-    let langConst = [];
-    if (lang === 'en') {
-        langConst.push('Request');
-        langConst.push('Requests');
-        langConst.push('Status');
-        langConst.push('Contracts');
-        langConst.push('Contract');
-        langConst.push('Submit your application');
-    } else {
-        langConst.push('Заявка');
-        langConst.push('Заявки');
-        langConst.push('Статус');
-        langConst.push('Контракты');
-        langConst.push('Контракт');
-        langConst.push('Подать заявку');
-    }
-
-    const id = 1;
     let isSuspended;
     const [contract, setContract] = useState({contract: []})
     const [professions, setProfessions] = useState({professions: []})
@@ -105,31 +86,47 @@ function EmployerPage(props) {
     const [applications, setApplications] = useState([])
     const [employer, setEmployer] = useState({employer: [], isLoading: true})
 
+    const [contractStatus, setContractStatus] = useState([]);
+    const agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    const personEmail = JSON.parse(localStorage.getItem('response')).email;
+    const userId = JSON.parse(localStorage.getItem('response')).userId;
+    const agencyId =  JSON.parse(localStorage.getItem('response')).agency.id;
     useEffect(() => {
         getEmployer();
-        getContract();
         getProfessions();
-        getApplications();
     }, [])
-    let agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
-    let personEmail = JSON.parse(localStorage.getItem('response')).email;
+
     const getEmployer = () => {
         axios
-            .get("http://localhost:8080/employer/" + id, {headers: authHeader()})
-            .then(data => {
-                setEmployer({employer: data.data, isLoading: false})
+            .get("http://localhost:8080/employer/get-by-user-id/" + userId, {headers: authHeader()})
+            .then(employer => {
+                setEmployer({employer: employer.data, isLoading: false})
+                axios
+                    .get("http://localhost:8080/employer-contract/" + employer.data.employerContractId, {headers: authHeader()})
+                    .then(data => {
+                        setContract({contract: data.data});
+                        getStatus(data.data.contractTypeId);
+                    })
+                    .catch(err => alert(err))
+                axios
+                    .get("http://localhost:8080/employerApplication/get-all-by-employer/" + employer.data.id, {headers: authHeader()})
+                    .then(data => {
+                        setApplications(data.data)
+                    })
+                    .catch(err => alert(err))
+
             })
             .catch(err => alert(err))
     }
 
-    const getContract = () => {
+
+    const getStatus = (statusId) => {
         axios
-            .get("http://localhost:8080/employer-contract/" + id, {headers: authHeader()})
+            .get("http://localhost:8080/status/" + statusId, {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
-                setContract({contract: data.data})
+                setContractStatus(data.data.name);
             })
             .catch(err => alert(err))
-
     }
     const getProfessions = () => {
         axios
@@ -140,16 +137,6 @@ function EmployerPage(props) {
             .catch(err => alert(err))
 
     }
-    const getApplications = () => {
-        axios
-            .get("http://localhost:8080/employerApplication/all", {headers: authHeader()})
-            .then(data => {
-                setApplications(data.data)
-            })
-            .catch(err => alert(err))
-
-    }
-
     const downloadContract = () => {
         axios
             .get("http://localhost:8080/employer-contract/download/1.docx", {headers: authHeader()})
@@ -169,14 +156,15 @@ function EmployerPage(props) {
             <div className=" section-0">
 
                 <div className="wrap-login100" id="request" style={{
-                    top: '80px', width: '360px', position: 'absolute', zIndex: '999',
+                    overflowY: 'auto', height: '500px', top: '450px', width: '360px', position: 'absolute', zIndex: '999',
                     margin: '0 0 0 -180px', left: '50%', display: 'none',
                     paddingLeft: '30px', paddingTop: '5px', paddingBottom: '30px', paddingRight: '30px'
                 }}>
 
                     <form className="login100-form validate-form">
                         <div className="cl-btn-7" onClick={requestNone}/>
-                        <EmployerApplication endDate={contract.contract.contractEndDate}/>
+                        <EmployerApplication endDate={contract.contract.contractEndDate} employerId={employer.employer.id}
+                        agencyId={agencyId}/>
                     </form>
 
                 </div>
@@ -193,7 +181,8 @@ function EmployerPage(props) {
                             <div className="row">
                                 <div className="col-md-8"
                                      style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                    <h1 className="to-animate">{agencyName}</h1>
+                                    <h1 className="to-animate">{employer.employer.name}</h1>
+                                    <h2 className="to-animate">Agency: {agencyName}</h2>
                                     <h2 className="to-animate"> Email: {personEmail}</h2>
                                 </div>
                             </div>
@@ -207,7 +196,7 @@ function EmployerPage(props) {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 section-heading text-center">
-                            <h2 className="to-animate">{langConst[1]}</h2>
+                            <h2 className="to-animate">Applications</h2>
                         </div>
                     </div>
                     <br/><br/>
@@ -216,7 +205,8 @@ function EmployerPage(props) {
                     </div>
                     <br/><br/>
                     <button type="submit" className="btn-block  btn-primary"
-                            style={styles.button} onClick={request}>{langConst[5]}</button>
+                            style={styles.button} onClick={request}>Submit your application
+                    </button>
                 </div>
 
             </section>
@@ -225,13 +215,13 @@ function EmployerPage(props) {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12 section-heading text-center">
-                            <h2 className="to-animate">{langConst[4]}</h2>
+                            <h2 className="to-animate">Contract</h2>
                         </div>
                     </div>
                     <br/><br/>
                     <div className="row row-bottom-padded-sm">
                         <div>
-                            <a className="fh5co-project-item image-popup to-animate" onClick={downloadContract}>
+                            <a className="fh5co-project-item image-popup to-animate" >
                                 <div style={{
                                     color: "black",
                                     textAlign: 'left',
@@ -241,18 +231,18 @@ function EmployerPage(props) {
                                 }}>
                                     <br/>
                                     <h6><b>{isSuspended}</b></h6>
-                                    <h10> Дата создания контракта: {contract.contract.contractCreationDate}</h10>
+                                    <h7> Дата создания контракта: {contract.contract.contractCreationDate}</h7>
                                     <br/>
-                                    <h10> Дата окончания контракта: {contract.contract.contractEndDate}</h10>
+                                    <h7> Дата окончания контракта: {contract.contract.contractEndDate}</h7>
                                     <br/>
-                                    <h10> Тип контракта: {contract.contract.contractTypeId}</h10>
+                                    <h7> Тип контракта: {contractStatus}</h7>
 
                                 </div>
                             </a>
                         </div>
                         <div className="clearfix visible-sm-block"/>
                     </div>
-                    <text>Нажмите на контракт для скачивания файла с подробным описанием</text>
+                    {/*<text>Нажмите на контракт для скачивания файла с подробным описанием</text>*/}
                 </div>
             </section>
         </div>

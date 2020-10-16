@@ -60,6 +60,15 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
         return applicationList.stream().map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
     }
 
+    public String getContractTypeNameForApplication(Long id) {
+        return employerApplicationRepository.getContractTypeNameForApplication(id);
+    }
+
+    public List<EmployerApplicationDto> findByEmployerId(Long id) {
+        return employerApplicationRepository.findByEmployerIdAndDeletedFalse(id).stream()
+                .map((EmployerApplicationConvert::convertEntityToDto)).collect(Collectors.toList());
+    }
+
     @Override
     public EmployerApplicationDto changeApplicationStatus(Long applicationId, String newStatus) {
         if (employerApplicationRepository.findById(applicationId).isEmpty() || statusRepository.findByName(newStatus).isEmpty())
@@ -135,14 +144,18 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     private EmployerApplication setData(EmployerApplicationDto applicationDto) {
         if (agencyRepository.findById(applicationDto.getAgencyId()).isEmpty()) System.out.println("agency");
         if (employerRepository.findById(applicationDto.getEmployerId()).isEmpty()) System.out.println("employer");
-        if (employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).isEmpty()) System.out.println("empl type");
+        if (employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).isEmpty())
+            System.out.println("empl type");
         if (countryRepository.findByName(applicationDto.getCountryName()).isEmpty()) System.out.println("country");
         if (cityRepository.findByName(applicationDto.getCityName()).isEmpty()) System.out.println("city");
-        if (professionRepository.findByName(applicationDto.getProfessionName()).isEmpty()) System.out.println("profession");
+        if (professionRepository.findByName(applicationDto.getProfessionName()).isEmpty())
+            System.out.println("profession");
         if (statusRepository.findByName(applicationDto.getStatusName()).isEmpty()) System.out.println("status");
         if (addressRepository.findById(applicationDto.getAddressId()).isEmpty()) System.out.println("address");
-        if (ageRestrictionRepository.findByName(applicationDto.getAgeRestrictionName()).isEmpty()) System.out.println("age");
-        if (experienceRepository.findByName(applicationDto.getExperienceName()).isEmpty()) System.out.println("experience");
+        if (ageRestrictionRepository.findByName(applicationDto.getAgeRestrictionName()).isEmpty())
+            System.out.println("age");
+        if (experienceRepository.findByName(applicationDto.getExperienceName()).isEmpty())
+            System.out.println("experience");
 
         if (agencyRepository.findById(applicationDto.getAgencyId()).isEmpty() || employerRepository.findById(applicationDto.getEmployerId()).isEmpty()
                 || employmentTypeRepository.findByName(applicationDto.getEmploymentTypeName()).isEmpty() || countryRepository.findByName(applicationDto.getCountryName()).isEmpty()

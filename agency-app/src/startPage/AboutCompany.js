@@ -33,6 +33,7 @@ function AboutCompany(lang) {
     else langConst = 'Рекрутинговое агенство';
     return (
         <section className="section  section-2" id="sec-6622">
+            <a name="aboutCompany"/>
             <div style={{textAlign: 'center', lineHeight: '1.6'}}>
                 <h5 style={styles.h5}>{langConst}</h5>
                 <h2 style={styles.h2}><b>{companyName}</b>

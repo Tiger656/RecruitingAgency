@@ -25,6 +25,14 @@ public class EmployeeContractController {
         this.employeeContractService = employeeContractService;
     }
 
+    //@PreAuthorize("hasAuthority('EMPLOYER') or hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
+    @PostMapping("/create")
+    public ResponseEntity<?> createEmployeeContract(final @RequestBody EmployeeContractDto employeeContractDto) {
+        LOGGER.info("REST request. Path:/employeeContract/create method: POST. employee contract: {}", employeeContractDto);
+        employeeContractService.create(employeeContractDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER')or hasAuthority('EMPLOYEE')")
     @GetMapping("/{id}")
     public EmployeeContractDto getOneEmployeeContract(@PathVariable("id") Long id) {
@@ -40,21 +48,15 @@ public class EmployeeContractController {
     }
 
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/edit")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('EMPLOYER') or hasAuthority('EMPLOYEE')")
+    @PutMapping("/edit")
     public ResponseEntity<?> editEmployeeContract(final @Valid @RequestBody EmployeeContractDto employeeContractDto) {
-        LOGGER.info("REST request. Path:/employeeContract/edit method: POST. employee contract: {}", employeeContractDto);
+        LOGGER.info("REST request. Path:/employeeContract/edit method: PUT. employee contract: {}", employeeContractDto);
         employeeContractService.update(employeeContractDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAuthority('EMPLOYER') or hasAuthority('EMPLOYEE') or hasAuthority('ADMIN')")
-    @PostMapping("/create")
-    public ResponseEntity<?> createEmployeeContract(final @Valid @RequestBody EmployeeContractDto employeeContractDto) {
-        LOGGER.info("REST request. Path:/employeeContract/create method: POST. employee contract: {}", employeeContractDto);
-        employeeContractService.create(employeeContractDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+
 
 
     @PreAuthorize("hasAuthority('ADMIN')")

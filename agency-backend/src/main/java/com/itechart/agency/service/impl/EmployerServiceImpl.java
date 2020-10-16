@@ -48,6 +48,18 @@ public class EmployerServiceImpl implements CrudService<EmployerDto> {
         return employerDto;
     }
 
+    public EmployerDto findByUserId(Long id) {
+        EmployerDto employerDto;
+        if (id <= 0L) throw new BadRequestException("Not valid id");
+        if (employerRepository.findByUserId(id).isPresent()) {
+            employerDto = EmployerConvert.convertEntityToDto
+                    (employerRepository.findByUserId(id).get());
+        } else {
+            throw new NotFoundException("Employer not found");
+        }
+        return employerDto;
+    }
+
     @Override
     public List<EmployerDto> findAll() {
         List<Employer> employers = employerRepository.findAll();

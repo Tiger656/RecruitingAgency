@@ -39,6 +39,14 @@ public class EmployerApplicationController {
     }
 
 
+    @PreAuthorize("hasAuthority('SECRETARY')or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
+    @GetMapping("/get-contract-type/{id}")
+    public String getContractTypeNameForApplication(@PathVariable("id") Long id) {
+        LOGGER.info("REST request. Path:/employerApplication/get-contract-type/" + id + " method: GET.");
+        return employerApplicationService.getContractTypeNameForApplication(id);
+    }
+
+
     @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER') ")
     @PutMapping("/edit")
     public ResponseEntity<?> editEmployerApplication(final @Valid @RequestBody EmployerApplicationDto employerApplicationDto) {
@@ -95,11 +103,17 @@ public class EmployerApplicationController {
     @GetMapping("/getAllByStatus/{status}")
     public List<EmployerApplicationDto> getAllEmployerApplicationByStatus(@PathVariable("status") String status) {
         LOGGER.info("REST request. Path:/employerApplication/getAllByStatus/" + status + " method: GET.");
-        System.out.println(status);
         if (status.contains("-")) {
             String statusN = status.replace('-', ' ');
             return employerApplicationService.getApplicationsByStatus(statusN);
         } else return employerApplicationService.getApplicationsByStatus(status);
+    }
+
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    @GetMapping("/get-all-by-employer/{id}")
+    public List<EmployerApplicationDto> getAllByEmployer(@PathVariable("id") Long id) {
+        LOGGER.info("REST request. Path:/employerApplication/get-all-by-employer/" + id + " method: GET.");
+       return employerApplicationService.findByEmployerId(id);
     }
 
 }

@@ -10,13 +10,13 @@ import authHeader from "../../auth/header";
 
 
 function EmployeePage() {
-    const agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
-    const personEmail = JSON.parse(localStorage.getItem('response')).email;
-    const userId = JSON.parse(localStorage.getItem('response')).userId;
     let isSuspended;
     const [contract, setContract] = useState({contract: []})
     const [interviews, setInterviews] = useState([]);
     const [contractStatus, setContractStatus] = useState([]);
+    const agencyName = JSON.parse(localStorage.getItem('response')).agency.name;
+    const personEmail = JSON.parse(localStorage.getItem('response')).email;
+    const userId = JSON.parse(localStorage.getItem('response')).userId;
     useEffect(() => {
         getContract();
     }, [])

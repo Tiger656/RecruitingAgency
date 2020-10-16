@@ -9,6 +9,39 @@ import axios from "axios";
 import authHeader from "../../auth/header";
 
 const styles = {
+    select100: {
+        height: '62px',
+        border: 'none',
+        outline: 'none',
+        marginBottom: '20px',
+        position: 'relative',
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: '20px'
+    },
+    divEnterData: {
+        marginBottom: '20px',
+        position: 'relative',
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: '20px'
+    },
+    input: {
+        fontSize: '16px',
+        color: '#000000',
+        lineHeight: '1.2',
+        height: '62px',
+        background: 'transparent',
+        padding: '0 20px 0 23px'
+    },
+    span: {
+        paddingBottom: '30px',
+        display: 'block',
+        fontSize: '30px',
+        color: 'black',
+        lineHeight: '1.2',
+        textAlign: 'center'
+    },
     button: {
         color: "black",
         textAlign: 'left',
@@ -39,14 +72,13 @@ function EmployeeContract() {
             statusId: 2,
             compensation: 0,
             creationDate: Date.now(),
-            endDate: Date.now() + new Date(0, 3, 0),
+            endDate: new Date(2021,10,16),
             isDeleted: false
         }
-
         console.log(contract);
         axios
-            .post('http://employee-contract/create', contract, {headers: authHeader()})
-            .then(() => {alert();})
+            .post('http://localhost:8080/employeeContract/create', contract)
+            .then()
             .catch((err) => alert(err))
 
     }

@@ -20,13 +20,13 @@ public class CityController {
         this.cityService = cityService;
     }
 
-    @PreAuthorize("hasAuthority('SYSADMIN')")
+    @PreAuthorize("hasAuthority('SYSADMIN') or hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
     @GetMapping
     public List<City> getAll()   {
         return cityService.findAll();
     }
 
-    @PreAuthorize("hasAuthority('SYSADMIN')")
+    @PreAuthorize("hasAuthority('SYSADMIN') or hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
     public List<City> getAllByCountryId(@PathVariable(name = "id") Long id) {
         return cityService.findCityByCountryId(id);

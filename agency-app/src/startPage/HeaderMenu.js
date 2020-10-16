@@ -214,7 +214,7 @@ if(isLoading) return <></>
                             <div className="collapse navbar-collapse">
                                 <ul className="ml-auto navbar-nav" id="ul">
                                     <li className="nav-item">
-                                        <a aria-haspopup="true" href="#aboutCompany"
+                                        <a aria-haspopup="true" href="/#aboutCompany"
                                            className="active  nav-link"
                                            aria-expanded="false" style={styles.a}>{langConst[0]}</a>
                                     </li>
@@ -278,22 +278,16 @@ if(isLoading) return <></>
 
                                     <li className="position-static  nav-item">
                                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                        <a aria-haspopup="true" href="#ourClients" className=" nav-link"
+                                        <a aria-haspopup="true" href="/#ourClients" className=" nav-link"
                                            aria-expanded="false" style={styles.a}>{langConst[1]}</a>
                                     </li>
-                                    <li className="nav-item"><a href="#ourServices" className="nav-link"
+                                    <li className="nav-item"><a href="/#ourServices" className="nav-link"
                                                                 style={styles.a}>{langConst[2]}</a>
                                     </li>
                                     <li className="nav-item">
                                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                                         <a aria-haspopup="true" className=" nav-link" style={styles.a}
-                                           aria-expanded="false" href="#contacs">{langConst[3]}</a>
-                                    </li>
-
-                                    <li className="nav-item">
-                                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                                        <a aria-haspopup="true" className=" nav-link" style={styles.a}
-                                           aria-expanded="false" href="#contacs">{langConst[3]}</a>
+                                           aria-expanded="false" href="/#contacs">{langConst[3]}</a>
                                     </li>
 
                                     {/*<li className="nav-item "><a href="#" className="nav-link"*/}
@@ -330,16 +324,16 @@ if(isLoading) return <></>
 
                         <ul id="sub-menu" style={ulStyle}>
                             <li>
-                                <a href="#aboutCompany" className="nav-link" style={st}>{langConst[0]}</a>
+                                <a href="/#aboutCompany" className="nav-link" style={st}>{langConst[0]}</a>
                             </li>
                             <li>
-                                <a href="#ourClients" className="nav-link" style={st}>{langConst[1]}</a>
+                                <a href="/#ourClients" className="nav-link" style={st}>{langConst[1]}</a>
                             </li>
                             <li>
-                                <a href="#ourServices" className="nav-link" style={st}>{langConst[2]}</a>
+                                <a href="/#ourServices" className="nav-link" style={st}>{langConst[2]}</a>
                             </li>
                             <li>
-                                <a href="#contacts" className="nav-link" style={st}>{langConst[3]}</a>
+                                <a href="/#contacts" className="nav-link" style={st}>{langConst[3]}</a>
                             </li>
 
 

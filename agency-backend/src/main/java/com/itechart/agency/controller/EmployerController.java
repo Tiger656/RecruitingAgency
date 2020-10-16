@@ -33,6 +33,13 @@ public class EmployerController {
 
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
+    @GetMapping("/get-by-user-id/{id}")
+    public EmployerDto getEmployerByUserId(@PathVariable("id") Long id) {
+        LOGGER.info("REST request. Path:/employer/get-by-user-id/{} method: GET.", id);
+        return employerService.findByUserId(id);
+
+    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/edit")

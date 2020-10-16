@@ -420,7 +420,13 @@
             </column>
         </createTable>
         <insert tableName="employment_type">
-            <column name="name" value="employment_type"></column>
+            <column name="name" value="Part-time employment"/>
+        </insert>
+        <insert tableName="employment_type">
+            <column name="name" value="Full time work"/>
+        </insert>
+        <insert tableName="employment_type">
+            <column name="name" value="Disposable cooperation"/>
         </insert>
 
         <createTable tableName="statuses">

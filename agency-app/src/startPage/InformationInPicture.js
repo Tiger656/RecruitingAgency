@@ -3,7 +3,6 @@ import AboutCompany from "./AboutCompany";
 import Clients from "./Clients";
 import Services from "./Services";
 import EmployeeContract from "../individualPage/EmployeePage/EmployeeContract";
-import EmployerApplication from "../individualPage/EmployerPage/EmployerApplication";
 
 const styles = {
     div: {
@@ -14,7 +13,7 @@ const styles = {
     },
     button: {
         fontFamily: 'sans-serif',
-        width: '200px',
+        width: '240px',
         paddingRight: '15px',
         paddingLeft: '15px',
         border: '3px solid white',
@@ -32,14 +31,14 @@ function InformationInPicture(props) {
     if (lang === 'en') {
         langConst.push('employer');
         langConst.push('Looking for staff?');
-        langConst.push('Submit your application');
+        langConst.push('Contact the agency');
         langConst.push('applicant');
         langConst.push('Looking for work?');
         langConst.push('Enter data');
     } else {
         langConst.push('работодателю');
         langConst.push('Нужны сотрудники?');
-        langConst.push('Подать заявку');
+        langConst.push('Связаться с агенством');
         langConst.push('соикателю');
         langConst.push('В поисках работы?');
         langConst.push('Внести данные');
@@ -66,7 +65,7 @@ function InformationInPicture(props) {
             <section className="section section-1" id="sec-ab20" style={{marginTop: '-100px'}}>
 
                 <div className="wrap-login100" id="employeeContract" style={{
-                    top: '80px', width: '360px', position: 'absolute', zIndex: '999',
+                    overflowY: 'auto', height: '500px', top: '100px', width: '360px', position: 'absolute', zIndex: '999',
                     margin: '0 0 0 -180px', left: '50%', display: 'none',
                     paddingLeft: '30px', paddingTop: '5px', paddingBottom: '30px', paddingRight: '30px'
                 }}>
@@ -79,17 +78,18 @@ function InformationInPicture(props) {
                     </form>
                 </div>
                 <div className="wrap-login100" id="employerApplication" style={{
-                    top: '80px', width: '360px', position: 'absolute', zIndex: '999',
+                    top: '270px', width: '360px', position: 'absolute', zIndex: '999',
                     margin: '0 0 0 -180px', left: '50%', display: 'none',
-                    paddingLeft: '30px', paddingTop: '5px', paddingBottom: '30px', paddingRight: '30px'
+                    paddingLeft: '30px', paddingBottom: '20px', paddingRight: '30px'
                 }}>
-
-                    <form className="login100-form validate-form">
-                        <div className="cl-btn-7" onClick={function () {
-                            document.getElementById('employerApplication').style.display = 'none';
-                        }}/>
-                        <EmployerApplication endDate={Date.now() + new Date(0, 3, 0)}/>
-                    </form>
+                    <div className="cl-btn-7" onClick={function () {
+                        document.getElementById('employerApplication').style.display = 'none';
+                    }}/>
+                    <h6><b>Our contacts: </b></h6>
+                    <h7> +375(29)1234567</h7>
+                    <br/>
+                    <h7> +375(44)7654321</h7>
+                    <br/>
 
                 </div>
 
@@ -109,7 +109,7 @@ function InformationInPicture(props) {
                     }>{langConst[5]}</button>
                 </div>
             </section>
-            <a name="aboutCompany"/>
+
             <AboutCompany lang={lang}/>
             <a name="ourClients"/>
             <Clients lang={lang}/>

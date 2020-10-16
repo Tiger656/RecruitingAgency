@@ -15,7 +15,7 @@ import java.util.List;
 public class CountryController {
     @Autowired
     private CountryServiceImpl countryService;
-    @PreAuthorize("hasAuthority('SYSADMIN')")
+    @PreAuthorize("hasAuthority('SYSADMIN') or hasAnyAuthority('ADMIN') or hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
     @GetMapping
     public List<Country> getAll(){
         return countryService.findAll();
