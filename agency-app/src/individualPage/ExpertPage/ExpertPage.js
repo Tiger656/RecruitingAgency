@@ -33,7 +33,7 @@ export const ExpertPage = () => {
             .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId + "/1", {headers: authHeader()})
             .then(data => {
                 unconfirmedInterviews = data.data;
-                console.log(data.data);
+
                 axios
                     .get("http://localhost:8080/interview/get-interview-for-expert/" +  JSON.parse(localStorage.getItem("response")).agency.id + "/" + JSON.parse(localStorage.getItem("response")).userId +"/2", {headers: authHeader()})
                     .then(data => {

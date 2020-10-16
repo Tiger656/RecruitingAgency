@@ -100,7 +100,6 @@ export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
         axios
             .post("http://localhost:8080/expert", expert, {headers: authHeader()})
             .then(data => {
-                //console.log(data);
                 toast.success("Expert has been added", {position: toast.POSITION.TOP_RIGHT})
                 getExperts();
             })

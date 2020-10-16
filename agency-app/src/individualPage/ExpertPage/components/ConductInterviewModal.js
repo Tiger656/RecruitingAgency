@@ -110,7 +110,6 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId, refreshIn
         axios
             .get("http://localhost:8080/interview/get-interview-for-conducting/" + interviewId, {headers: authHeader()})
             .then(data => {
-                console.log(data);
                 setQuestions(data.data);
             })
             .catch(err => alert(err))
@@ -120,10 +119,7 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId, refreshIn
         const {name, value} = event.currentTarget ;
         let q = questions
         q.map(question => {
-            //console.log(question.id);
-            //console.log(name);
             if (question.id == name) {
-                //console.log(value);
                 question.answer = value;
             }
         })
@@ -139,7 +135,7 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId, refreshIn
                 refreshInterviews();
             })
             .catch(err => toast.error("Answers haven't been saved"))
-
+            onModalCloseClick();
     }
     return (
         <div>
@@ -185,11 +181,11 @@ export const ConductInterviewModal = ({onModalCloseClick, interviewId, refreshIn
                         {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
                     </PDFDownloadLink>
                 </div>*/}
-                <div className="container-login100-form-btn">
+                {/*<div className="container-login100-form-btn">
                     <button className="login100-form-btn" >
                         Create report
                     </button>
-                </div>
+                </div>*/}
                 <div className="container-login100-form-btn">
                     <button className="login100-form-btn" onClick={onModalCloseClick}>
                         Close

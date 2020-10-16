@@ -116,7 +116,6 @@ export const CustomQuestionModal = ({onModalCloseClick, questions, setQuestions}
     }
 
     const submitQuestion = () => {
-        console.log({questionName: customQuestion.questionName, variants: variants});
         setQuestions([...questions,
             {
                 questionName: customQuestion.questionName,

@@ -119,7 +119,7 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
         axios
             .get("http://localhost:8080/interview-status", {headers: authHeader()})
             .then(data => {
-                console.log(data);
+
                 setInterviewStatuses(data.data);
 
             })
@@ -127,7 +127,6 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
     }*/
 
     const handleInputChange = event => {
-        console.log("handle");
         setInterviewUpdateData({...interviewUpdateData, interviewId: updateStatusInterviewData.interviewId, [event.currentTarget.name]: event.currentTarget.value})
     }
 
@@ -136,8 +135,6 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
             .get("http://localhost:8080/interview/get-interview-by-id/"+ interviewUpdateData.interviewId, {headers: authHeader()})
             .then(data => {
                 let newStatusId;
-                console.log(data);
-                console.log(data.data.interviewStatusId);
                 if (data.data.interviewStatusId === 1) {
                     setInterviewUpdateData({interviewId: updateStatusInterviewData.interviewId, interviewStatusId: 3})
                     newStatusId = 3;
