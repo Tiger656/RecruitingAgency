@@ -2,7 +2,6 @@ package com.itechart.agency.controller;
 
 import com.itechart.agency.dto.EmployerApplicationDto;
 import com.itechart.agency.dto.EmployerApplicationForManagerDto;
-import com.itechart.agency.service.impl.EmailServiceImpl;
 import com.itechart.agency.service.impl.EmployerApplicationServiceImpl;
 
 import org.apache.log4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
@@ -31,15 +29,6 @@ public class EmployerApplicationController {
     }
 
 
-    @PreAuthorize("hasAuthority('SECRETARY')")
-    @PostMapping("/sendEmail")
-    public ResponseEntity<?> sendEmail(final @Valid @RequestBody String[] email) throws MessagingException {
-        LOGGER.info("REST request. Path:/employerApplication/sendEmail method: POST. email: to " + email[0] + ", message: " + email[2]);
-        EmailServiceImpl.send(email[0], email[1], email[2]);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
     @PreAuthorize("hasAuthority('SECRETARY')or hasAuthority('MANAGER')or hasAuthority('EMPLOYER')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getOneEmployerApplication(@PathVariable("id") Long id) {
@@ -50,10 +39,10 @@ public class EmployerApplicationController {
     }
 
 
-    @PreAuthorize("hasAuthority('SECRETARY')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER') ")
     @PutMapping("/edit")
     public ResponseEntity<?> editEmployerApplication(final @Valid @RequestBody EmployerApplicationDto employerApplicationDto) {
-        LOGGER.info("REST request. Path:/employerApplication/edit method: POST. " + employerApplicationDto.toString());
+        LOGGER.info("REST request. Path:/employerApplication/edit method: PUT. " + employerApplicationDto.toString());
         employerApplicationService.update(employerApplicationDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -67,7 +56,6 @@ public class EmployerApplicationController {
     }
 
 
-    //нельзя удалять при статусе "рассматривается"
     @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('EMPLOYER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeEmployerApplication(@PathVariable("id") Long id) {
@@ -84,7 +72,7 @@ public class EmployerApplicationController {
         return new ResponseEntity<>(employerAppDtos, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('MANAGER') or hasAuthority('EMPLOYER')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllEmployerApplications() {
         LOGGER.info("REST request. Path:/employerApplication/all method: GET.");

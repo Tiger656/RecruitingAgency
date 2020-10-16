@@ -9,7 +9,7 @@ import './startPage/Toggle.css';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {AdminPage} from "./individualPage/AdminPage/AdminPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import SecretaryPage from "./individualPage/SecretaryPage";
+import SecretaryPage from "./individualPage/SecretaryPage/SecretaryPage";
 import {ManagerPageMain} from "./individualPage/ManagerPages/ManagerPageMain";
 import Login from "./auth/component/Login";
 import {ExpertPage} from "./individualPage/ExpertPage/ExpertPage";

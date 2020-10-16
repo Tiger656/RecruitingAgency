@@ -8,6 +8,8 @@ import "../../../cssForIndividualPage/magnific-popup.css";
 import "../../../cssForIndividualPage/style.css";
 import axios from "axios";
 import authHeader from "../../../auth/header";
+import {toast} from "react-toastify";
+import {Notification} from "../../AdminPage/components/Notification"
 
 const styles = {
     popupFade: {
@@ -86,7 +88,7 @@ const styles = {
 
 export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
 
-    const [expert, setExpert] = useState({agencyId: 1})
+    const [expert, setExpert] = useState({agencyId: JSON.parse(localStorage.getItem('response')).agency.id})
     const handleInputChange = event => {
         const {name, value} = event.currentTarget
         setExpert({...expert, [name]: value});
@@ -98,12 +100,16 @@ export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
         axios
             .post("http://localhost:8080/expert", expert, {headers: authHeader()})
             .then(data => {
-                console.log(data);
+                //console.log(data);
+                toast.success("Expert has been added", {position: toast.POSITION.TOP_RIGHT})
                 getExperts();
             })
-            .catch(err => alert(err))
+            .catch(err => toast.error("Expert hasn't been added. Smth goes wrong", {position: toast.POSITION.TOP_RIGHT})
+            )
     }
     return (
+        <div>
+            <Notification/>
         <div style={styles.popupFade} >
 
             <link
@@ -146,6 +152,7 @@ export const AddExpertModal = ({onModalCloseClick, getExperts}) => {
                 </div>
 
             </div>
+        </div>
         </div>
     )
 

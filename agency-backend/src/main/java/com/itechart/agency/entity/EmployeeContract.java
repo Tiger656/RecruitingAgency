@@ -1,8 +1,6 @@
 package com.itechart.agency.entity;
 
-
-import com.itechart.agency.entity.lists.EmploymentType;
-import com.itechart.agency.entity.lists.Feature;
+import com.itechart.agency.entity.lists.Experience;
 import com.itechart.agency.entity.lists.Profession;
 import com.itechart.agency.entity.lists.Status;
 import com.itechart.agency.entity.location.Address;
@@ -13,7 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "agency_employee_contract")
@@ -30,7 +27,6 @@ public class EmployeeContract {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-
     @NotNull(message = "Agency id in employee contract cannot be null")
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
@@ -41,10 +37,10 @@ public class EmployeeContract {
     @Column(name = "min_salary")
     private double minSalary;
 
-    @NotNull(message = "Price usd in employee contract cannot be null")
+    /*@NotNull(message = "Price usd in employee contract cannot be null")
     @Size(min = 1, max = 38, message = "Price usd in employee contract must be between 1 and 50 characters")
     @Column(name = "price_usd")
-    private double priceUsd;
+    private double priceUsd;*/
 
     @NotNull(message = "Compensation in employee contract cannot be null")
     @Size(min = 1, max = 38, message = "Compensation in employee contract must be between 1 and 50 characters")
@@ -74,9 +70,9 @@ public class EmployeeContract {
     private String surname;
 
     @NotNull(message = "Employee experience years cannot be null")
-    @Size(min = 1, max = 3, message = "Employee experience years must be between 1 and 3 characters")
-    @Column(name = "experience_years")
-    private int experienceYears;
+    @ManyToOne
+    @JoinColumn(name = "experience_id", referencedColumnName = "id")
+    private Experience experience;
 
     @NotNull(message = "Employee birth date cannot be null")
     @Column(name = "birth_date")
@@ -97,7 +93,6 @@ public class EmployeeContract {
     @Column(name = "passport")
     private String passport;
 
-    //не нужное поле
     @NotNull(message = "Employee's email cannot be null")
     @Size(min = 1, max = 50, message = "Employee's email must be between 1 and 50 characters")
     @Column(name = "email")

@@ -5,15 +5,17 @@ import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
 import InformationInPicture from "./InformationInPicture";
 import Login from "../auth/component/Login";
 import {AdminPage} from "../individualPage/AdminPage/AdminPage";
-import EmployerPage from "../individualPage/EmployerPage/EmployerPage";
-import EmployeePage from "../individualPage/EmployeePage/EmployeePage";
-import {SysAdminPage} from "../individualPage/SysAdminPage/SysAdminPage";
+
+
 import {IncorrectUrl} from "../auth/component/InсorrectUrl";
 import AuthService from "../auth/auth.service";
-import SecretaryPage from "../individualPage/SecretaryPage";
+import SecretaryPage from "../individualPage/SecretaryPage/SecretaryPage";
 import {ManagerPageMain} from "../individualPage/ManagerPages/ManagerPageMain";
 import {ExpertPage} from "../individualPage/ExpertPage/ExpertPage";
 import PaymentPage from "../individualPage/Payment/PaymentPage";
+import EmployeePage from "../individualPage/EmployeePage/EmployeePage";
+import EmployerPage from "../individualPage/EmployerPage/EmployerPage";
+import {SysAdminPage} from "../individualPage/SysAdminPage/SysAdminPage";
 
 
 const styles = {
@@ -117,7 +119,7 @@ export const HeaderMenu = ({logo, lang, id = '1'}) => {
     const [showOwner, setShowOwner] = useState(false);
     const [showSecretary, setShowSecretary] = useState(false);
     const [showManager, setShowManager] = useState(false);
-
+    const [showExpert,setShowExpert]=useState(false);
     const [currentUser, setCurrentUser] = useState();
     const [userRole, setUserRoles] = useState([]);
 
@@ -144,6 +146,7 @@ const  fetchingUserFromStorage=()=>{
             setShowOwner(resp.roles.includes("OWNER"));
             setShowSecretary(resp.roles.includes("SECRETARY"));
             setShowManager(resp.roles.includes("MANAGER"));
+            setShowExpert(resp.roles.includes("EXPERT"));
 
 
 
@@ -264,6 +267,13 @@ if(isLoading) return <></>
                                             </Link>
                                         </li>
                                     )}
+                                    {showExpert && (
+                                        <li className="nav-item">
+                                            <Link to={"/expert-page"} className="nav-link" style={styles.a}>
+                                                EXPERT
+                                            </Link>
+                                        </li>
+                                    )}
 
 
                                     <li className="position-static  nav-item">
@@ -380,6 +390,13 @@ if(isLoading) return <></>
                                 <li>
                                     <Link to={"/employee-page"} className="nav-link" style={st}>
                                         EMPLOYEE
+                                    </Link>
+                                </li>
+                            )}
+                            {showExpert && (
+                                <li>
+                                    <Link to={"/expert-page"} className="nav-link" style={st}>
+                                        EXPERT
                                     </Link>
                                 </li>
                             )}

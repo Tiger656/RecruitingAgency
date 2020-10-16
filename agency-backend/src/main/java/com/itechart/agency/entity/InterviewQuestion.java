@@ -10,7 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "interviews")
+@Table(name = "interview_questions")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,23 +18,22 @@ import javax.persistence.*;
 public class InterviewQuestion {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @Column(name = "name")
-    @NotNull
+    @Column(name = "answer")
     private String answer;
 
-    @Column(name = "is_right")
+    /*@Column(name = "is_right")
     @NotNull
-    private String isRight;
+    private String isRight;*/
 
 }

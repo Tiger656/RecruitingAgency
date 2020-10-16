@@ -1,7 +1,9 @@
 package com.itechart.agency.dto;
 
 import com.itechart.agency.entity.Agency;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -10,6 +12,8 @@ import java.util.Optional;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmployerDto {
     private Long id;
     private String name;

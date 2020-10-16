@@ -1,11 +1,8 @@
 package com.itechart.agency.service.impl;
 
 import com.itechart.agency.dto.EmployeeContractDto;
-import com.itechart.agency.dto.EmployerApplicationForManagerDto;
 import com.itechart.agency.dto.converter.EmployeeContractConvert;
-import com.itechart.agency.dto.converter.EmployerApplicationForManagerConvert;
 import com.itechart.agency.entity.EmployeeContract;
-import com.itechart.agency.entity.EmployerApplication;
 import com.itechart.agency.exception.BadRequestException;
 import com.itechart.agency.exception.NotFoundException;
 import com.itechart.agency.repository.*;
@@ -45,6 +42,25 @@ public class EmployeeContractServiceImpl implements CrudService<EmployeeContract
     }
 
 
+    public List<EmployeeContractDto> getContractsByStatus(String status) {
+        if (statusRepository.findByName(status).isEmpty())
+            throw new NotFoundException("Status doesn't exist");
+        List<EmployeeContract> contractList = employeeContractRepository.findByStatus(statusRepository.findByName(status).get());
+        return contractList.stream().map((EmployeeContractConvert::convertEntityToDto)).collect(Collectors.toList());
+    }
+
+
+    public EmployeeContractDto changeContractStatus(Long contractId, String newStatus) {
+        if (employeeContractRepository.findById(contractId).isEmpty() || statusRepository.findByName(newStatus).isEmpty())
+            throw new NotFoundException("Employee contract or/and status doesn't exist");
+        else {
+            EmployeeContract employeeContract = employeeContractRepository.findById(contractId).get();
+            employeeContract.setStatus(statusRepository.findByName(newStatus).get());
+            return EmployeeContractConvert.convertEntityToDto(employeeContractRepository.save(employeeContract));
+        }
+    }
+
+
     @Override
     public EmployeeContractDto findById(Long id) {
         EmployeeContractDto contractDto;
@@ -52,6 +68,22 @@ public class EmployeeContractServiceImpl implements CrudService<EmployeeContract
         if (employeeContractRepository.findById(id).isPresent()) {
             contractDto = EmployeeContractConvert.convertEntityToDto
                     (employeeContractRepository.findById(id).get());
+        } else {
+            throw new NotFoundException("Employee contract not found");
+        }
+        if (!contractDto.isDeleted())
+            return contractDto;
+        else {
+            throw new NotFoundException("Employee contract was deleted");
+        }
+    }
+
+    public EmployeeContractDto findByUserId(Long id) {
+        EmployeeContractDto contractDto;
+        if (id <= 0L) throw new BadRequestException("Not valid id");
+        if (employeeContractRepository.findByUserId(id).isPresent()) {
+            contractDto = EmployeeContractConvert.convertEntityToDto
+                    (employeeContractRepository.findByUserId(id).get());
         } else {
             throw new NotFoundException("Employee contract not found");
         }

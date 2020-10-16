@@ -120,6 +120,7 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
     @Override
     public Long update(EmployerApplicationDto applicationDto) {
         EmployerApplication application = setData(applicationDto);
+        application.setId(applicationDto.getId());
         if (applicationDto.getId() <= 0L)
             throw new BadRequestException("Not valid data");
         if (employerApplicationRepository.findById(applicationDto.getId()).isPresent()) {
@@ -157,7 +158,7 @@ public class EmployerApplicationServiceImpl implements EmployerApplicationServic
         application.setSalary(applicationDto.getSalary());
         application.setComment(applicationDto.getComment());
         application.setDeleted(false);
-        application.setApplicationNumber(applicationDto.getApplicationNumber());
+        application.setPrice(applicationDto.getPrice());
         //EmployerApplication application = EmployerApplicationConvert.convertDtoToEntity(applicationDto);
         application.setExperience(experienceRepository.findByName(applicationDto.getExperienceName()).get());
         application.setAgeRestriction(ageRestrictionRepository.findByName(applicationDto.getAgeRestrictionName()).get());
