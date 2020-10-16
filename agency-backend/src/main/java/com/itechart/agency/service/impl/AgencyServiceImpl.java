@@ -31,7 +31,8 @@ public class AgencyServiceImpl implements AgencyService {
         this.cityRepository = cityRepository;
         this.addressRepository = addressRepository;
     }
-/*create agency and default user OWNER and ADMIN for new agency*/
+
+    /*create agency and default user OWNER and ADMIN for new agency*/
     @Transactional
     @Override
     public AgencyDto create(AgencyDto agencyDto) {
@@ -39,8 +40,9 @@ public class AgencyServiceImpl implements AgencyService {
                 addressRepository.save(new Address(agencyDto.getStreet(), agencyDto.getBuilding(),
                         agencyDto.getApartment())).getId());
 
-        userService.createUserByRole(agencyDto.getOwnerEmail(), agencyDto1.getId(), ROLE_OWNER);
-        userService.createUserByRole(agencyDto.getAdminEmail(), agencyDto1.getId(), ROLE_ADMIN);
+            userService.createUserByRole(agencyDto.getOwnerEmail(), agencyDto1.getId(), ROLE_OWNER);
+            userService.createUserByRole(agencyDto.getAdminEmail(), agencyDto1.getId(), ROLE_ADMIN);
+
 
         return agencyDto1;
     }
@@ -82,6 +84,7 @@ public class AgencyServiceImpl implements AgencyService {
     public Double getDepositByAgencyId(Long id) {
         return agencyRepository.findById(id).orElseThrow(() -> new NotFoundException("No agency with id " + id)).getDeposit();
     }
+
     //fix set double value
     /*fix */
     private AgencyDto createAgencyDto(AgencyDto agencyDto, Long addressId) {

@@ -161,23 +161,18 @@ export const SysAdminPage = () => {
 
 
     const saveAgency = (agency) => {
-        setAddAgencyLoading(true);
         axios
             .post('http://localhost:8080/api/agency', agency, {headers: authHeader()})
             .then((result) => {
-                setAddAgencyLoading(false);
                 setAllAgencies([...allAgencies, result.data])
                 successNotify("Agency  created successfully " + result.data.name);
             })
 
-            .catch((err) => {
-                setAddAgencyLoading(false);
-                errorNotify(err.response.data.error)})
+            .catch((err) => errorNotify(err.response.data.error))
     };
 
     const getReportPDF = () => {
-        setPdfFileLoading(true);
-
+        setPdfFileLoading(true)
         axios
             .get('http://localhost:8080/api/report/PDF', {responseType: 'arraybuffer'})
             .then((result) => {
@@ -185,13 +180,9 @@ export const SysAdminPage = () => {
                 let fileURL = URL.createObjectURL(file);
                 window.open(fileURL, '_blank', '');
                 setPdfFileLoading(false);
-
             })
 
-            .catch((err) => {
-                setPdfFileLoading(false);
-
-                errorNotify(err.response.data.error)})
+            .catch((err) => errorNotify(err.response.data.error))
     }
     const getReportXls = () => {
         setXlsFileLoading(true)
@@ -249,20 +240,12 @@ export const SysAdminPage = () => {
         setForEditing(id);
         toggleShowEditModal()
     }
-    const [addAgencyLoading, setAddAgencyLoading] = useState(false);
+
 
     return (
 
         <div>
             {modalIsOpen && <ModalCreateReport toggleModalIsOpen={toggleModalIsOpen}/>}
-
-            {addAgencyLoading &&
-            <div style={styles.popupFade}>
-                <div className="spinner-border text-primary" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
-            </div>
-            }
             <div>
                 <link
                     href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
@@ -278,7 +261,7 @@ export const SysAdminPage = () => {
                                 <div className="row">
                                     <div className="col-md-8"
                                          style={{marginLeft: 'auto', marginRight: 'auto', textAlign: 'left'}}>
-                                        <h1 className="to-animate">SYSADMIN</h1>
+                                        <h1 className="to-animate">Owner</h1>
                                         <h2 className="to-animate"> Email: {personEmail}</h2>
 
                                     </div>
@@ -360,8 +343,8 @@ export const SysAdminPage = () => {
                     <br/>
                     <div style={{display: 'flex'}}>
                         <button type="button" className="btn-block  btn-primary"
-                                // onClick={getReportPDF}
-                            onClick={toggleModalIsOpen}
+                                onClick={getReportPDF}
+                            // onClick={toggleModalIsOpen}
                                 style={styles.button}>
                             {pdfFileLoading && (
                                 <span className="spinner-border spinner-border-sm"/>
@@ -387,10 +370,6 @@ export const SysAdminPage = () => {
 
 
     )
-    // return (
-    //     <div className='container' style={{backgroundColor:"white"}}>
-    //             <p>SysAdmin</p>
-    //     </div>
-    // );
+
 };
 

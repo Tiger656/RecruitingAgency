@@ -186,7 +186,7 @@ export const Modal = ({
         event.preventDefault()
 
         if (!isValid) {
-            warnEnterAllFieldsNotify("NOTTT is not valid!");
+            warnEnterAllFieldsNotify("You entered incorrect data!");
             return
         }
 
@@ -257,7 +257,7 @@ export const Modal = ({
 
     const validateEmail = (e) => {
 
-        validator.isEmail(e.target.value) && validator.isLength(e.target.value,{min:2,max:30}) ?
+        validator.isEmail(e.target.value) && validator.isLength(e.target.value,{min:9,max:70}) ?
             setIsValid(true)
      :
             setIsValid(false);
@@ -391,7 +391,7 @@ export const Modal = ({
                     <div style={styles.divEnterData}>
                         <input className="input100" type="text" style={styles.input}
                                name="contractId"
-                               placeholder="Employee"
+                               placeholder="Employee contract number"
 
                                onChange={validateEmployeeContractNumber}/>
                         <span className="focus-input100"/>

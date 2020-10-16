@@ -13,6 +13,7 @@ import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -28,6 +29,7 @@ public class ExpertServiceImpl implements ExpertService {
     private final ExpertRepository expertRepository;
     private final UserRepository userRepository;
     private final AgencyRepository agencyRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
     @Autowired
     public ExpertServiceImpl(ExpertRepository expertRepository, EmailServiceImpl emailService, UserRepository userRepository, AgencyRepository agencyRepository) {
@@ -43,11 +45,12 @@ public class ExpertServiceImpl implements ExpertService {
         String password = passwordGenerator.generatePassword(10, new CharacterRule(EnglishCharacterData.UpperCase, 1)
                                                                         , new CharacterRule(EnglishCharacterData.LowerCase, 1)
                                                                         , new CharacterRule(EnglishCharacterData.Digit, 1));
-        user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         List<Role> roles = new ArrayList<>();
-        roles.add(new Role(7L, null));
+        roles.add(new Role(8L, null));
         user.setRoles(roles);
         user.setIsDeleted(false);
+        user.setIsDeactivated(false);
         user.setAgency(agencyRepository.findById(user.getAgency().getId()).orElseThrow(() -> new NotFoundException("No agency with id:" + 1)));
         user = userRepository.save(user);
 
@@ -55,7 +58,7 @@ public class ExpertServiceImpl implements ExpertService {
         Expert savedExpert = expertRepository.save(expert);
 
         try {
-            EmailServiceImpl.send(user.getEmail(), "Created account", "You have been just registered as Expert on site localhost:3000 with password: " + password);
+            EmailServiceImpl.send(user.getEmail(), "Created account", "You have been just registered as Expert on our site with password: " + password);
         } catch (MessagingException e) {
             e.printStackTrace();
         }

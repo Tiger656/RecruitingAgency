@@ -5,6 +5,8 @@ import "../../cssForIndividualPage/simple-line-icons.css";
 import "../../cssForIndividualPage/magnific-popup.css";
 import "../../cssForIndividualPage/style.css";
 import "../../startPage/SignIn.css";
+import axios from "axios";
+import authHeader from "../../auth/header";
 
 const styles = {
     button: {
@@ -26,7 +28,7 @@ const styles = {
 function EmployeeInterview(props) {
 
     const {interview} = props;
-    let showButton = interview.interviewStatusId === 1 || interview.interviewStatusId === 2;
+    let showButton = interview.interviewStatusId === 1 || interview.interviewStatusId === 3;
     let [status, setStatus] = useState(interview.interviewStatusName);
     return (
         <div className="col-md-4 col-sm-6">
@@ -46,14 +48,26 @@ function EmployeeInterview(props) {
                     <br/>
                     {showButton && (<button type="button" className="btn-block  btn-primary"
                                             id={"interview" + interview.id} style={styles.choiceButton}
-                        // onClick={function () {
-                        //     if (interview.interviewStatusId === 1) {
-                        //
-                        //     } else {
-                        //
-                        //     }
-                        // }
-                        // }
+                         onClick={function () {
+                             if (interview.interviewStatusId === 1) {
+                                 axios. //if 1 then 2, if 3 then 7
+                                     put("http://localhost:8080/interview/update-interview-status/" + interview.id + "/" + 2, {},{headers: authHeader()})
+                                     .then(data => {
+                                         alert("success");
+                                     })
+                                     .catch(err => alert(err))
+
+
+                             } else if (interview.interviewStatusId === 3){
+                                 axios. //if 1 then 2, if 3 then 7
+                                     put("http://localhost:8080/interview/update-interview-status/" + interview.id + "/" + 7, {},{headers: authHeader()})
+                                     .then(data => {
+                                         alert("success");
+                                     })
+                                     .catch(err => alert(err))
+                             }
+                         }
+                         }
                     >Approve</button>)}
                 </div>
 

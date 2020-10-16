@@ -119,7 +119,7 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
         axios
             .get("http://localhost:8080/interview-status", {headers: authHeader()})
             .then(data => {
-                console.log(data);
+
                 setInterviewStatuses(data.data);
 
             })
@@ -127,7 +127,6 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
     }*/
 
     const handleInputChange = event => {
-        console.log("handle");
         setInterviewUpdateData({...interviewUpdateData, interviewId: updateStatusInterviewData.interviewId, [event.currentTarget.name]: event.currentTarget.value})
     }
 
@@ -136,17 +135,17 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
             .get("http://localhost:8080/interview/get-interview-by-id/"+ interviewUpdateData.interviewId, {headers: authHeader()})
             .then(data => {
                 let newStatusId;
-                if (data.data.id === 1) {
+                if (data.data.interviewStatusId === 1) {
                     setInterviewUpdateData({interviewId: updateStatusInterviewData.interviewId, interviewStatusId: 3})
                     newStatusId = 3;
-                } else if (data.data.id === 2) {
+                } else if (data.data.interviewStatusId === 2) {
                     setInterviewUpdateData({interviewId: updateStatusInterviewData.interviewId, interviewStatusId: 7})
                     newStatusId = 7;
                 }
                 axios
                     .post("http://localhost:8080/interview/change-interview-status-expert",
                         {interviewId: interviewUpdateData.interviewId,
-                            managerComment: interviewUpdateData.managerComment,
+                            expertComment: interviewUpdateData.expertComment,
                             interviewStatusId: newStatusId,
                             questions: questions
                             /*questions: [{questionName: "qn1"}, {questionName: "qn2", variants: [{label: "a", name: "an"}, {label: "b", name: "bn"}]}]*/

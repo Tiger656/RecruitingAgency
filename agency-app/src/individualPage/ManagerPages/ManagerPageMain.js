@@ -161,7 +161,6 @@ export const ManagerPageMain =  () => {
         axios
             .get("http://localhost:8080/employeeContract/all-for-manager/" + JSON.parse(localStorage.getItem("response")).agency.id, {headers: authHeader()})
             .then(data => {
-                console.log(data);
                 setEeApplications(data.data)
             })
             .catch(err => toast.error("Unable to get get Applications. \n Pls, contact us by telephone", {position: toast.POSITION.TOP_RIGHT}))
@@ -170,7 +169,6 @@ export const ManagerPageMain =  () => {
         axios
             .get("http://localhost:8080/employerApplication/all-for-manager/" + JSON.parse(localStorage.getItem("response")).agency.id, {headers: authHeader()})
             .then(data => {
-                console.log(data);
                 setErApplications(data.data)
 
             })
@@ -250,7 +248,6 @@ export const ManagerPageMain =  () => {
         data.endDateTime = format(endDate, 'yyyy-MM-dd HH:mm');
         /*document.getElementById("date").value*;*/
         data.managerComment = document.getElementById("manager-comment").value;
-        console.log(data);
         axios
             .post("http://localhost:8080/interview", data, {headers: authHeader()})
             .then(data => {
@@ -310,8 +307,6 @@ export const ManagerPageMain =  () => {
         axios
             .get("http://localhost:8080/interview/" + JSON.parse(localStorage.getItem("response")).agency.id +"/"+ JSON.parse(localStorage.getItem("response")).userId , {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
-                console.log("My interview userId" + JSON.parse(localStorage.getItem("response")).agency.id)
-                console.log(data.data);
                 setInterviews(data.data);
                 setSearchResults(data.data);
             })
@@ -321,7 +316,6 @@ export const ManagerPageMain =  () => {
         axios
             .get("http://localhost:8080/interview/" + JSON.parse(localStorage.getItem("response")).agency.id/*JSON.parse(localStorage.getItem("response")).agency.id*/ /*document.getElementById("MANAGER_ID").value*/ , {headers: authHeader()}) //agency_id/expert_id/year/month/day
             .then(data => {
-                console.log(data.data);
                 setInterviews(data.data);
                 setSearchResults(data.data);
             })
@@ -480,7 +474,7 @@ export const ManagerPageMain =  () => {
                                             <p>Employer: {erApplication.employerName}</p>
                                             <p>Profession: {erApplication.professionName}</p>
                                             <p>Salary: {erApplication.salary}</p>
-                                            <p>Salary: {erApplication.experience}</p>
+                                            <p>Salary: {erApplication.experience.name}</p>
                                             <p>Recommended expert: {erApplication.expertPersonalName}</p>
                                             <button style={{marginLeft: 'auto', marginRight: 'auto', marginBottom: '5px' }} className="login100-form-btn add-temp" onClick={addToTempAppEmployer.bind(this, erApplication)}>
                                                 Выбрать

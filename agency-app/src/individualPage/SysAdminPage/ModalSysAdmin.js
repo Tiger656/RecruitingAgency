@@ -10,6 +10,9 @@ import "../../cssForIndividualPage/style.css";
 
 import axios from "axios";
 import authHeader from "../../auth/header";
+import {toast} from "react-toastify";
+import {Notification} from "../AdminPage/components/Notification";
+import validator from "validator/es";
 
 const styles = {
 
@@ -52,10 +55,10 @@ const styles = {
     span: {
         paddingBottom: '5px',
         display: 'flex',
-        fontSize: '20px',
+        fontSize: '15px',
         color: 'black',
-        lineHeight: '1.2',
-        textAlign: 'center'
+        lineHeight: '1.0',
+        textAlign: 'left'
     },
     divSign: {
         paddingTop: '0px',
@@ -76,7 +79,18 @@ const styles = {
         position: 'relative',
         width: '100%',
         backgroundColor: '#fff',
-        borderRadius: '20px'
+        borderRadius: '20px',
+
+    },
+    divEnterDataError: {
+        marginBottom: '20px',
+        position: 'relative',
+        width: '100%',
+        backgroundColor: '#fff',
+        borderRadius: '20px',
+        borderColor: 'red',
+        borderStyle: "solid",
+        borderWidth: "1px"
     },
 
     txt: {
@@ -139,9 +153,39 @@ export const ModalSysAdmin = ({
             .catch((err) => errorNotify(err.response.data.error))
     };
 
-
+    const [isValid, setIsValid] = useState(!!id);
     const handleSubmit = event => {
         event.preventDefault();
+
+        // if (!isValid) {
+        //     warnEnterAllFieldsNotify("You entered incorrect data!");
+        //     return;
+        // }
+        if(emailError){
+            warnEnterAllFieldsNotify(emailError);
+            return;
+        }
+        if(nameError){
+            warnEnterAllFieldsNotify(nameError);
+            return;
+        }
+        if(paymentError){
+            warnEnterAllFieldsNotify(paymentError);
+            return;
+        }
+        if(addressError){
+            warnEnterAllFieldsNotify(addressError);
+            return;
+        }
+
+        if(numberError){
+            warnEnterAllFieldsNotify(numberError);
+            return;
+        }
+        if(buildingError){
+            warnEnterAllFieldsNotify(buildingError);
+            return;
+        }
 
         if (!agency.name || !agency.countryId || !agency.cityId
             || !agency.street || !agency.building || !agency.apartment || !agency.regularPayment)
@@ -153,6 +197,67 @@ export const ModalSysAdmin = ({
 
 
     }
+
+   const [emailError,setEmailError]=useState('');
+
+    const validateEmail = (e) => {
+
+        validator.isEmail(e.target.value) && validator.isLength(e.target.value, {min: 9, max: 70}) ?
+            setEmailError('')
+            :
+            setEmailError('Email is incorrect!');
+
+        handleInputChange(e);
+    };
+
+
+    const [nameError,setNameError]=useState('');
+
+    const validateName = (e) => {
+        let name = e.target.value.trim();
+        validator.isLength(name, {min: 2, max: 20}) ?
+            setNameError('')
+            :
+            setNameError('Name is incorrect (size: 2-20)') ;
+
+        handleInputChange(e);
+    };
+    const [addressError,setAddressError]=useState('');
+
+    const validateAddress = (e) => {
+        let name = e.target.value.trim();
+        validator.isLength(name, {min: 2, max: 20}) ?
+            setAddressError('')
+            :
+            setAddressError('Address is incorrect (size: 2-20)') ;
+
+        handleInputChange(e);
+    };
+
+    const [numberError,setNumberError]=useState('');
+    const validateNumber = (e) => {
+
+        validator.isInt(e.target.value, {min: 1, max: 20}) ? setNumberError('') : setNumberError('Name is incorrect (size: 1-20)');
+
+        handleInputChange(e);
+    };
+    const [paymentError,setPaymentError]=useState('');
+    const validatePayment = (e) => {
+
+        validator.isInt(e.target.value, {min: 1, max: 100000}) ? setPaymentError('') : setPaymentError('Payment is incorrect, should be integer (size: 1-100000)');
+
+        handleInputChange(e);
+    };
+
+    const [buildingError,setBuildingError]=useState('');
+
+    const validateBuilding = (e) => {
+
+        validator.isLength(e.target.value, {min: 1, max: 5}) ? setBuildingError('') : setBuildingError('Building should be integer  (size: 1-5)') ;
+        handleInputChange(e);
+    };
+
+
     const handleInputCountryChange = event => {
         getCitiesByCountryId(event.currentTarget.value);
         const {name, value} = event.currentTarget;
@@ -172,31 +277,35 @@ export const ModalSysAdmin = ({
 
     }
 
-    console.log(agency)
+
     return (
         <div style={styles.popupFade}>
+            <Notification/>
+
             <link
                 href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700'
                 rel='stylesheet' type='text/css'/>
             <div className="animate__animated animate__backInLeft" id="interviewForm" style={styles.divSign}>
 
                 <form className="login100-form validate-form " onSubmit={handleSubmit} style={{marginTop: '-20px'}}>
-                    <button type="button" className="cl-btn-7" style={{top:'10px',left:'-30px'}}
+                    <button type="button" className="cl-btn-7" style={{top: '10px', left: '-30px'}}
                             onClick={closeModal}
                     />
                     <br/>
 
 
-                    <span style={styles.span} >
+                    <span style={styles.span}>
                             {buttonName} Agency
                         </span>
 
-                    <div style={styles.divEnterData}>
+                    <div id='email'
+                        style={styles.divEnterData}
+                    >
                         <input className="input101" type="text" style={styles.input}
                                name="name"
-                               placeholder="Agency Name"
+                               placeholder="Agency Name "
                                value={agency.name}
-                               onChange={handleInputChange}
+                               onChange={validateName}
                         />
                         <span className="focus-input100"/>
                     </div>
@@ -231,8 +340,8 @@ export const ModalSysAdmin = ({
                     {!id &&
 
                     <div>
-                    <span style={styles.span} >
-					             OWNER AND ADMIN
+                    <span style={styles.span}>
+					             Owner
                     </span>
 
                         <div style={styles.divEnterData}>
@@ -242,19 +351,21 @@ export const ModalSysAdmin = ({
                                 style={{height: '35px'}}
                                 name="ownerEmail"
                                 placeholder="Enter owner email"
-                                onChange={handleInputChange}
+                                onChange={validateEmail}
                             />
                             <span className="focus-input100"/>
                         </div>
-
+                        <span style={styles.span}>
+					             Admin
+                    </span>
                         <div style={styles.divEnterData}>
                             <input
                                 // className="input100"
                                 type="text"
                                 style={{height: '35px'}}
                                 name="adminEmail"
-                                placeholder="Enter admin email"
-                                onChange={handleInputChange}
+                                placeholder="Enter admin email "
+                                onChange={validateEmail}
                             />
                             <span className="focus-input100"/>
                         </div>
@@ -271,7 +382,7 @@ export const ModalSysAdmin = ({
                             name="regularPayment"
                             placeholder="Regular payment"
                             value={agency.regularPayment}
-                            onChange={handleInputChange}
+                            onChange={validatePayment}
                         />
                         <span className="focus-input100"/>
                     </div>
@@ -287,7 +398,7 @@ export const ModalSysAdmin = ({
                                name="street"
                                placeholder="Street"
                                value={agency.street}
-                               onChange={handleInputChange}
+                               onChange={validateAddress}
                         />
                         <span className="focus-input100"/>
                     </div>
@@ -297,7 +408,7 @@ export const ModalSysAdmin = ({
                                name="building"
                                placeholder="Building"
                                value={agency.building}
-                               onChange={handleInputChange}
+                               onChange={validateBuilding}
                         />
                         <span className="focus-input100"/>
                     </div>
@@ -306,7 +417,7 @@ export const ModalSysAdmin = ({
                                name="apartment"
                                placeholder="Apartment"
                                value={agency.apartment}
-                               onChange={handleInputChange}
+                               onChange={validateBuilding}
                         />
                         <span className="focus-input100"/>
                     </div>
@@ -320,10 +431,10 @@ export const ModalSysAdmin = ({
                             </button>
                         </div>
                     }
-                    <div style={{display:'flex'}}>
+                    <div style={{display: 'flex'}}>
                         <div className="container-login100-form-btn">
                             <button className="login100-form-btn"
-                                    // style={{marginBottom: '10px'}}
+                                // style={{marginBottom: '10px'}}
                             >
                                 {buttonName}
                             </button>
@@ -344,6 +455,6 @@ export const ModalSysAdmin = ({
                 </form>
             </div>
         </div>
-)
+    )
 
 }

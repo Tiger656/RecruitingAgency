@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
             return UserDto.convertEntityToDto(user);
         } else {
-            throw new NotFoundException("User with email: " + userDto.getEmail() + " is exist");
+            throw new NotFoundException("User with email: " + userDto.getEmail() + " not exist");
         }
 
     }
@@ -283,7 +283,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
                 e.printStackTrace();
             }
         } else {
-            throw new NotFoundException("User with email: " + email + " is exist");
+            throw new NotFoundException("User with email: " + email + "  not exist");
 
         }
     }

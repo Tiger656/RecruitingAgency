@@ -32,14 +32,18 @@
             <column name="question_type_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_questions_question_types" references="question_types(id)"></constraints>
             </column>
+            <column name="answer" type="varchar(1000)">
+            </column>
         </createTable>
         <insert tableName="questions">
             <column name="name" value="Lets speak about access levels in Java"></column>
             <column name="question_type_id" valueNumeric="1"></column>
+            <column name="answer" valueNumeric="4"></column>
         </insert>
         <insert tableName="questions">
             <column name="name" value="How many access levels in Java"></column>
             <column name="question_type_id" valueNumeric="2"></column>
+            <column name="answer" valueNumeric="4"></column>
         </insert>
 
         <createTable tableName="question_variants">
@@ -175,13 +179,11 @@
             <column name="question_id" type="bigint">
                 <constraints nullable="false"></constraints>
             </column>
-            <column name="answer" type="varchar(1000)">
-            </column>
+
         </createTable>
         <insert tableName="interview_questions">
             <column name="interview_id" valueNumeric="1"></column>
             <column name="question_id" valueNumeric="1"/>
-            <column name="answer" value="4 (public, protected, default, private)"/>
         </insert>
 
 

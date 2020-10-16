@@ -93,21 +93,18 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
 
     useEffect(() => {
         getInterviewStatuses();
-        console.log(updateStatusInterviewData);
     }, [])
 
     const getInterviewStatuses = () => {
         axios
             .get("http://localhost:8080/interview-status", {headers: authHeader()})
             .then(data => {
-                console.log(data);
                 setInterviewStatuses(data.data);
 
             })
             .catch(err => alert(err))
     }
     const handleInputChange = event => {
-        console.log("handle");
         setInterviewUpdateData({interviewId: updateStatusInterviewData.interviewId, interviewStatusId: event.currentTarget.value})
     }
 
@@ -115,7 +112,6 @@ export const UpdateInterviewModal = ({onModalCloseClick, updateStatusInterviewDa
         axios
             .put("http://localhost:8080/interview/change-interview-status", {id: interviewUpdateData.interviewId, interviewStatusId: interviewUpdateData.interviewStatusId}, {headers: authHeader()})
             .then(data => {
-                console.log(interviewUpdateData);
                 onModalCloseClick();
             })
             .catch(err => alert(err))

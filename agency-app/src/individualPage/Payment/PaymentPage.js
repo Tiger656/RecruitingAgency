@@ -5,6 +5,7 @@ import axios from "axios";
 import authHeader from "../../auth/header";
 import {toast} from "react-toastify";
 import {Notification} from "../AdminPage/components/Notification";
+import validator from "validator/es";
 
 const required = (value) => {
     if (!value) {
@@ -18,27 +19,40 @@ const required = (value) => {
 const PaymentPage = (props) => {
 
 
-    const [email, setEmail] = useState("");
-    const [sum, setSum] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+
     const [payment, setPayment] = useState();
 
-    const onChangeUsername = (e) => {
-        const email = e.target.value;
-        setEmail(email);
-    };
 
-    const onChangeSum = (e) => {
-        const password = e.target.value;
-        setSum(password);
-    };
+
     const handleInputChange = event => {
         const {name, value} = event.currentTarget;
         setPayment({...payment, [name]: value})
 
     }
-    console.log(payment)
+    const [isValid, setIsValid] = useState(false);
+
+    const handleSubmit = event => {
+        event.preventDefault()
+
+        if (!isValid) {
+            warnEnterAllFieldsNotify('You entered incorrect data!');
+            return;
+        }
+
+        paymentProcess();
+
+    }
+
+    const validateEmail = (e) => {
+
+        validator.isEmail(e.target.value) && validator.isLength(e.target.value,{min:9,max:70}) ?
+            setIsValid(true)
+            :
+            setIsValid(false) ;
+
+        handleInputChange(e);
+    };
+
     const paymentProcess = () => {
         axios
             .post('http://localhost:8080/api/payment', payment, {headers: authHeader()})
@@ -53,7 +67,9 @@ const PaymentPage = (props) => {
     const successNotify = (message) => {
         toast.success(message, {position: toast.POSITION.TOP_RIGHT});
     }
-
+    const warnEnterAllFieldsNotify = (message) => {
+        toast.warn(message, {position: toast.POSITION.TOP_RIGHT, color: "black"});
+    }
 
     return (
 
@@ -77,7 +93,7 @@ const PaymentPage = (props) => {
                             <div className="tab-content">
 
                                 <div id="credit-card" className="tab-pane fade show active pt-3">
-                                    <Form role="form">
+                                    <Form role="form" onSubmit={handleSubmit}>
 
 
                                         <div className="form-group">
@@ -89,7 +105,8 @@ const PaymentPage = (props) => {
                                                    placeholder="Card Owner Email"
                                                    required className="form-control "
                                                    validations={[required]}
-                                            onChange={handleInputChange}
+                                                   validateEmail
+                                            onChange={validateEmail}
                                             />
                                         </div>
 
@@ -152,9 +169,10 @@ const PaymentPage = (props) => {
 
 
                                         <div className="card-footer"/>
-                                        <button type="button"
+                                        <button type="submit"
                                                 className="subscribe btn btn-primary btn-block shadow-sm"
-                                                onClick={paymentProcess}>
+                                                // onClick={paymentProcess}
+                                        >
                                             Confirm Payment
                                         </button>
 

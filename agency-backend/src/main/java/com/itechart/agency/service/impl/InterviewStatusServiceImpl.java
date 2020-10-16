@@ -18,7 +18,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class InterviewStatusServiceImpl implements InterviewStatusService {
+public class InterviewStatusServiceImpl {
 
 
     private final InterviewStatusRepository interviewStatusRepository;
@@ -31,5 +31,9 @@ public class InterviewStatusServiceImpl implements InterviewStatusService {
 
     public List<InterviewStatus> getAllInterviewStatuses() {
         return interviewStatusRepository.findAll();
+    }
+
+    public InterviewStatus findById(Long interviewStatusId) {
+        return interviewStatusRepository.findById(interviewStatusId).orElseThrow(() -> new NotFoundException("No interview status with id:" + interviewStatusId));
     }
 }
