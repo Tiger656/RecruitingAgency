@@ -230,6 +230,26 @@
             <column name="sum" valueNumeric="100"></column>
             <column name="agency_id" valueNumeric="1"></column>
         </insert>
+        <insert tableName="agencies_transaction">
+            <column name="date" valueDate="${now}"></column>
+            <column name="sum" valueNumeric="140"></column>
+            <column name="agency_id" valueNumeric="1"></column>
+        </insert>
+        <insert tableName="agencies_transaction">
+            <column name="date" valueDate="${now}"></column>
+            <column name="sum" valueNumeric="900"></column>
+            <column name="agency_id" valueNumeric="1"></column>
+        </insert>
+        <insert tableName="agencies_transaction">
+            <column name="date" valueDate="${now}"></column>
+            <column name="sum" valueNumeric="1030"></column>
+            <column name="agency_id" valueNumeric="1"></column>
+        </insert>
+        <insert tableName="agencies_transaction">
+            <column name="date" valueDate="${now}"></column>
+            <column name="sum" valueNumeric="300"></column>
+            <column name="agency_id" valueNumeric="1"></column>
+        </insert>
 
         <createTable tableName="roles">
             <column autoIncrement="true" name="id" type="BIGSERIAL">

@@ -149,9 +149,9 @@ export const ModalCreateReport = ({toggleModalIsOpen}) => {
                  style={styles.divSign}>
                 <form className="login100-form validate-form" >
                     <Notification/>
-                    <div className="cl-btn-7"
-                        // onClick={closeInterviewForm}
-                    />
+                    {/*<div className="cl-btn-7"*/}
+                    {/*     onClick={toggleModalIsOpen}*/}
+                    {/*/>*/}
                     <br/>
                     <span style={styles.span}>
 					            Report criteria
