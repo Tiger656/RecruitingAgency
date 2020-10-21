@@ -75,7 +75,7 @@ public class InterviewServiceImpl {
         List<InterviewGetDto> interviewsGetDto;
         if (id <= 0L) throw new BadRequestException("Not valid id");
         if (!interviewRepository.findByEmployeeContractId(id).isEmpty()) {
-            interviewsGetDto = (interviewRepository.findByEmployeeContractId(id)).stream().map((InterviewGetConverter::convertEntityToDto)).collect(Collectors.toList());
+            interviewsGetDto = (interviewRepository.findByEmployeeContractId(id)).orElseThrow(() -> new NotFoundException("Interviews wasnt found by  employee contract id:" + id)).stream().map((InterviewGetConverter::convertEntityToDto)).collect(Collectors.toList());
         } else {
             throw new NotFoundException("Interview not found");
         }
@@ -98,7 +98,7 @@ public class InterviewServiceImpl {
 
     public List<Interview> findAllByAgencyAndManager(Long agencyId, Long managerUserId) {
         Manager manager = managerRepository.findByUserId(managerUserId);
-        List<Interview> interviews = interviewRepository.findByAgencyIdAndManagerId(agencyId, manager.getId());
+        List<Interview> interviews = interviewRepository.findByAgencyIdAndManagerId(agencyId, manager.getId()).orElseThrow(() -> new NotFoundException("Not found exception"));
         return interviews;
     }
     /*public List<Interview> findAllByAgencyAndManager(Long agencyId, Long managerId) {
@@ -107,13 +107,13 @@ public class InterviewServiceImpl {
     }*/
 
     public List<Interview> findAllByAgencyAndExpertAndInterviewStatus(Long agencyId, Long expertUserId, Long interviewStatusId) {
-        Long expertId = expertRepository.findByUserId(expertUserId).getId();
-        List<Interview> interviews = interviewRepository.findByAgencyIdAndExpertIdAndInterviewStatusId(agencyId, expertId, interviewStatusId);
+        Long expertId = expertRepository.findByUserId(expertUserId).orElseThrow(() -> new NotFoundException("expert with id:" + expertUserId + " wasn't found")).getId();
+        List<Interview> interviews = interviewRepository.findByAgencyIdAndExpertIdAndInterviewStatusId(agencyId, expertId, interviewStatusId).orElseThrow(() -> new NotFoundException("No interviews by agencyId, expertId, interviewStatusId:" + agencyId + "," + expertId + "," + interviewStatusId));
         return interviews;
     }
 
     public List<Interview> findAllByAgency(Long agencyId) {
-        List<Interview> interviews = interviewRepository.findByAgencyId(agencyId);
+        List<Interview> interviews = interviewRepository.findByAgencyId(agencyId).orElseThrow(() -> new NotFoundException("No such interviews"));
         return interviews;
     }
 

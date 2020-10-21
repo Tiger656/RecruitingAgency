@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class QuestionServiceImpl implements ManagerService {
+public class QuestionServiceImpl {
 
     private final QuestionRepository questionRepository;
     private final QuestionTypeRepository questionTypeRepository;

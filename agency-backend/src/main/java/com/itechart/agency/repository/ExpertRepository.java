@@ -5,8 +5,10 @@ import com.itechart.agency.entity.lists.EmploymentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ExpertRepository extends JpaRepository<Expert, Long> {
 
-    Expert findByUserId(Long expertUserId);
+    Optional<Expert> findByUserId(Long expertUserId);
 }
